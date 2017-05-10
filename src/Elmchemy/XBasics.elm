@@ -2,6 +2,7 @@ module Elmchemy.XBasics exposing (..)
 
 import Elmchemy exposing (..)
 
+import Elmchemy.Debug exposing (..)
 
 type Order
     = LT
