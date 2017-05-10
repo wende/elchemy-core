@@ -2,8 +2,6 @@ module Elmchemy.XBasics exposing (..)
 
 import Elmchemy exposing (..)
 
-import Elmchemy.Debug exposing (..)
-
 type Order
     = LT
     | EQ
@@ -199,10 +197,16 @@ always : a -> a -> a
 always a b =
     a
 
+
+
 {- flag nospec:+flip -}
+
+
 flip : (a -> b -> c) -> b -> a -> c
 flip f a b =
     f b a
+
+
 
 -- TODO Will be fixed with #34
 {- ex
@@ -220,25 +224,29 @@ flip f a b =
 
 -}
 -- We don't care for Never type
-
 -- Additional
+
 
 notImplemented : a
 notImplemented =
     lffi "throw" "Not implemented"
 
-tuple2 : a -> b -> (a, b)
+
+tuple2 : a -> b -> ( a, b )
 tuple2 a b =
-    (a, b)
+    ( a, b )
 
-tuple3 : a -> b -> c -> (a, b, c)
+
+tuple3 : a -> b -> c -> ( a, b, c )
 tuple3 a b c =
-    (a, b, c)
+    ( a, b, c )
 
-tuple4 : a -> b -> c -> d -> (a, b, c, d)
+
+tuple4 : a -> b -> c -> d -> ( a, b, c, d )
 tuple4 a b c d =
-    (a, b, c, d)
+    ( a, b, c, d )
 
-tuple5 : a -> b -> c -> d -> e -> (a, b, c, d, e)
+
+tuple5 : a -> b -> c -> d -> e -> ( a, b, c, d, e )
 tuple5 a b c d e =
-    (a, b, c, d, e)
+    ( a, b, c, d, e )

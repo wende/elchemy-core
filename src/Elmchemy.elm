@@ -1,5 +1,6 @@
 module Elmchemy exposing (..)
 
+
 type alias Pid =
     ( Int, Int, Int )
 
@@ -25,9 +26,11 @@ ffi : Module -> Function -> a
 ffi m f =
     Debug.crash "You can't use ffi in a browser"
 
+
 flambda : Int -> a -> b
 flambda arity f =
     Debug.crash "You can't use foreign lambda in a browser"
+
 
 super : a
 super =

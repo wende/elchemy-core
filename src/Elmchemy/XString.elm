@@ -42,6 +42,7 @@ module Elmchemy.XString
         , any
         , all
         )
+
 {-| A built-in representation for efficient string manipulation. String literals
 are enclosed in `"double quotes"`. Strings are *not* lists of characters.
 
@@ -90,9 +91,11 @@ import Elmchemy exposing (..)
 import Elmchemy.XList as XList
 import Elmchemy.XResult as XResult
 import Elmchemy.XTuple as XTuple
+
+
 {- ex
-import Kernel, except: [{:length, 1}]
-import Elmchemy.XBasics, except: [{:to_float, 1}]
+   import Kernel, except: [{:length, 1}]
+   import Elmchemy.XBasics, except: [{:to_float, 1}]
 -}
 
 
@@ -138,9 +141,8 @@ uncons : String -> Maybe ( Char, String )
 uncons str =
     let
         result =
-            ffi "String" "split_at" (str, 1)
+            ffi "String" "split_at" ( str, 1 )
                 |> XTuple.mapFirst (\a -> ffi "String" "to_charlist" a)
-
     in
         if XTuple.first result == [] then
             Nothing
@@ -300,6 +302,9 @@ are taken starting from the *end* of the list.
     slice -6 -1 "snakes on a plane!" == "plane"
 
 -}
+
+
+
 -- slice 7 9 = slice 7 (9 - 7)
 --                     7  2
 -- slice 0 6 = slice 0 (6 - 0)
@@ -308,15 +313,27 @@ are taken starting from the *end* of the list.
 --                      0  11
 -- slice -6 -1 = slice ((18 - 6)) (18 - 1 - 12)
 --                          12       5
+
+
 slice : Int -> Int -> String -> String
 slice from to str =
     let
-        l = length str
-        mirror a = if a < 0 then l + a else a
-        start = mirror from
-        len = (mirror to) - start
+        l =
+            length str
+
+        mirror a =
+            if a < 0 then
+                l + a
+            else
+                a
+
+        start =
+            mirror from
+
+        len =
+            (mirror to) - start
     in
-        ffi "String" "slice" ( str, start, len)
+        ffi "String" "slice" ( str, start, len )
 
 
 {-| Take *n* characters from the left side of a string.
@@ -369,12 +386,15 @@ dropRight n str =
 pad : Int -> Char -> String -> String
 pad n c str =
     let
-        right = (length str + n) // 2
-        left = n
+        right =
+            (length str + n) // 2
+
+        left =
+            n
     in
         str
-        |> padRight right c
-        |> padLeft left c
+            |> padRight right c
+            |> padLeft left c
 
 
 {-| Pad a string on the left until it has a given length.
@@ -449,9 +469,10 @@ words str =
 lines : String -> List String
 lines str =
     let
-        pattern = ffi ":binary" "compile_pattern" ([ "\n", "\x0D", "\x0D\n" ])
+        pattern =
+            ffi ":binary" "compile_pattern" ([ "\n", "\x0D", "\x0D\n" ])
     in
-        ffi "String" "split" ( str, pattern)
+        ffi "String" "split" ( str, pattern )
 
 
 {-| Convert a string to all upper case. Useful for case-insensitive comparisons
@@ -604,7 +625,11 @@ want to use [`Result.withDefault`](Result#withDefault) to handle bad data:
 toFloat : String -> Result String Float
 toFloat str =
     let
-        real = if contains "." str then str else str ++ ".0"
+        real =
+            if contains "." str then
+                str
+            else
+                str ++ ".0"
     in
         case tryCatch (\_ -> (ffi "String" "to_float" real)) of
             Err "argument error" ->
@@ -622,9 +647,10 @@ toFloat str =
 toList : String -> List Char
 toList str =
     let
-        charlist = (ffi "String" "to_charlist" str)
+        charlist =
+            (ffi "String" "to_charlist" str)
     in
-        ffi "Enum" "map" (charlist, XList.singleton)
+        ffi "Enum" "map" ( charlist, XList.singleton )
 
 
 {-| Convert a list of characters into a String. Can be useful if you
