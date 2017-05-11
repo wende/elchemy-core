@@ -32,7 +32,7 @@ ffi m f =
 {-|
 Produce multiple argument anonymous function out of regular elm function.
 
-flambda 2 fun --> fn x1, x2 -> fun.(x1).(x2) end
+    flambda 2 fun --> fn x1, x2 -> fun.(x1).(x2) end
 -}
 flambda : Int -> a -> b
 flambda arity f =
