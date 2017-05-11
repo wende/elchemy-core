@@ -33,24 +33,41 @@ defmodule Elmchemy do
       ]
       alias Elmchemy.{
         XBasics,
+        XList,
         XString,
         XMaybe,
         XChar,
         XTuple,
         XResult
       }
-      import_std(Elmchemy.XBasics)
+      import_std()
     end
   end
 
-  defmacro import_std(mod, _opts \\ []) do
-    if __CALLER__.module != Macro.expand(mod, __ENV__) do
+  @std [
+    Elmchemy.XBasics,
+    Elmchemy.XList,
+    Elmchemy.XString,
+    Elmchemy.XMaybe,
+    Elmchemy.XChar,
+    Elmchemy.XTuple,
+    Elmchemy.XResult
+    ]
+  defmacro import_std() do
+    if Enum.member?(@std, __CALLER__.module) do
       quote do
-        import unquote(mod)
+        :ok
       end
     else
       quote do
-        :ok
+        import Elmchemy.XBasics
+        import Elmchemy.XList, only: [{:cons, 0}]
+        # Rest contains no functions
+        # import Maybe exposing ( Maybe( Just, Nothing ) )
+        # import Result exposing ( Result( Ok, Err ) )
+        # import String
+        # import Tuple
+        # import Debug
       end
     end
   end

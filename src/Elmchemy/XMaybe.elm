@@ -1,14 +1,13 @@
-module Elmchemy.XMaybe
-    exposing
-        ( Maybe(Just, Nothing)
-        , andThen
-        , map
-        , map2
-        , map3
-        , map4
-        , map5
-        , withDefault
-        )
+module Elmchemy.XMaybe exposing
+    ( Maybe(Just, Nothing)
+    , andThen
+    , map
+    , map2
+    , map3
+    , map4
+    , map5
+    , withDefault
+    )
 
 {-| This library fills a bunch of important niches in Elm. A `Maybe` can help
 you with optional arguments, error handling, and records with optional fields.

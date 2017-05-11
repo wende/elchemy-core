@@ -54,7 +54,7 @@ list must have the same type.
 
 # Putting Lists Together
 
-@docs singleton, repeat, range, (::), append, concat, intersperse
+@docs singleton, repeat, range, cons, (::), append, concat, intersperse
 
 
 # Taking Lists Apart
@@ -95,7 +95,7 @@ The current sentiment is that it is already quite error prone once you get to
 
 {- ex
    import Kernel, except: [{:length, 1}]
-
+   import Elmchemy.XBasics
 -}
 
 import Elmchemy exposing (..)
@@ -108,15 +108,18 @@ import Elmchemy exposing (..)
 
 -}
 
-
-
-{- flag nodef:+:: nocurry:+:: nospec:+:: nospec0:+:: -}
-
-
+{- flag nodef:+:: nocurry:+:: nospec:+:: -}
 (::) : a -> List a -> List a
 (::) a list =
     cons a list
 
+
+{-| Add an element to the front of a list. Pronounced *cons*.
+
+    cons 1 [2,3] == [1,2,3]
+    cons 1 [] == [1]
+
+-}
 
 cons : a -> List a -> List a
 cons a list =

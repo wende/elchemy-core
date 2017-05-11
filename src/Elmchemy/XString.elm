@@ -76,9 +76,7 @@ are enclosed in `"double quotes"`. Strings are *not* lists of characters.
 
 Cosmetic operations such as padding with extra characters or trimming whitespace.
 
-@docs toUpper, toLower,
-pad, padLeft, padRight,
-trim, trimLeft, trimRight
+@docs toUpper, toLower, pad, padLeft, padRight, trim, trimLeft, trimRight
 
 
 # Higher-Order Functions
@@ -88,14 +86,16 @@ trim, trimLeft, trimRight
 -}
 
 import Elmchemy exposing (..)
-import Elmchemy.XList as XList
 import Elmchemy.XResult as XResult
+import Elmchemy.XList as XList
 import Elmchemy.XTuple as XTuple
 
 
 {- ex
-   import Kernel, except: [{:length, 1}]
-   import Elmchemy.XBasics, except: [{:to_float, 1}]
+   import Kernel, except: [{:length, 1}, {:'++', 2}]
+   import Elmchemy.XBasics, except: [{
+     :to_float, 1,
+   }]
 -}
 
 
@@ -112,7 +112,7 @@ isEmpty str =
 
 {-| Add a character to the beginning of a string.
 
-    cons 'T' "he truth is out there" == "The truth is out there"
+    XString.cons 'T' "he truth is out there" == "The truth is out there"
 
 -}
 cons : Char -> String -> String
@@ -232,7 +232,7 @@ reverse str =
 
 {-| Reduce a string from the left.
 
-    foldl cons "" "time" == "emit"
+    foldl XString.cons "" "time" == "emit"
 
 -}
 foldl : (Char -> b -> b) -> b -> String -> b
@@ -248,7 +248,7 @@ foldl f acc str =
 
 {-| Reduce a string from the right.
 
-    foldr cons "" "time" == "time"
+    foldr XString.cons "" "time" == "time"
 
 -}
 foldr : (Char -> b -> b) -> b -> String -> b

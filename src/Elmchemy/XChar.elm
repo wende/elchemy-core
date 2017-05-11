@@ -23,7 +23,7 @@ module Elmchemy.XChar
 
 # Conversion
 
-@docs toUpper, toLower, toLocaleUpper, toLocaleLower
+@docs toUpper, toLower
 
 
 # Key Codes

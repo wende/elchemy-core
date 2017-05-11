@@ -1,15 +1,22 @@
 {
     "version": "1.0.0",
-    "summary": "helpful summary of your project, less than 80 characters",
-    "repository": "https://github.com/user/project.git",
+    "summary": "Set of standard libraries for Elmchemy",
+    "repository": "https://github.com/wende/elmchemy-core.git",
     "license": "BSD3",
     "source-directories": [
         ".",
-        "./src",
-        "./src/Elmchemy",
-        "./.ex_deps"
+        "./src"
     ],
-    "exposed-modules": [],
+    "exposed-modules": [
+      "Elmchemy",
+      "Elmchemy.XBasics",
+      "Elmchemy.XList",
+      "Elmchemy.XString",
+      "Elmchemy.XMaybe",
+      "Elmchemy.XChar",
+      "Elmchemy.XResult",
+      "Elmchemy.XTuple"
+    ],
     "dependencies": {
         "elm-lang/core": "5.1.1 <= v < 6.0.0"
     },
