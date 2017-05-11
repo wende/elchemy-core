@@ -117,7 +117,7 @@ isEmpty str =
 -}
 cons : Char -> String -> String
 cons c str =
-    toString c ++ str
+    fromChar c ++ str
 
 
 {-| Create a string from a given character.
@@ -127,7 +127,7 @@ cons c str =
 -}
 fromChar : Char -> String
 fromChar char =
-    cons char ""
+   ffi ":binary" "list_to_bin" char
 
 
 {-| Split a non-empty string into its head and tail. This lets you

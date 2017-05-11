@@ -41,7 +41,7 @@ mapFirst f ( fst, snd ) =
 
 {-| Transform the second value in a tuple.
     import String
-    mapSecond sqrt          ("stressed", 16) == ("stressed", 4)
+    mapSecond sqrt          ("stressed", 16) == ("stressed", 4.0)
     mapSecond (\x -> x + 1) ("stressed", 16) == ("stressed", 17)
  -}
 mapSecond : (b -> b1) -> ( a, b ) -> ( a, b1 )

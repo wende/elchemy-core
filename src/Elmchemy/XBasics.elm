@@ -26,10 +26,14 @@ module Elmchemy.XBasics
         , identity
         , always
         , flip
+        , tuple2
+        , tuple3
+        , tuple4
+        , tuple5
         )
 
 {-| Tons of useful functions that get imported by default.
-@docs compare, xor, negate, sqrt, clamp, compare , xor , negate , sqrt , clamp , logBase , e , pi , cos , sin , tan , acos , asin , atan , atan2 , round , floor , ceiling , truncate , toFloat , toString , (++) , identity , always, flip
+@docs compare, xor, negate, sqrt, clamp, compare , xor , negate , sqrt , clamp , logBase , e , pi , cos , sin , tan , acos , asin , atan , atan2 , round , floor , ceiling , truncate , toFloat , toString , (++) , identity , always, flip, tuple2, tuple3, tuple4, tuple5
 
 @docs Order
 
@@ -219,12 +223,11 @@ toFloat x =
 {-| Turn any kind of value into a string. When you view the resulting string
 with `Text.fromString` it should look just like the value it came from.
     toString 42 == "42"
-    toString [1,2] == "[1,2]"
-    toString "he said, \"hi\"" == "\"he said, \\\"hi\\\"\""
+    toString [1,2] == "[1, 2]"
 -}
 toString : a -> String
 toString x =
-    ffi "Kernel" "to_string" x
+    ffi "Kernel" "inspect" x
 
 {-| Put two appendable things together. This includes strings, lists, and text.
     "hello" ++ "world" == "helloworld"
@@ -285,22 +288,22 @@ notImplemented : a
 notImplemented =
     lffi "throw" "Not implemented"
 
-
+{-|-}
 tuple2 : a -> b -> ( a, b )
 tuple2 a b =
     ( a, b )
 
-
+{-|-}
 tuple3 : a -> b -> c -> ( a, b, c )
 tuple3 a b c =
     ( a, b, c )
 
-
+{-|-}
 tuple4 : a -> b -> c -> d -> ( a, b, c, d )
 tuple4 a b c d =
     ( a, b, c, d )
 
-
+{-|-}
 tuple5 : a -> b -> c -> d -> e -> ( a, b, c, d, e )
 tuple5 a b c d e =
     ( a, b, c, d, e )

@@ -93,12 +93,12 @@ The current sentiment is that it is already quite error prone once you get to
 
 -}
 
+import Elmchemy exposing (..)
 {- ex
    import Kernel, except: [{:length, 1}]
    import Elmchemy.XBasics
 -}
 
-import Elmchemy exposing (..)
 
 
 {-| Add an element to the front of a list. Pronounced *cons*.
