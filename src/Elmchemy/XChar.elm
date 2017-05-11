@@ -36,9 +36,11 @@ import Elmchemy exposing (..)
 
 
 {-| True for char between first and second argument
-between 'a' 'z' 'b' == True
-between '1' '9' '5' == True
-between 'A' 'Z' 'g' == False
+
+    between 'a' 'z' 'b' == True
+    between '1' '9' '5' == True
+    between 'A' 'Z' 'g' == False
+
 -}
 isBetween : Char -> Char -> Char -> Bool
 isBetween low high char =
@@ -50,9 +52,10 @@ isBetween low high char =
 
 
 {-| True for upper case ASCII letters.
-isUpper 'D' == True
-isUpper 'A' == True
-isUpper 'x' == False
+
+    isUpper 'D' == True
+    isUpper 'A' == True
+    isUpper 'x' == False
 -}
 isUpper : Char -> Bool
 isUpper char =
@@ -60,9 +63,10 @@ isUpper char =
 
 
 {-| True for lower case ASCII letters.
-isLower 'd' == True
-isLower 'a' == True
-isLower 'X' == False
+
+    isLower 'd' == True
+    isLower 'a' == True
+    isLower 'X' == False
 -}
 isLower : Char -> Bool
 isLower char =
@@ -70,9 +74,10 @@ isLower char =
 
 
 {-| True for ASCII digits `[0-9]`.
-isDigit '1' == True
-isDigit '9' == True
-isDigit 'a' == False
+
+    isDigit '1' == True
+    isDigit '9' == True
+    isDigit 'a' == False
 -}
 isDigit : Char -> Bool
 isDigit char =
@@ -80,9 +85,10 @@ isDigit char =
 
 
 {-| True for ASCII octal digits `[0-7]`.
-isOctDigit '7' == True
-isOctDigit '5' == True
-isOctDigit '9' == False
+
+    isOctDigit '7' == True
+    isOctDigit '5' == True
+    isOctDigit '9' == False
 -}
 isOctDigit : Char -> Bool
 isOctDigit char =
@@ -90,9 +96,10 @@ isOctDigit char =
 
 
 {-| True for ASCII hexadecimal digits `[0-9a-fA-F]`.
-isHexDigit 'd' == True
-isHexDigit 'D' == True
-isHexDigit 'x' == False
+
+    isHexDigit 'd' == True
+    isHexDigit 'D' == True
+    isHexDigit 'x' == False
 -}
 isHexDigit : Char -> Bool
 isHexDigit char =
@@ -100,7 +107,8 @@ isHexDigit char =
 
 
 {-| Convert to upper case.
-toUpper 'a' == 'A'
+
+    toUpper 'a' == 'A'
 -}
 toUpper : Char -> Char
 toUpper char =
@@ -108,7 +116,8 @@ toUpper char =
 
 
 {-| Convert to lower case.
-toLower 'A' == 'a'
+
+    toLower 'A' == 'a'
 -}
 toLower : Char -> Char
 toLower char =
@@ -135,7 +144,8 @@ type alias KeyCode =
 
 
 {-| Convert to key code.
-toCode 'a' == 97
+
+    toCode 'a' == 97
 -}
 toCode : Char -> KeyCode
 toCode char =
@@ -143,7 +153,8 @@ toCode char =
 
 
 {-| Convert from key code.
-fromCode 97 == 'a'
+
+    fromCode 97 == 'a'
 -}
 fromCode : KeyCode -> Char
 fromCode code =

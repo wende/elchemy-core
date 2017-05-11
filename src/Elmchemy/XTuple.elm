@@ -11,6 +11,7 @@ Module for tuple manipulation
 -}
 
 {-| Extract the first value from a tuple.
+
     first (3, 4) == 3
     first ("john", "doe") == "john"
  -}
@@ -20,6 +21,7 @@ first ( fst, _ ) =
 
 
 {-| Extract the second value from a tuple.
+
     second (3, 4) == 4
     second ("john", "doe") == "doe"
  -}
@@ -30,7 +32,7 @@ second ( _, snd ) =
 
 
 {-| Transform the first value in a tuple.
-    import String
+
     mapFirst String.reverse ("stressed", 16) == ("desserts", 16)
     mapFirst String.length  ("stressed", 16) == (8, 16)
  -}
@@ -40,7 +42,7 @@ mapFirst f ( fst, snd ) =
 
 
 {-| Transform the second value in a tuple.
-    import String
+
     mapSecond sqrt          ("stressed", 16) == ("stressed", 4.0)
     mapSecond (\x -> x + 1) ("stressed", 16) == ("stressed", 17)
  -}

@@ -33,7 +33,7 @@ module Elmchemy.XBasics
         )
 
 {-| Tons of useful functions that get imported by default.
-@docs compare, xor, negate, sqrt, clamp, compare , xor , negate , sqrt , clamp , logBase , e , pi , cos , sin , tan , acos , asin , atan , atan2 , round , floor , ceiling , truncate , toFloat , toString , (++) , identity , always, flip, tuple2, tuple3, tuple4, tuple5
+@docs compare, xor, sqrt, clamp, compare , xor , negate , sqrt , logBase , e , pi , cos , sin , tan , acos , asin , atan , atan2 , round , floor , ceiling , truncate , toFloat , toString , (++) , identity , always, flip, tuple2, tuple3, tuple4, tuple5
 
 @docs Order
 
@@ -120,6 +120,7 @@ xor a b =
     (a && not b) || (not a && b)
 
 {-| Negate a number.
+
     negate 42 == -42
     negate -42 == 42
     negate 0 == 0
@@ -222,6 +223,7 @@ toFloat x =
 
 {-| Turn any kind of value into a string. When you view the resulting string
 with `Text.fromString` it should look just like the value it came from.
+
     toString 42 == "42"
     toString [1,2] == "[1, 2]"
 -}
@@ -230,6 +232,7 @@ toString x =
     ffi "Kernel" "inspect" x
 
 {-| Put two appendable things together. This includes strings, lists, and text.
+
     "hello" ++ "world" == "helloworld"
     [1,1,2] ++ [3,5,8] == [1,1,2,3,5,8]
  -}
@@ -249,6 +252,7 @@ identity a =
 
 {-| Create a function that *always* returns the same value. Useful with
 functions like `map`:
+
     List.map (always 0) [1,2,3,4,5] == [0,0,0,0,0]
     List.map (\_ -> 0) [1,2,3,4,5] == [0,0,0,0,0]
 -}
