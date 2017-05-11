@@ -3,13 +3,12 @@ module Elmchemy.XDebug exposing
         , crash
         )
 
-{-|
-Module with helper functions for debugging
+{-| Module with helper functions for debugging
 
 # Debug
 @docs log, crash
 
- -}
+-}
 
 import Elmchemy exposing (..)
 
