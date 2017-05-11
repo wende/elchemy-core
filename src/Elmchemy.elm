@@ -16,7 +16,7 @@ and a tuple or single value of arguments
     lffi "to_string" 1 == "1"
 -}
 lffi : String -> a
-lffi =
+lffi a =
     Debug.crash "You can't call local ffi in a browser"
 
 {-|
