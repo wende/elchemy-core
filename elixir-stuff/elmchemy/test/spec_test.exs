@@ -51,21 +51,21 @@ defmodule Elmchemy.SpecTest do
         Enum, List)
     end)
   end
-  defmodule TypeTest do
-    use Elmchemy
-
-    @spec myfun1(integer, integer, integer) :: integer
-    verify as: Enum.at/3
-    defdelegate myfun1(a, b, c), to: Enum
-
-    @spec myfun1(list(), float, integer) :: integer
-    verify as: Enum.at/3
-    defdelegate myfun2(a, b, c), to: Enum
-
-    @spec myfun1(list(), float, integer) :: integer
-    verify as: Enum.at/3
-    defdelegate myfun3(a, b, c), to: Enum
-  end
+  # defmodule TypeTest do
+  #   use Elmchemy
+  #
+  #   @spec myfun1(integer, integer, integer) :: integer
+  #   verify as: Enum.at/3
+  #   defdelegate myfun1(a, b, c), to: Enum
+  #
+  #   @spec myfun1(list(), float, integer) :: integer
+  #   verify as: Enum.at/3
+  #   defdelegate myfun2(a, b, c), to: Enum
+  #
+  #   @spec myfun1(list(), float, integer) :: integer
+  #   verify as: Enum.at/3
+  #   defdelegate myfun3(a, b, c), to: Enum
+  # end
   test "Test verify type" do
 
   end
