@@ -1,26 +1,20 @@
 defmodule ElmchemyHack do
-
-  defp get_definitions(content) do
-    ~r/def (\w+)/
-    |> Regex.scan(content)
-  end
-
-  defmacro __before_compile__(env) do
-    IO.inspect env
-    IO.inspect __CALLER__.module
-
-    File.read!(env.file)
-    |> IO.inspect
-    |> get_definitions
-    |> IO.inspect
+  defmacro __before_compile__(_env) do
+    module = __CALLER__.module
+    verifys = Module.get_attribute(module, :verify_type)
+    Enum.map(verifys, fn {{mod, fun, arity}, {:spec, {fun1, _}, spec}} ->
+      orig = Elmchemy.Spec.find(mod, fun, arity)
+      Elmchemy.Spec.compare!({{fun1, arity}, [spec]}, orig, module, mod)
+    end)
   end
 
 end
 
 defmodule Elmchemy do
-
   defmacro __using__(_) do
     quote do
+      Module.register_attribute(__MODULE__, :verify_type, accumulate: true)
+      @before_compile ElmchemyHack
       require Elmchemy
       import Elmchemy
       require Elmchemy.Glue

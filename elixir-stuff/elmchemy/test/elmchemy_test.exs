@@ -10,4 +10,5 @@ defmodule ElmchemyTest do
   doctest Elmchemy.XChar
   doctest Elmchemy.XResult
   doctest Elmchemy.XTuple
+
 end
