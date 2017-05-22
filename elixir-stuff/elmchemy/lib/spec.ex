@@ -23,29 +23,38 @@ defmodule Elmchemy.Spec do
       These type signatures are different:
         #{gen_elm a, mod1}
         #{gen_elm b, mod2}
-      Because of #{elem(result, 1)}
+      Because of #{inspect result}
       """
     end
   end
   @doc """
   Check if left spec is a subtype of a right one
   """
-  def compare({{_, arity1}, [spec1]}, {{_, arity2}, [spec2]}, mod1, mod2 \\ nil) do
+  def compare(l = {{_, arity1}, [spec1]}, r = {{f, arity2}, [spec2 | rest]}, mod1, mod2 \\ nil) do
+    IO.inspect(r)
+    IO.puts "\n"
     mod2 = mod2 || mod1
-    if arity1 != arity2 do
-      {:error, "functions have different arity"}
-    else
-      do_compare(spec1, spec2, mod1, mod2)
+    compared = do_compare(spec1, spec2, mod1, mod2)
+    cond do
+      arity1 != arity2 ->
+        {:error, "functions have different arity"}
+      compared == :ok ->
+         :ok
+      rest == [] ->
+        compared
+      true ->
+        compare(l, {{f, arity2}, rest}, mod1, mod2)
     end
   end
+
   defp do_compare(same, same, _mod1, _mod2), do: :ok
   defp do_compare({:type, _, type, []}, {:type, _, type, []}, _, _), do: :ok
   defp do_compare(_, {:type, _, :any, []}, _, _), do: :ok
   defp do_compare(_, {:type, _, :term, []}, _, _), do: :ok
   defp do_compare(_, {:var, _, _}, _, _), do: :ok
-  defp do_compare({:type, _, type, args1}, {:type, _, type, args2}, m1, m2) do
+  defp do_compare(t1 = {:type, _, type, args1}, t2 = {:type, _, type, args2}, m1, m2) do
     if length(args1) != length(args2) do
-      {:error, "#{args1} is not the same length as #{args2}"}
+      {:error, "#{gen_spec t1, m1} is not the same length as #{gen_spec t2, m2}"}
     else
       [args1, args2]
       |> Enum.zip()
@@ -74,7 +83,7 @@ defmodule Elmchemy.Spec do
   end
   defp do_compare({:var, _, _}, {:var, _, _}, _, _), do: :ok
   defp do_compare({:user_type, _, name, []}, {:user_type, _, name, []}, _, _) do
-    true
+    :ok
   end
   defp do_compare({:user_type, _, name, []}, b, m1, m2) do
     do_compare(resolve_type(name, m1), b, m1, m2)
@@ -83,7 +92,7 @@ defmodule Elmchemy.Spec do
     do_compare(a, resolve_type(name, m2), m1, m2)
   end
   defp do_compare({:remote_type, _, path}, {:remote_type, _, path}, _, _) do
-    path == path
+    :ok
   end
   defp do_compare({:remote_type, _, path}, b, m1, m2) do
     {module, name} = get_path_and_name(path)
@@ -112,7 +121,7 @@ defmodule Elmchemy.Spec do
   end
   def gen_elm({{name, _arity}, specs}, mod) do
     "#{to_string name} : " <>
-    Enum.join(Enum.map(specs, &gen_spec(&1, mod)))
+    Enum.join(Enum.map(specs, &gen_spec(&1, mod)), " | ")
   end
   def gen_elm({{:erts_internal, name, arity}, specs}, mod) do
     gen_elm({{name, arity}, specs}, mod)
@@ -152,9 +161,9 @@ defmodule Elmchemy.Spec do
   defp gen_spec({type, _line, value}, _mod) do
     elmify_type(type, [value])
   end
-  # NIF. Nothing to do here
-  defp gen_spec(other, _mod) when is_list(other),
-    do: other
+  defp gen_spec([{:type, _, :constraint, _} | _], _) do
+    ""
+  end
 
   defp get_path_and_name(ast) when is_list(ast) do
     rev = Enum.reverse(ast) |> List.flatten
@@ -162,7 +171,13 @@ defmodule Elmchemy.Spec do
     path =
       revpath
       |> Enum.map(fn {:atom, _, module} -> module end)
-      |> Module.concat()
+
+    path =
+      if (length(path) == 1) && !(path |> hd |> to_string |> String.starts_with?("Elixir.")) do
+        path |> hd
+      else
+        Module.concat(path)
+      end
     {path, name}
   end
   defp extract_path({:atom, _, name}), do: name
@@ -187,10 +202,10 @@ defmodule Elmchemy.Spec do
       {:term, []} -> "any"
       {:list, []} -> "List any"
       {:list, _} -> "List " <> Enum.join(rest, " ")
-      {:nonempty_maybe_improper_list, ^rest} -> "List {} #{Enum.join rest, " "}{}"
+      {:nonempty_maybe_improper_list, ^rest} -> "List #{Enum.join rest, " "}"
       {:any, []} -> "any"
       {:timeout, []} -> "Timeout"
-      {:no_return, []} -> "Nothing"
+      {:no_return, []} -> "()"
       {:byte, []} -> "Byte"
       {:integer, []} -> "Int"
       {:integer, [_value]} -> "Int"
@@ -204,12 +219,12 @@ defmodule Elmchemy.Spec do
       {:binary, []} -> "String"
       {:binary, _any} -> "String"
       {:var, [:_]} -> "a"
-      {:var, [name]} -> "#{name}"
+      {:var, [name]} -> "#{String.downcase (to_string name)}"
       {:nonempty_list, [type]} -> "List " <> type
       {:record, [type]} -> "Record " <> to_string type
-      {:bounded_fun, _} -> "boun"
       {:function, []} -> "(Any -> Any)"
       {:fun, []} -> "(Any -> Any)"
+      {:bounded_fun, rest} -> Enum.join rest
       {:char, []} -> "Char"
       {:map_field_exact, [key, value]} -> "#{key} = #{value}"
       {:iolist, []} -> "IOList"
@@ -230,9 +245,15 @@ defmodule Elmchemy.Spec do
   end
 
   defp resolve_type(type, module) when is_atom(type) do
-    resolved =
+    beam_types =
       module
       |> Kernel.Typespec.beam_types()
+
+    if beam_types == nil do
+      throw "There is no #{type} in #{module}"
+    end
+    resolved =
+      beam_types
       |> Enum.find(fn {:type, {name, _definition, []}} -> name == type end)
     case resolved do
       {:type, {^type, {:type, _, :any, []}, []}} ->
@@ -241,6 +262,9 @@ defmodule Elmchemy.Spec do
       {:type, {^type, definition, []}} ->
         Logger.debug "Resolved #{inspect type} into #{inspect definition}"
         definition
+      nil ->
+        Logger.warn "No type with name #{type} in module #{module}. Resolving to :any"
+        {:type, 0, :any, []}
     end
   end
 end

@@ -70,12 +70,18 @@ defmodule Elmchemy.Glue do
 
   ## TYPE CHECKING
   defmacro verify(as: {:/, _, [{call, _, []}, arity1]}) do
-    {:., _, [{:__aliases__, _, mods}, function]} = call
-    mod = Module.concat(mods)
+    {mod, function} = case call do
+      {:., _, [{:__aliases__, _, mods}, fun]} ->
+        mod = Module.concat(mods)
+        {mod, fun}
+      {:., _, [mod, fun]} ->
+        {mod, fun}
+    end
     quote do
       spec_ast = Module.get_attribute(__MODULE__, :spec) |> hd |> elem(1)
-      {spec, _line} = Kernel.Typespec.translate_spec(:spec, spec_ast, __ENV__)
-      Module.put_attribute(__MODULE__, :verify_type, {{unquote(mod), unquote(function), unquote(arity1)}, spec})
+      {{:spec, {fun1, _}, spec}, _line} = Kernel.Typespec.translate_spec(:spec, spec_ast, __ENV__)
+      orig = Elmchemy.Spec.find(unquote(mod), unquote(function), unquote(arity1))
+      Elmchemy.Spec.compare!({{unquote(function), unquote(arity1)}, [spec]}, orig, __MODULE__, unquote(mod))
     end
   end
 end
