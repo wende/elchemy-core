@@ -81,7 +81,7 @@ defmodule Elmchemy.Glue do
       spec_ast = Module.get_attribute(__MODULE__, :spec) |> hd |> elem(1)
       {{:spec, {fun1, _}, spec}, _line} = Kernel.Typespec.translate_spec(:spec, spec_ast, __ENV__)
       orig = Elmchemy.Spec.find(unquote(mod), unquote(function), unquote(arity1))
-      Elmchemy.Spec.compare!({{unquote(function), unquote(arity1)}, [spec]}, orig, __MODULE__, unquote(mod))
+      Elmchemy.Spec.compare!({{fun1, unquote(arity1)}, [spec]}, orig, __MODULE__, unquote(mod))
     end
   end
 end

@@ -150,6 +150,10 @@ type alias KeyCode =
     Int
 
 
+
+{- flag noverify:+toCode -}
+
+
 {-| Convert to key code.
 
     toCode 'a' == 97

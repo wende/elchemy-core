@@ -46,8 +46,13 @@ defmodule Elmchemy.Spec do
         compare(l, {{f, arity2}, rest}, mod1, mod2)
     end
   end
-
   defp do_compare(same, same, _mod1, _mod2), do: :ok
+  defp do_compare(l, {:type, _, :bounded_fun, [fun | constraints]}, m1, m2) do
+    do_compare(l, fun, m1, m2)
+  end
+  defp do_compare({:type, _, :list, [{:type, _, :any, []}]}, {:type, _, :list, []}, _m1, _m2) do
+    :ok
+  end
   defp do_compare({:type, _, type, []}, {:type, _, type, []}, _, _), do: :ok
   defp do_compare(_, {:type, _, :any, []}, _, _), do: :ok
   defp do_compare(_, {:type, _, :term, []}, _, _), do: :ok
@@ -77,9 +82,9 @@ defmodule Elmchemy.Spec do
       {:error, "none of #{gen_spec a, m1} is a subtype of #{gen_spec b, m2}"}
     end
   end
-  defp do_compare(t1 = {:type, _, type1, _}, t2 = {:type, _, type2, _}, m1, m2)
-  when type1 != type2 do
-    {:error, "type #{gen_spec t1, m1} is not a subtype of #{gen_spec t2, m2}"}
+  defp do_compare(t1 = {:type, _, _type1, _arg1}, t2 = {:type, _, _type2, _arg2}, m1, m2)
+  do
+    compare_types(t1, t2, m1, m2)
   end
   defp do_compare({:var, _, _}, {:var, _, _}, _, _), do: :ok
   defp do_compare({:user_type, _, name, []}, {:user_type, _, name, []}, _, _) do
@@ -102,10 +107,45 @@ defmodule Elmchemy.Spec do
     {module, name} = get_path_and_name(path)
     do_compare(a, resolve_type(name, module), m1, m2)
   end
-  defp do_compare(a, b, m1, m2) do
-    {:error, "\n\t#{gen_spec a, m1}\nand\n\t#{gen_spec b, m2}\n aren't equal"}
+  defp do_compare(t1 = {:type, _, type1, _},  t2 = {type2, _, _val}, m1, _m2) do
+    cond do
+      type1 == type2 -> :ok
+      type1 == :integer && type2 == :number -> :ok
+      type1 == :integer && type2 == :pos_integer -> :ok
+      type1 == :integer && type2 == :neg_integer -> :ok
+      type1 == :integer && type2 == :float -> :ok
+
+      type2 == :integer && type1 == :number -> :ok
+      type2 == :integer && type1 == :pos_integer -> :ok
+      type2 == :integer && type1 == :neg_integer -> :ok
+      type2 == :integer && type1 == :float -> :ok
+
+      type1 == :float && type2 == :number -> :ok
+      type1 == :float && type2 == :integer -> :ok
+
+      type2 == :float && type1 == :number -> :ok
+      type2 == :float && type1 == :integer -> :ok
+
+      true -> {:error, "Type instance #{inspect t2} is not of type #{gen_spec t1, m1} (#{inspect t1})"}
+    end
   end
 
+  defp compare_types(t1 = {:type, _, type1, arg1}, t2 = {:type, _, type2, arg2}, m1, m2) do
+    case IO.inspect {{type1, arg1}, {type2, arg2}} do
+      {same, same} -> :ok
+      {{:list, [{:type, _, :any, _}]}, {:list, []}} -> :ok
+      {{:list, []}, {:list, [{:type, _, :any, _}]}} -> :ok
+      {{:string, []}, {:list, []}} -> :ok
+      {{:list, []}, {:string, []}} -> :ok
+      {{:string, []}, {:list, [b]}} ->
+        do_compare({:type, 0, :integer, []}, b, m1, m2)
+      {{:integer, []}, {:float, []}} -> :ok
+      {{:integer, []}, {:neg_integer, []}} -> :ok
+      {{:integer, []}, {:pos_integer, []}} -> :ok
+      _ ->
+        {:error, "type #{gen_spec t1, m1} is not a subtype of #{gen_spec t2, m2}"}
+    end
+  end
   def gen_elixir({{name, _}, [spec]}, _mod) do
     Kernel.Typespec.spec_to_ast(name, spec)
     |> Macro.to_string()
@@ -194,7 +234,7 @@ defmodule Elmchemy.Spec do
         end
 
       {:tuple, _} -> "(#{Enum.join(rest, ", ")})"
-      {:pos_integer, []} -> "Integer"
+      {:pos_integer, []} -> "PositiveInt"
       {:atom, []} -> "Atom"
       {:atom, [val]} -> "Atom #{val}"
       {:boolean, []} -> "Bool"
@@ -202,15 +242,15 @@ defmodule Elmchemy.Spec do
       {:term, []} -> "any"
       {:list, []} -> "List any"
       {:list, _} -> "List " <> Enum.join(rest, " ")
-      {:nonempty_maybe_improper_list, ^rest} -> "List #{Enum.join rest, " "}"
+      {:nonempty_maybe_improper_list, [content, _termination]} -> "NonemptyList #{content}"
       {:any, []} -> "any"
       {:timeout, []} -> "Timeout"
       {:no_return, []} -> "()"
       {:byte, []} -> "Byte"
       {:integer, []} -> "Int"
-      {:integer, [_value]} -> "Int"
+      {:integer, [value]} -> "Int #{value}"
       {:arity, []} -> "Int"
-      {:string, []} -> "String"
+      {:string, []} -> "List Int"
       {:node, []} -> "Atom"
       {:nil, []} -> "Nothing"
       {:pid, []} -> "Pid"
@@ -230,7 +270,7 @@ defmodule Elmchemy.Spec do
       {:iolist, []} -> "IOList"
       {:iodata, []} -> "IOData"
       {:map_field_assoc, [key, val]} -> "MapFieldAssoc #{key} #{val}"
-      {:neg_integer, _} -> "Int"
+      {:neg_integer, _} -> "NegativeInt"
       {:float, []} -> "Float"
       {:reference, []} -> "Reference"
       {:bitstring, []} -> "String"

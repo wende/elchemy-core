@@ -170,12 +170,7 @@ e =
 {-| -}
 pi : Float
 pi =
-    apply_ ":math" "pi" []
-
-
-apply_ : String -> String -> List a -> b
-apply_ =
-    ffi "Kernel" "apply"
+    ffi ":math" "pi"
 
 
 {-| -}
