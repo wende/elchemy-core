@@ -682,6 +682,7 @@ sortBy f list =
 
 This is also the most general sort function, allowing you
 to define any other: `sort == sortWith compare`
+f
 
 -}
 sortWith : (a -> a -> Order) -> List a -> List a
