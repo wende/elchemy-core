@@ -15,9 +15,9 @@ defmodule Elmchemy.SpecTest do
     gen_spec = &(Spec.find(&1, &2, &3) |> Spec.gen_elm(&1))
 
     assert gen_spec.(Enum, :map, 2) ==
-      "map : any -> (element -> any) -> List any"
+      "map : term -> (element -> any) -> List any"
     assert gen_spec.(Enum, :at, 3) ==
-      "at : any -> Int -> default -> element | default"
+      "at : term -> Int -> default -> element | default"
   end
 
   test "Can unify two different specs" do

@@ -92,10 +92,15 @@ import Elmchemy.XTuple as XTuple
 
 
 {- ex
-   import Kernel, except: [{:length, 1}, {:'++', 2}]
-   import Elmchemy.XBasics, except: [{
-     :to_float, 1,
-   }]
+   import Kernel, except: [
+     {:length, 1},
+     {:'++', 2},
+     {:to_charlist, 1}
+
+   ]
+   import Elmchemy.XBasics, except: [
+     {:to_float, 1},
+    ]
 -}
 
 
@@ -144,7 +149,7 @@ uncons str =
             (splitAt_ str 1)
 
         realFirst =
-            first |> toCharlist
+            first |> toList
     in
         case realFirst of
             [] ->
@@ -160,11 +165,6 @@ uncons str =
 splitAt_ : String -> Int -> ( String, String )
 splitAt_ =
     ffi "String" "split_at"
-
-
-toCharlist : String -> List Char
-toCharlist =
-    ffi "String" "to_charlist"
 
 
 {-| Append two strings. You can also use [the `(++)` operator](Basics#++)
@@ -213,7 +213,7 @@ map f str =
     str
         |> toList
         |> (\str -> List.map f str)
-        |> List.map toString
+        |> List.map fromChar
         |> join ""
 
 
@@ -231,7 +231,7 @@ filter f str =
     str
         |> toList
         |> (\str -> List.filter f str)
-        |> List.map toString
+        |> List.map fromChar
         |> join ""
 
 
@@ -287,10 +287,14 @@ Use [`Regex.split`](Regex#split) if you need something more flexible.
 -}
 split : String -> String -> List String
 split pattern str =
-    split_ str pattern
+    split_ str [ pattern ] []
 
 
-split_ : String -> String -> List String
+type SplitOption
+    = Trim Bool
+
+
+split_ : String -> List String -> List SplitOption -> List String
 split_ =
     ffi "String" "split"
 
@@ -506,8 +510,8 @@ trimRight =
 
 -}
 words : String -> List String
-words =
-    split_ " "
+words s =
+    ffi "String" "split"
 
 
 {-| Break a string into lines, splitting on newlines.
@@ -621,7 +625,7 @@ endsWith suffix str =
 
 endsWith_ : String -> String -> Bool
 endsWith_ =
-    ffi "String" "starts_with?"
+    ffi "String" "ends_with?"
 
 
 {-| Get all of the indexes for a substring in another string.
@@ -694,12 +698,19 @@ want to use [`Result.withDefault`](Result#withDefault) to handle bad data:
 -}
 toFloat : String -> Result String Float
 toFloat str =
-    case toFloat_ str of
-        Err "argument error" ->
-            Err ("could not convert string '" ++ str ++ "' to a Float")
+    let
+        real =
+            if contains "." str then
+                str
+            else
+                str ++ ".0"
+    in
+        case toFloat_ real of
+            Err "argument error" ->
+                Err ("could not convert string '" ++ str ++ "' to a Float")
 
-        e ->
-            e
+            e ->
+                e
 
 
 toFloat_ : String -> Result String Float
@@ -714,7 +725,32 @@ toFloat_ =
 -}
 toList : String -> List Char
 toList str =
-    toCharlist str
+    let
+        charlist =
+            toCharlist_ str
+    in
+        map_ charlist List.singleton
+
+
+
+{- It's ugly but it's the only way since there's no
+   Chars in Elixir
+-}
+{- flag noverify:+toCharlist -}
+
+
+toCharlist_ : String -> List Int
+toCharlist_ =
+    ffi "String" "to_charlist"
+
+
+
+{- flag noverify:+map_ -}
+
+
+map_ : List Int -> (Int -> List Int) -> List Char
+map_ =
+    ffi "Enum" "map"
 
 
 {-| Convert a list of characters into a String. Can be useful if you

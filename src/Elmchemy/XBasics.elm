@@ -264,7 +264,17 @@ toString a =
     inspect_ a []
 
 
-inspect_ : a -> List ( b, c ) -> String
+type BinariesAs
+    = AsBinaries
+    | AsStrings
+
+
+type InspectOption
+    = Structs Bool
+    | Binaries BinariesAs
+
+
+inspect_ : a -> List InspectOption -> String
 inspect_ =
     ffi "Kernel" "inspect"
 

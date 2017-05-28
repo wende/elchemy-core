@@ -1,12 +1,10 @@
 defmodule Elmchemy.Glue do
 
-  def try_catch() do
-    fn func ->
-      try do
-        {:ok, func.(nil)}
-      rescue
-        e -> {:error, e.message}
-      end
+  def try_catch(func) do
+    try do
+        {:ok, func.()}
+    rescue
+      e -> {:error, e.message}
     end
   end
 
@@ -79,9 +77,21 @@ defmodule Elmchemy.Glue do
     end
     quote do
       spec_ast = Module.get_attribute(__MODULE__, :spec) |> hd |> elem(1)
-      {{:spec, {fun1, _}, spec}, _line} = Kernel.Typespec.translate_spec(:spec, spec_ast, __ENV__)
-      orig = Elmchemy.Spec.find(unquote(mod), unquote(function), unquote(arity1))
-      Elmchemy.Spec.compare!({{fun1, unquote(arity1)}, [spec]}, orig, __MODULE__, unquote(mod))
+      {{:spec, {fun1, _}, spec}, _line} =
+        Kernel.Typespec.translate_spec(:spec, spec_ast, __ENV__)
+      right =
+        Elmchemy.Spec.find(unquote(mod), unquote(function), unquote(arity1))
+      left = {{fun1, unquote(arity1)}, [spec]}
+
+      __MODULE__
+      |> Module.put_attribute(:verify_type, [left, right, __MODULE__, unquote(mod)])
     end
+  end
+
+  defmacro typetest(mod) do
+    Macro.expand(mod, __CALLER__).__type_tests__
+    |> Enum.each(fn args ->
+      Kernel.apply(Elmchemy.Spec, :compare!, args)
+    end)
   end
 end

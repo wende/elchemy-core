@@ -22,14 +22,19 @@ log : String -> a -> a
 log title a =
     let
         _ =
-            puts_ "#{title}:#{a}"
+            puts_ "#{title}:#{a}" []
     in
         a
 
 
-puts_ : a -> a
+puts_ : a -> List ( key, val ) -> a
 puts_ =
     ffi "IO" "inspect"
+
+
+
+{- We don't verify since it's a macro -}
+{- flag noverify:+crash -}
 
 
 {-| Raise an exception to crash the runtime. Should be avoided at all

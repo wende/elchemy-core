@@ -2,24 +2,31 @@ defmodule Elmchemy.Spec do
   require Logger
 
   def find(module, function, arity) do
-    result = module
+    possible_result = module
       |> Kernel.Typespec.beam_specs()
-      |> Enum.find(fn {name, _} -> name == {function, arity} end)
+      |> Enum.filter(fn {{name, _ar}, _} -> name == function end)
+    result =
+      possible_result
+      |> Enum.find(fn {fun, _} -> fun == {function, arity} end)
     if result == nil do
-      raise "No function #{module}.#{function}/#{arity} found"
+      raise """
+      No function #{inspect module}.#{function}/#{arity} found
+      Maybe you meant one of these:
+      #{inspect possible_result}
+      """
     else
       result
     end
   end
 
-  def compare!(a, b, mod1, mod2 \\ nil) do
+  def compare!(a = {{_, _}, [{_, line, _, _}]}, b, mod1, mod2 \\ nil) do
     mod2 = mod2 || mod1
     result = compare(a, b, mod1, mod2)
     if result == :ok do
       :ok
     else
       raise Elmchemy.SpecError, message: """
-      Type definition mismatch
+      Type definition mismatch at #{inspect mod1} line #{line}
       These type signatures are different:
         #{gen_elm a, mod1}
         #{gen_elm b, mod2}
@@ -31,10 +38,12 @@ defmodule Elmchemy.Spec do
   Check if left spec is a subtype of a right one
   """
   def compare(l = {{_, arity1}, [spec1]}, r = {{f, arity2}, [spec2 | rest]}, mod1, mod2 \\ nil) do
-    IO.inspect(r)
-    IO.puts "\n"
     mod2 = mod2 || mod1
-    compared = do_compare(spec1, spec2, mod1, mod2)
+    compared =
+       spec1
+       |> lambdify_functions()
+       |> do_compare(spec2, mod1, mod2)
+
     cond do
       arity1 != arity2 ->
         {:error, "functions have different arity"}
@@ -47,7 +56,7 @@ defmodule Elmchemy.Spec do
     end
   end
   defp do_compare(same, same, _mod1, _mod2), do: :ok
-  defp do_compare(l, {:type, _, :bounded_fun, [fun | constraints]}, m1, m2) do
+  defp do_compare(l, {:type, _, :bounded_fun, [fun | _constraints]}, m1, m2) do
     do_compare(l, fun, m1, m2)
   end
   defp do_compare({:type, _, :list, [{:type, _, :any, []}]}, {:type, _, :list, []}, _m1, _m2) do
@@ -99,29 +108,27 @@ defmodule Elmchemy.Spec do
   defp do_compare({:remote_type, _, path}, {:remote_type, _, path}, _, _) do
     :ok
   end
-  defp do_compare({:remote_type, _, path}, b, m1, m2) do
+  defp do_compare({:remote_type, _, path}, b, _m1, m2) do
     {module, name} = get_path_and_name(path)
-    do_compare(resolve_type(name, module), b, m1, m2)
+    # We replace context module because multiple remote_types
+    do_compare(resolve_type(name, module), b, module, m2)
   end
-  defp do_compare(a, {:remote_type, _, path}, m1, m2) do
+  defp do_compare(a, {:remote_type, _, path}, m1, _m2) do
     {module, name} = get_path_and_name(path)
-    do_compare(a, resolve_type(name, module), m1, m2)
+    # We replace context module because multiple remote_types
+    do_compare(a, resolve_type(name, module), m1, module)
   end
+  defp do_compare(t1 = {_type2, _, _val}, t2 = {:type, _, _, _}, m1, m2),
+    do: do_compare(t2, t1, m2, m1)
   defp do_compare(t1 = {:type, _, type1, _},  t2 = {type2, _, _val}, m1, _m2) do
     cond do
       type1 == type2 -> :ok
-      type1 == :integer && type2 == :number -> :ok
-      type1 == :integer && type2 == :pos_integer -> :ok
-      type1 == :integer && type2 == :neg_integer -> :ok
-      type1 == :integer && type2 == :float -> :ok
 
       type2 == :integer && type1 == :number -> :ok
       type2 == :integer && type1 == :pos_integer -> :ok
+      type2 == :integer && type1 == :non_neg_integer -> :ok
       type2 == :integer && type1 == :neg_integer -> :ok
       type2 == :integer && type1 == :float -> :ok
-
-      type1 == :float && type2 == :number -> :ok
-      type1 == :float && type2 == :integer -> :ok
 
       type2 == :float && type1 == :number -> :ok
       type2 == :float && type1 == :integer -> :ok
@@ -131,16 +138,22 @@ defmodule Elmchemy.Spec do
   end
 
   defp compare_types(t1 = {:type, _, type1, arg1}, t2 = {:type, _, type2, arg2}, m1, m2) do
-    case IO.inspect {{type1, arg1}, {type2, arg2}} do
+    case {{type1, arg1}, {type2, arg2}} do
       {same, same} -> :ok
+
       {{:list, [{:type, _, :any, _}]}, {:list, []}} -> :ok
       {{:list, []}, {:list, [{:type, _, :any, _}]}} -> :ok
+
       {{:string, []}, {:list, []}} -> :ok
-      {{:list, []}, {:string, []}} -> :ok
       {{:string, []}, {:list, [b]}} ->
         do_compare({:type, 0, :integer, []}, b, m1, m2)
+      {{:list, []}, {:string, []}} -> :ok
+      {{:list, [a]}, {:string, []}} ->
+        do_compare(a, {:type, 0, :integer, []}, m1, m2)
+
       {{:integer, []}, {:float, []}} -> :ok
       {{:integer, []}, {:neg_integer, []}} -> :ok
+      {{:integer, []}, {:non_neg_integer, []}} -> :ok
       {{:integer, []}, {:pos_integer, []}} -> :ok
       _ ->
         {:error, "type #{gen_spec t1, m1} is not a subtype of #{gen_spec t2, m2}"}
@@ -192,9 +205,9 @@ defmodule Elmchemy.Spec do
     do: resolve_type(name, mod) |> gen_spec(mod)
   defp gen_spec({:ann_type, _line, [_typename, type]}, mod),
    do: gen_spec(type, mod)
-  defp gen_spec({:remote_type, _line, path}, mod) do
+  defp gen_spec({:remote_type, _line, path}, _mod) do
     {module, name} = get_path_and_name(path)
-    resolve_type(name, module) |> gen_spec(mod)
+    resolve_type(name, module) |> gen_spec(module)
   end
   defp gen_spec([], _mod), do: "[]"
 
@@ -234,51 +247,68 @@ defmodule Elmchemy.Spec do
         end
 
       {:tuple, _} -> "(#{Enum.join(rest, ", ")})"
-      {:pos_integer, []} -> "PositiveInt"
+
       {:atom, []} -> "Atom"
-      {:atom, [val]} -> "Atom #{val}"
+      {:atom, [val]} -> ":#{val}"
+
       {:boolean, []} -> "Bool"
+
       {:module, []} -> "Module"
-      {:term, []} -> "any"
+
+      {:term, []} -> "term"
+      {:any, []} -> "any"
+      {:var, [:_]} -> "a"
+      {:var, [name]} -> "#{String.downcase (to_string name)}"
+      {:type, [:any]} -> "any"
+
       {:list, []} -> "List any"
       {:list, _} -> "List " <> Enum.join(rest, " ")
       {:nonempty_maybe_improper_list, [content, _termination]} -> "NonemptyList #{content}"
-      {:any, []} -> "any"
+      {:nonempty_list, [type]} -> "NonEmptyList " <> type
+      {:maybe_improper_list, []} -> "List"
+
       {:timeout, []} -> "Timeout"
+
       {:no_return, []} -> "()"
+
       {:byte, []} -> "Byte"
+
       {:integer, []} -> "Int"
       {:integer, [value]} -> "Int #{value}"
-      {:arity, []} -> "Int"
+      {:neg_integer, _} -> "NegativeInt"
+      {:non_neg_integer, []} -> "NonNegativeInt"
+      {:pos_integer, []} -> "PositiveInt"
+      {:arity, []} -> "Arity"
+
+      {:number, []} -> "number"
+      {:float, []} -> "Float"
+
       {:string, []} -> "List Int"
-      {:node, []} -> "Atom"
+      {:nonempty_string, []} -> "NonEmptyString"
+      {:binary, []} -> "Binary"
+      {:binary, _any} -> "Binary"
+
+      {:node, []} -> "Node"
       {:nil, []} -> "Nothing"
       {:pid, []} -> "Pid"
-      {:nonempty_string, []} -> "String"
-      {:non_neg_integer, []} -> "Int"
-      {:binary, []} -> "String"
-      {:binary, _any} -> "String"
-      {:var, [:_]} -> "a"
-      {:var, [name]} -> "#{String.downcase (to_string name)}"
-      {:nonempty_list, [type]} -> "List " <> type
+
       {:record, [type]} -> "Record " <> to_string type
+
       {:function, []} -> "(Any -> Any)"
       {:fun, []} -> "(Any -> Any)"
       {:bounded_fun, rest} -> Enum.join rest
-      {:char, []} -> "Char"
+
+      {:char, []} -> "IntChar"
+
       {:map_field_exact, [key, value]} -> "#{key} = #{value}"
+      {:map_field_assoc, [key, val]} -> "MapFieldAssoc #{key} #{val}"
+
       {:iolist, []} -> "IOList"
       {:iodata, []} -> "IOData"
-      {:map_field_assoc, [key, val]} -> "MapFieldAssoc #{key} #{val}"
-      {:neg_integer, _} -> "NegativeInt"
-      {:float, []} -> "Float"
       {:reference, []} -> "Reference"
-      {:bitstring, []} -> "String"
+      {:bitstring, []} -> "BitString"
       {:port, []} -> "Port"
-      {:number, []} -> "Float"
-      {:maybe_improper_list, []} -> "List"
       {:range, [from, to]} -> "Range #{from} #{to}"
-      {:type, [:any]} -> "Any"
       {:identifier, []} -> "Int"
       # {:nonempty_list}
     end
@@ -290,11 +320,15 @@ defmodule Elmchemy.Spec do
       |> Kernel.Typespec.beam_types()
 
     if beam_types == nil do
-      throw "There is no #{type} in #{module}"
+      throw "There is no #{type} in #{inspect module}"
     end
     resolved =
       beam_types
-      |> Enum.find(fn {:type, {name, _definition, []}} -> name == type end)
+      |> Enum.find(fn
+        {:type, {name, _definition, []}} -> name == type
+        {:opaque, _} -> false
+        {:typep, _} -> false
+      end)
     case resolved do
       {:type, {^type, {:type, _, :any, []}, []}} ->
         Logger.debug "Resolved #{inspect type} into itself"
@@ -303,10 +337,30 @@ defmodule Elmchemy.Spec do
         Logger.debug "Resolved #{inspect type} into #{inspect definition}"
         definition
       nil ->
-        Logger.warn "No type with name #{type} in module #{module}. Resolving to :any"
+        Logger.warn "No type with name #{type} in module #{inspect module}. Resolving to :any"
         {:type, 0, :any, []}
     end
   end
+
+  defp lambdify_functions(
+    {:type, l1, :fun, [
+      {:type, l2, :product, [a]},
+      {:type, _l3, :fun, [
+          {:type, _l4, :product, [b]},
+          return
+      ]}
+    ]}
+  ) do
+    {:type, l1, :fun, [
+      {:type, l2, :product, [a, b]},
+      lambdify_functions(return)
+    ]}
+  end
+  defp lambdify_functions({:type, l1, type, args}) do
+    {:type, l1, type, Enum.map(args, &lambdify_functions/1)}
+  end
+  defp lambdify_functions(l), do: l
+
 end
 defmodule Elmchemy.SpecError do
   defexception [:message]
