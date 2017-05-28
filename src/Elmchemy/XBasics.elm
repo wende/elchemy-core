@@ -1,6 +1,6 @@
 module Elmchemy.XBasics
     exposing
-        (Order(..)
+        ( Order(..)
         , compare
         , xor
         , negate
@@ -40,6 +40,7 @@ module Elmchemy.XBasics
 -}
 
 import Elmchemy exposing (..)
+
 
 {-| Represents the relative ordering of two things.
 The relations are less than, equal to, and greater than.
@@ -114,31 +115,38 @@ compare a b =
 -}
 -- not/1 is inlined by the compiler
 
-{-| The exclusive-or operator. `True` if exactly one input is `True`. -}
+
+{-| The exclusive-or operator. `True` if exactly one input is `True`.
+-}
 xor : Bool -> Bool -> Bool
 xor a b =
     (a && not b) || (not a && b)
+
 
 {-| Negate a number.
 
     negate 42 == -42
     negate -42 == 42
     negate 0 == 0
- -}
-negate : number -> number
-negate x =
-    lffi "-" x
 
-{-| Take the square root of a number. -}
+-}
+negate : number -> number
+negate =
+    ffi "Kernel" "-"
+
+
+{-| Take the square root of a number.
+-}
 sqrt : number -> Float
-sqrt x =
-    ffi ":math" "sqrt" x
+sqrt =
+    ffi ":math" "sqrt"
+
 
 {-| Clamps a number within a given range. With the expression
 `clamp 100 200 x` the results are as follows:
-  100     if x < 100
-   x      if 100 <= x < 200
-  200     if 200 <= x
+100 if x < 100
+x if 100 <= x < 200
+200 if 200 <= x
 -}
 clamp : comparable -> comparable -> comparable -> comparable
 clamp x bottom top =
@@ -146,102 +154,167 @@ clamp x bottom top =
         |> min bottom
         |> max top
 
-{-|-}
+
+{-| -}
 logBase : Float -> Float -> Float
 logBase a b =
     notImplemented
 
-{-|-}
+
+{-| -}
 e : Float
 e =
     2.71828
 
-{-|-}
+
+{-| -}
 pi : Float
 pi =
-    lffi "apply" ( ":math", "pi", [] )
+    ffi ":math" "pi"
 
-{-|-}
+
+{-| -}
 cos : Float -> Float
-cos x =
-    ffi ":math" "cos" x
+cos =
+    ffi ":math" "cos"
 
-{-|-}
+
+{-| -}
 sin : Float -> Float
-sin x =
-    ffi ":math" "sin" x
+sin =
+    ffi ":math" "sin"
 
-{-|-}
+
+{-| -}
 tan : Float -> Float
-tan x =
-    ffi ":math" "tan" x
+tan =
+    ffi ":math" "tan"
 
-{-|-}
+
+{-| -}
 acos : Float -> Float
-acos x =
-    ffi ":math" "acos" x
+acos =
+    ffi ":math" "acos"
 
-{-|-}
+
+{-| -}
 asin : Float -> Float
-asin x =
-    ffi ":math" "asin" x
+asin =
+    ffi ":math" "asin"
 
-{-|-}
+
+{-| -}
 atan : Float -> Float
-atan x =
-    ffi ":math" "atan" x
+atan =
+    ffi ":math" "atan"
 
-{-|-}
+
+{-| -}
 atan2 : Float -> Float -> Float
-atan2 x y =
-    ffi ":math" "atan2" ( x, y )
+atan2 =
+    ffi ":math" "atan2"
 
-{-|-}
+
+{-| -}
 round : Float -> Int
-round x =
-    lffi "round" x
+round =
+    ffi "Kernel" "round"
 
-{-|-}
+
+{-| -}
 floor : Float -> Int
 floor x =
     notImplemented
 
-{-|-}
+
+{-| -}
 ceiling : Float -> Int
 ceiling x =
     notImplemented
 
-{-| Truncate a number, rounding towards zero. -}
+
+{-| Truncate a number, rounding towards zero.
+-}
 truncate : Float -> Int
 truncate x =
     notImplemented
 
-{-| Convert an integer into a float. -}
+
+{-| Convert an integer into a float.
+-}
 toFloat : Int -> Float
 toFloat x =
-    ffi "Kernel" "*" ( x, 1.0 )
+    mul_ x 1.0
+
+
+mul_ : Int -> Float -> Float
+mul_ =
+    ffi "Kernel" "*"
+
 
 {-| Turn any kind of value into a string. When you view the resulting string
 with `Text.fromString` it should look just like the value it came from.
 
     toString 42 == "42"
     toString [1,2] == "[1, 2]"
+
 -}
 toString : a -> String
-toString x =
-    ffi "Kernel" "inspect" x
+toString a =
+    inspect_ a []
+
+
+type BinariesAs
+    = AsBinaries
+    | AsStrings
+
+
+type InspectOption
+    = Structs Bool
+    | Binaries BinariesAs
+
+
+inspect_ : a -> List InspectOption -> String
+inspect_ =
+    ffi "Kernel" "inspect"
+
 
 {-| Put two appendable things together. This includes strings, lists, and text.
 
     "hello" ++ "world" == "helloworld"
     [1,1,2] ++ [3,5,8] == [1,1,2,3,5,8]
- -}
+
+-}
 (++) : appendable -> appendable -> appendable
 (++) a b =
-    if lffi "is_binary" a && lffi "is_binary" b then
-        ffi "Kernel" "<>" ( a, b )
+    if isBinary_ a && isBinary_ b then
+        addStrings_ a b
     else
-        ffi "Kernel" "++" ( a, b )
+        addLists_ a b
+
+
+isBinary_ : a -> Bool
+isBinary_ =
+    ffi "Kernel" "is_binary"
+
+
+
+{- flag noverify:+addStrings_ -}
+
+
+addStrings_ : appendable -> appendable -> appendable
+addStrings_ =
+    ffi "Kernel" "<>"
+
+
+
+{- flag noverify:+addLists_ -}
+
+
+addLists_ : appendable -> appendable -> appendable
+addLists_ =
+    ffi "Kernel" "++"
+
 
 {-| Given a value, returns exactly the same value. This is called
 [the identity function](http://en.wikipedia.org/wiki/Identity_function).
@@ -250,19 +323,21 @@ identity : a -> a
 identity a =
     a
 
+
 {-| Create a function that *always* returns the same value. Useful with
 functions like `map`:
 
     List.map (always 0) [1,2,3,4,5] == [0,0,0,0,0]
     List.map (\_ -> 0) [1,2,3,4,5] == [0,0,0,0,0]
+
 -}
 always : a -> a -> a
 always a b =
     a
 
 
-
-{-| Flip the order of the first two arguments to a function. -}
+{-| Flip the order of the first two arguments to a function.
+-}
 flip : (a -> b -> c) -> b -> a -> c
 flip f a b =
     f b a
@@ -290,24 +365,37 @@ flip f a b =
 
 notImplemented : a
 notImplemented =
-    lffi "throw" "Not implemented"
+    let
+        _ =
+            throw_ "Not implemented"
+    in
+        Debug.crash "a"
 
-{-|-}
+
+throw_ : String -> ()
+throw_ =
+    ffi "Kernel" "throw"
+
+
+{-| -}
 tuple2 : a -> b -> ( a, b )
 tuple2 a b =
     ( a, b )
 
-{-|-}
+
+{-| -}
 tuple3 : a -> b -> c -> ( a, b, c )
 tuple3 a b c =
     ( a, b, c )
 
-{-|-}
+
+{-| -}
 tuple4 : a -> b -> c -> d -> ( a, b, c, d )
 tuple4 a b c d =
     ( a, b, c, d )
 
-{-|-}
+
+{-| -}
 tuple5 : a -> b -> c -> d -> e -> ( a, b, c, d, e )
 tuple5 a b c d e =
     ( a, b, c, d, e )

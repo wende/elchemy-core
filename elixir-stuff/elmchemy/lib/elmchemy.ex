@@ -1,36 +1,31 @@
 defmodule ElmchemyHack do
-
-  defp get_definitions(content) do
-    ~r/def (\w+)/
-    |> Regex.scan(content)
+  defmacro __before_compile__(_env) do
+    module = __CALLER__.module
+    verifies = Macro.escape(Module.get_attribute(module, :verify_type))
+    quote do
+      def __type_tests__ do
+        unquote(verifies)
+      end
+    end
   end
-
-  defmacro __before_compile__(env) do
-    IO.inspect env
-    IO.inspect __CALLER__.module
-
-    File.read!(env.file)
-    |> IO.inspect
-    |> get_definitions
-    |> IO.inspect
-  end
-
 end
 
 defmodule Elmchemy do
-
   defmacro __using__(_) do
     quote do
+      Module.register_attribute(__MODULE__, :verify_type, accumulate: true)
+      @before_compile ElmchemyHack
+
       require Elmchemy
-      import Elmchemy
       require Elmchemy.Glue
 
+      import Elmchemy
       import Kernel, except: [{:"++", 2}]
-
       import Elmchemy.Glue
       import Kernel, except: [
         {:'++', 2}
       ]
+
       alias Elmchemy.{
         XBasics,
         XList,

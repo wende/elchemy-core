@@ -56,6 +56,7 @@ isBetween low high char =
     isUpper 'D' == True
     isUpper 'A' == True
     isUpper 'x' == False
+
 -}
 isUpper : Char -> Bool
 isUpper char =
@@ -67,6 +68,7 @@ isUpper char =
     isLower 'd' == True
     isLower 'a' == True
     isLower 'X' == False
+
 -}
 isLower : Char -> Bool
 isLower char =
@@ -78,6 +80,7 @@ isLower char =
     isDigit '1' == True
     isDigit '9' == True
     isDigit 'a' == False
+
 -}
 isDigit : Char -> Bool
 isDigit char =
@@ -89,6 +92,7 @@ isDigit char =
     isOctDigit '7' == True
     isOctDigit '5' == True
     isOctDigit '9' == False
+
 -}
 isOctDigit : Char -> Bool
 isOctDigit char =
@@ -100,6 +104,7 @@ isOctDigit char =
     isHexDigit 'd' == True
     isHexDigit 'D' == True
     isHexDigit 'x' == False
+
 -}
 isHexDigit : Char -> Bool
 isHexDigit char =
@@ -109,19 +114,21 @@ isHexDigit char =
 {-| Convert to upper case.
 
     toUpper 'a' == 'A'
+
 -}
 toUpper : Char -> Char
-toUpper char =
-    ffi ":string" "to_upper" char
+toUpper =
+    ffi ":string" "to_upper"
 
 
 {-| Convert to lower case.
 
     toLower 'A' == 'a'
+
 -}
 toLower : Char -> Char
-toLower char =
-    ffi ":string" "to_lower" char
+toLower =
+    ffi ":string" "to_lower"
 
 
 
@@ -143,19 +150,30 @@ type alias KeyCode =
     Int
 
 
+
+{- flag noverify:+toCode -}
+
+
 {-| Convert to key code.
 
     toCode 'a' == 97
+
 -}
 toCode : Char -> KeyCode
-toCode char =
-    lffi "hd" char
+toCode =
+    ffi "Kernel" "hd"
 
 
 {-| Convert from key code.
 
     fromCode 97 == 'a'
+
 -}
 fromCode : KeyCode -> Char
 fromCode code =
-    ffi "List" "insert_at" ( [], 0, code )
+    insert_at_ [] 0 code
+
+
+insert_at_ : List a -> Int -> a -> Char
+insert_at_ =
+    ffi "List" "insert_at"

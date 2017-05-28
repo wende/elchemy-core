@@ -92,10 +92,15 @@ import Elmchemy.XTuple as XTuple
 
 
 {- ex
-   import Kernel, except: [{:length, 1}, {:'++', 2}]
-   import Elmchemy.XBasics, except: [{
-     :to_float, 1,
-   }]
+   import Kernel, except: [
+     {:length, 1},
+     {:'++', 2},
+     {:to_charlist, 1}
+
+   ]
+   import Elmchemy.XBasics, except: [
+     {:to_float, 1},
+    ]
 -}
 
 
@@ -126,8 +131,8 @@ cons c str =
 
 -}
 fromChar : Char -> String
-fromChar char =
-   ffi ":binary" "list_to_bin" char
+fromChar =
+    ffi ":binary" "list_to_bin"
 
 
 {-| Split a non-empty string into its head and tail. This lets you
@@ -140,14 +145,26 @@ pattern match on strings exactly as you would with lists.
 uncons : String -> Maybe ( Char, String )
 uncons str =
     let
-        result =
-            ffi "String" "split_at" ( str, 1 )
-                |> XTuple.mapFirst (\a -> ffi "String" "to_charlist" a)
+        ( first, rest ) =
+            (splitAt_ str 1)
+
+        realFirst =
+            first |> toList
     in
-        if XTuple.first result == [] then
-            Nothing
-        else
-            Just result
+        case realFirst of
+            [] ->
+                Nothing
+
+            [ r ] ->
+                Just ( r, rest )
+
+            _ ->
+                Nothing
+
+
+splitAt_ : String -> Int -> ( String, String )
+splitAt_ =
+    ffi "String" "split_at"
 
 
 {-| Append two strings. You can also use [the `(++)` operator](Basics#++)
@@ -178,8 +195,8 @@ concat list =
 
 -}
 length : String -> Int
-length str =
-    ffi "String" "length" str
+length =
+    ffi "String" "length"
 
 
 
@@ -195,7 +212,8 @@ map : (Char -> Char) -> String -> String
 map f str =
     str
         |> toList
-        |> (\str -> ffi "Enum" "map" ( str, f ))
+        |> (\str -> List.map f str)
+        |> List.map fromChar
         |> join ""
 
 
@@ -212,7 +230,8 @@ filter : (Char -> Bool) -> String -> String
 filter f str =
     str
         |> toList
-        |> (\str -> ffi "Enum" "filter" ( str, f ))
+        |> (\str -> List.filter f str)
+        |> List.map fromChar
         |> join ""
 
 
@@ -222,8 +241,8 @@ filter f str =
 
 -}
 reverse : String -> String
-reverse str =
-    ffi "String" "reverse" str
+reverse =
+    ffi "String" "reverse"
 
 
 
@@ -268,7 +287,16 @@ Use [`Regex.split`](Regex#split) if you need something more flexible.
 -}
 split : String -> String -> List String
 split pattern str =
-    ffi "String" "split" ( str, pattern )
+    split_ str [ pattern ] []
+
+
+type SplitOption
+    = Trim Bool
+
+
+split_ : String -> List String -> List SplitOption -> List String
+split_ =
+    ffi "String" "split"
 
 
 {-| Put many strings together with a given separator.
@@ -280,7 +308,12 @@ split pattern str =
 -}
 join : String -> List String -> String
 join str list =
-    ffi "Enum" "join" ( list, str )
+    join_ list str
+
+
+join_ : List String -> String -> String
+join_ =
+    ffi "Enum" "join"
 
 
 {-| Repeat a string *n* times.
@@ -290,7 +323,12 @@ join str list =
 -}
 repeat : Int -> String -> String
 repeat n str =
-    ffi "String" "duplicate" ( str, n )
+    repeat_ str n
+
+
+repeat_ : String -> Int -> String
+repeat_ =
+    ffi "String" "duplicate"
 
 
 {-| Take a substring given a start and end index. Negative indexes
@@ -333,7 +371,12 @@ slice from to str =
         len =
             (mirror to) - start
     in
-        ffi "String" "slice" ( str, start, len )
+        slice_ str start len
+
+
+slice_ : String -> Int -> Int -> String
+slice_ =
+    ffi "String" "slice"
 
 
 {-| Take *n* characters from the left side of a string.
@@ -406,7 +449,12 @@ pad n c str =
 -}
 padLeft : Int -> Char -> String -> String
 padLeft n c str =
-    ffi "String" "pad_leading" ( str, n, fromChar c )
+    padLeading str n (fromChar c)
+
+
+padLeading : String -> Int -> String -> String
+padLeading =
+    ffi "String" "pad_leading"
 
 
 {-| Pad a string on the right until it has a given length.
@@ -418,7 +466,12 @@ padLeft n c str =
 -}
 padRight : Int -> Char -> String -> String
 padRight n c str =
-    ffi "String" "pad_trailing" ( str, n, fromChar c )
+    padTrailing str n (fromChar c)
+
+
+padTrailing : String -> Int -> String -> String
+padTrailing =
+    ffi "String" "pad_trailing"
 
 
 {-| Get rid of whitespace on both sides of a string.
@@ -427,8 +480,8 @@ padRight n c str =
 
 -}
 trim : String -> String
-trim str =
-    ffi "String" "trim" str
+trim =
+    ffi "String" "trim"
 
 
 {-| Get rid of whitespace on the left of a string.
@@ -437,8 +490,8 @@ trim str =
 
 -}
 trimLeft : String -> String
-trimLeft str =
-    ffi "String" "trim_leading" str
+trimLeft =
+    ffi "String" "trim_leading"
 
 
 {-| Get rid of whitespace on the right of a string.
@@ -447,8 +500,8 @@ trimLeft str =
 
 -}
 trimRight : String -> String
-trimRight str =
-    ffi "String" "trim_trailing" str
+trimRight =
+    ffi "String" "trim_trailing"
 
 
 {-| Break a string into words, splitting on chunks of whitespace.
@@ -457,8 +510,8 @@ trimRight str =
 
 -}
 words : String -> List String
-words str =
-    ffi "String" "split" str
+words s =
+    ffi "String" "split"
 
 
 {-| Break a string into lines, splitting on newlines.
@@ -468,11 +521,7 @@ words str =
 -}
 lines : String -> List String
 lines str =
-    let
-        pattern =
-            ffi ":binary" "compile_pattern" ([ "\n", "\x0D", "\x0D\n" ])
-    in
-        ffi "String" "split" ( str, pattern )
+    split "\n" str
 
 
 {-| Convert a string to all upper case. Useful for case-insensitive comparisons
@@ -482,8 +531,8 @@ and VIRTUAL YELLING.
 
 -}
 toUpper : String -> String
-toUpper str =
-    ffi "String" "upcase" str
+toUpper =
+    ffi "String" "upcase"
 
 
 {-| Convert a string to all lower case. Useful for case-insensitive comparisons.
@@ -492,8 +541,8 @@ toUpper str =
 
 -}
 toLower : String -> String
-toLower str =
-    ffi "String" "downcase" str
+toLower =
+    ffi "String" "downcase"
 
 
 
@@ -509,7 +558,7 @@ toLower str =
 -}
 any : (Char -> Bool) -> String -> Bool
 any f str =
-    ffi "Enum" "any?" ( toList str, f )
+    List.any f (toList str)
 
 
 
@@ -525,7 +574,7 @@ any f str =
 -}
 all : (Char -> Bool) -> String -> Bool
 all f str =
-    ffi "Enum" "all?" ( toList str, f )
+    List.all f (toList str)
 
 
 {-| See if the second string contains the first one.
@@ -539,7 +588,12 @@ Use [`Regex.contains`](Regex#contains) if you need something more flexible.
 -}
 contains : String -> String -> Bool
 contains pattern str =
-    ffi "String" " contains?" ( str, pattern )
+    contains_ str pattern
+
+
+contains_ : String -> String -> Bool
+contains_ =
+    ffi "String" " contains?"
 
 
 {-| See if the second string starts with the first one.
@@ -550,7 +604,12 @@ contains pattern str =
 -}
 startsWith : String -> String -> Bool
 startsWith prefix str =
-    ffi "String" "starts_with?" ( str, prefix )
+    startsWith_ str prefix
+
+
+startsWith_ : String -> String -> Bool
+startsWith_ prefix str =
+    ffi "String" "starts_with?"
 
 
 {-| See if the second string ends with the first one.
@@ -561,7 +620,12 @@ startsWith prefix str =
 -}
 endsWith : String -> String -> Bool
 endsWith suffix str =
-    ffi "String" "ends_with?" ( str, suffix )
+    endsWith_ str suffix
+
+
+endsWith_ : String -> String -> Bool
+endsWith_ =
+    ffi "String" "ends_with?"
 
 
 {-| Get all of the indexes for a substring in another string.
@@ -573,8 +637,13 @@ endsWith suffix str =
 -}
 indexes : String -> String -> List Int
 indexes pattern str =
-    ffi ":binary" "matches" ( str, pattern )
-        |> XList.map XTuple.first
+    matches_ str pattern
+        |> List.map XTuple.first
+
+
+matches_ : String -> a -> List ( Int, String )
+matches_ =
+    ffi ":binary" "matches"
 
 
 {-| Alias for `indexes`.
@@ -600,12 +669,17 @@ want to use [`Result.withDefault`](Result#withDefault) to handle bad data:
 -}
 toInt : String -> Result String Int
 toInt str =
-    case tryCatch (\_ -> (ffi "String" "to_integer" str)) of
+    case toInt_ str of
         Err "argument error" ->
             Err ("could not convert string '" ++ str ++ "' to an Int")
 
         e ->
             e
+
+
+toInt_ : String -> Result String Int
+toInt_ =
+    tryFfi "String" "to_integer"
 
 
 {-| Try to convert a string into a float, failing on improperly formatted strings.
@@ -631,12 +705,17 @@ toFloat str =
             else
                 str ++ ".0"
     in
-        case tryCatch (\_ -> (ffi "String" "to_float" real)) of
+        case toFloat_ real of
             Err "argument error" ->
                 Err ("could not convert string '" ++ str ++ "' to a Float")
 
             e ->
                 e
+
+
+toFloat_ : String -> Result String Float
+toFloat_ =
+    tryFfi "String" "to_float"
 
 
 {-| Convert a string to a list of characters.
@@ -648,9 +727,30 @@ toList : String -> List Char
 toList str =
     let
         charlist =
-            (ffi "String" "to_charlist" str)
+            toCharlist_ str
     in
-        ffi "Enum" "map" ( charlist, XList.singleton )
+        map_ charlist List.singleton
+
+
+
+{- It's ugly but it's the only way since there's no
+   Chars in Elixir
+-}
+{- flag noverify:+toCharlist -}
+
+
+toCharlist_ : String -> List Int
+toCharlist_ =
+    ffi "String" "to_charlist"
+
+
+
+{- flag noverify:+map_ -}
+
+
+map_ : List Int -> (Int -> List Int) -> List Char
+map_ =
+    ffi "Enum" "map"
 
 
 {-| Convert a list of characters into a String. Can be useful if you
@@ -662,4 +762,9 @@ something.
 -}
 fromList : List Char -> String
 fromList list =
-    ffi "Enum" "join" ( list, "" )
+    joinChars_ list ""
+
+
+joinChars_ : List Char -> String -> String
+joinChars_ =
+    ffi "Enum" "join"

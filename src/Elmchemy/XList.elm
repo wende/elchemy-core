@@ -94,11 +94,12 @@ The current sentiment is that it is already quite error prone once you get to
 -}
 
 import Elmchemy exposing (..)
+
+
 {- ex
    import Kernel, except: [{:length, 1}]
    import Elmchemy.XBasics
 -}
-
 
 
 {-| Add an element to the front of a list. Pronounced *cons*.
@@ -108,7 +109,11 @@ import Elmchemy exposing (..)
 
 -}
 
+
+
 {- flag nodef:+:: nocurry:+:: nospec:+:: -}
+
+
 (::) : a -> List a -> List a
 (::) a list =
     cons a list
@@ -120,7 +125,6 @@ import Elmchemy exposing (..)
     cons 1 [] == [1]
 
 -}
-
 cons : a -> List a -> List a
 cons a list =
     a :: list
@@ -229,7 +233,12 @@ foldl func acc list =
 -}
 foldr : (a -> b -> b) -> b -> List a -> b
 foldr f start list =
-    ffi "List" "foldr" ( list, start, (flambda 2 f) )
+    foldr_ list start f
+
+
+foldr_ : List a -> b -> (a -> b -> b) -> b
+foldr_ =
+    ffi "List" "foldr"
 
 
 {-| Reduce a list from the left, building up all of the intermediate results into a list.
@@ -462,8 +471,13 @@ If one list is longer, the extra elements are dropped.
 -}
 map2 : (a -> b -> result) -> List a -> List b -> List result
 map2 f a b =
-    (ffi "Enum" "zip" ( a, b ))
+    zip_ a b
         |> map (uncurry f)
+
+
+zip_ : List a -> List b -> List ( a, b )
+zip_ =
+    ffi "Enum" "zip"
 
 
 
@@ -491,6 +505,7 @@ unzip pairs =
     foldr unzipStep ( [], [] ) pairs
 
 
+unzipStep : ( a, b ) -> ( List a, List b ) -> ( List a, List b )
 unzipStep ( x, y ) ( xs, ys ) =
     ( x :: xs, y :: ys )
 
@@ -653,7 +668,7 @@ sort xs =
 
 {-| Sort values by a derived property. To be replaced
 
-    sortBy (\a -> ffi "String" "length" a)  ["mouse","cat"] == ["cat","mouse"]
+    sortBy (\(i, a) -> i)  [(1, "mouse"),(0, "cat")] == [(0, "cat"), (1, "mouse")]
 
 -}
 sortBy : (a -> comparable) -> List a -> List a
@@ -667,6 +682,7 @@ sortBy f list =
 
 This is also the most general sort function, allowing you
 to define any other: `sort == sortWith compare`
+f
 
 -}
 sortWith : (a -> a -> Order) -> List a -> List a
@@ -686,4 +702,9 @@ sortWith f list =
                                 True
                    )
     in
-        ffi "Enum" "sort" ( list, (flambda 2 exf) )
+        sort_ list exf
+
+
+sort_ : List a -> (a -> b -> Bool) -> List a
+sort_ =
+    ffi "Enum" "sort"
