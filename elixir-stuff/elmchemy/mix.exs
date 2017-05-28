@@ -5,7 +5,7 @@ defmodule Elmchemy.Mixfile do
     [app: :elmchemy,
      name: "Elmchemy Compiler",
      description: "Mix compiler wrapper around Elmchemy project",
-     version: "0.1.7",
+     version: "0.3.0",
      elixir: "~> 1.4",
      description: "",
      package: package(),
