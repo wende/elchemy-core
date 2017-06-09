@@ -9,7 +9,6 @@ defmodule Elmchemy.Mixfile do
      elixir: "~> 1.4",
      description: "",
      package: package(),
-     compilers: (if Mix.env == :test, do: [:elmchemy] ++ Mix.compilers, else: Mix.compilers),
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      elmchemy_path: "elm",

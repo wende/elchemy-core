@@ -1,5 +1,5 @@
 
-# Compiled using Elmchemy v0.3.22
+# Compiled using Elmchemy v0.3.25
 defmodule Elmchemy.XString do
   use Elmchemy
 
