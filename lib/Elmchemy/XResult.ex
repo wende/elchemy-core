@@ -1,5 +1,5 @@
 
-# Compiled using Elmchemy v0.3.25
+# Compiled using Elmchemy v0.3.31
 defmodule Elmchemy.XResult do
   use Elmchemy
 
@@ -55,7 +55,6 @@ defmodule Elmchemy.XResult do
   
  
   """
-  @spec with_default() :: (any -> (result -> any))
   @spec with_default(any, result) :: any
   curry with_default/2
   def with_default(def, result) do
@@ -83,7 +82,6 @@ defmodule Elmchemy.XResult do
   
  
   """
-  @spec map() :: ((any -> any) -> (result -> result))
   @spec map((any -> any), result) :: result
   curry map/2
   def map(func, ra) do
@@ -115,7 +113,6 @@ defmodule Elmchemy.XResult do
   
  
   """
-  @spec map2() :: ((any -> (any -> any)) -> (result -> (result -> result)))
   @spec map2((any -> (any -> any)), result, result) :: result
   curry map2/3
   def map2(func, ra, rb) do
@@ -133,7 +130,6 @@ defmodule Elmchemy.XResult do
  
  
   """
-  @spec map3() :: ((any -> (any -> (any -> any))) -> (result -> (result -> (result -> result))))
   @spec map3((any -> (any -> (any -> any))), result, result, result) :: result
   curry map3/4
   def map3(func, ra, rb, rc) do
@@ -153,7 +149,6 @@ defmodule Elmchemy.XResult do
  
  
   """
-  @spec map4() :: ((any -> (any -> (any -> (any -> any)))) -> (result -> (result -> (result -> (result -> result)))))
   @spec map4((any -> (any -> (any -> (any -> any)))), result, result, result, result) :: result
   curry map4/5
   def map4(func, ra, rb, rc, rd) do
@@ -175,7 +170,6 @@ defmodule Elmchemy.XResult do
  
  
   """
-  @spec map5() :: ((any -> (any -> (any -> (any -> (any -> any))))) -> (result -> (result -> (result -> (result -> (result -> result))))))
   @spec map5((any -> (any -> (any -> (any -> (any -> any))))), result, result, result, result, result) :: result
   curry map5/6
   def map5(func, ra, rb, rc, rd, re) do
@@ -211,7 +205,6 @@ defmodule Elmchemy.XResult do
   
  
   """
-  @spec and_then() :: ((any -> result) -> (result -> result))
   @spec and_then((any -> result), result) :: result
   curry and_then/2
   def and_then(callback, result) do
@@ -239,7 +232,6 @@ defmodule Elmchemy.XResult do
   
  
   """
-  @spec map_error() :: ((any -> any) -> (result -> result))
   @spec map_error((any -> any), result) :: result
   curry map_error/2
   def map_error(f, result) do
@@ -257,7 +249,6 @@ defmodule Elmchemy.XResult do
   
  
   """
-  @spec to_maybe() :: (result -> {any} | nil)
   @spec to_maybe(result) :: {any} | nil
   curry to_maybe/1
   def to_maybe({:ok, v}) do
@@ -273,7 +264,6 @@ defmodule Elmchemy.XResult do
   
  
   """
-  @spec from_maybe() :: (any -> ({any} | nil -> result))
   @spec from_maybe(any, {any} | nil) :: result
   curry from_maybe/2
   def from_maybe(err, maybe) do

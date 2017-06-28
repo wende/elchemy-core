@@ -1,5 +1,5 @@
 
-# Compiled using Elmchemy v0.3.25
+# Compiled using Elmchemy v0.3.31
 defmodule Elmchemy.XBasics do
   use Elmchemy
 
@@ -68,13 +68,12 @@ defmodule Elmchemy.XBasics do
   
  
   """
-  @spec compare() :: (any -> (any -> order))
   @spec compare(any, any) :: order
   curry compare/2
   def compare(a, b) do
     cond do
-      a > b -> :gt
-      a < b -> :lt
+      ( a > b ) -> :gt
+      ( a < b ) -> :lt
       true -> :eq
     end
   end
@@ -92,11 +91,10 @@ defmodule Elmchemy.XBasics do
   
  
   """
-  @spec xor() :: (boolean -> (boolean -> boolean))
   @spec xor(boolean, boolean) :: boolean
   curry xor/2
   def xor(a, b) do
-    a && (&!/0).().(b) || (&!/0).().(a) && b
+    ( ( a && (&!/0).().(b) ) || ( (&!/0).().(a) && b ) )
   end
 
   @doc """
@@ -118,7 +116,6 @@ defmodule Elmchemy.XBasics do
   
  
   """
-  @spec negate() :: (number -> number)
   @spec negate(number) :: number
   curry negate/1
   verify as: Kernel.-/1
@@ -128,7 +125,6 @@ defmodule Elmchemy.XBasics do
   
  
   """
-  @spec sqrt() :: (number -> float)
   @spec sqrt(number) :: float
   curry sqrt/1
   verify as: :math.sqrt/1
@@ -142,7 +138,6 @@ defmodule Elmchemy.XBasics do
   
  
   """
-  @spec clamp() :: (any -> (any -> (any -> any)))
   @spec clamp(any, any, any) :: any
   curry clamp/3
   def clamp(x, bottom, top) do
@@ -155,7 +150,6 @@ defmodule Elmchemy.XBasics do
  
  
   """
-  @spec log_base() :: (float -> (float -> float))
   @spec log_base(float, float) :: float
   curry log_base/2
   def log_base(a, b) do
@@ -182,7 +176,6 @@ defmodule Elmchemy.XBasics do
  
  
   """
-  @spec cos() :: (float -> float)
   @spec cos(float) :: float
   curry cos/1
   verify as: :math.cos/1
@@ -191,7 +184,6 @@ defmodule Elmchemy.XBasics do
  
  
   """
-  @spec sin() :: (float -> float)
   @spec sin(float) :: float
   curry sin/1
   verify as: :math.sin/1
@@ -200,7 +192,6 @@ defmodule Elmchemy.XBasics do
  
  
   """
-  @spec tan() :: (float -> float)
   @spec tan(float) :: float
   curry tan/1
   verify as: :math.tan/1
@@ -209,7 +200,6 @@ defmodule Elmchemy.XBasics do
  
  
   """
-  @spec acos() :: (float -> float)
   @spec acos(float) :: float
   curry acos/1
   verify as: :math.acos/1
@@ -218,7 +208,6 @@ defmodule Elmchemy.XBasics do
  
  
   """
-  @spec asin() :: (float -> float)
   @spec asin(float) :: float
   curry asin/1
   verify as: :math.asin/1
@@ -227,7 +216,6 @@ defmodule Elmchemy.XBasics do
  
  
   """
-  @spec atan() :: (float -> float)
   @spec atan(float) :: float
   curry atan/1
   verify as: :math.atan/1
@@ -236,7 +224,6 @@ defmodule Elmchemy.XBasics do
  
  
   """
-  @spec atan2() :: (float -> (float -> float))
   @spec atan2(float, float) :: float
   curry atan2/2
   verify as: :math.atan2/2
@@ -245,7 +232,6 @@ defmodule Elmchemy.XBasics do
  
  
   """
-  @spec round() :: (float -> integer)
   @spec round(float) :: integer
   curry round/1
   verify as: Kernel.round/1
@@ -254,7 +240,6 @@ defmodule Elmchemy.XBasics do
  
  
   """
-  @spec floor() :: (float -> integer)
   @spec floor(float) :: integer
   curry floor/1
   def floor(x) do
@@ -265,7 +250,6 @@ defmodule Elmchemy.XBasics do
  
  
   """
-  @spec ceiling() :: (float -> integer)
   @spec ceiling(float) :: integer
   curry ceiling/1
   def ceiling(x) do
@@ -277,7 +261,6 @@ defmodule Elmchemy.XBasics do
   
  
   """
-  @spec truncate() :: (float -> integer)
   @spec truncate(float) :: integer
   curry truncate/1
   def truncate(x) do
@@ -289,14 +272,12 @@ defmodule Elmchemy.XBasics do
   
  
   """
-  @spec to_float() :: (integer -> float)
   @spec to_float(integer) :: float
   curry to_float/1
   def to_float(x) do
     mul_.(x).(1.0)
   end
 
-  @spec mul_() :: (integer -> (float -> float))
   @spec mul_(integer, float) :: float
   curryp mul_/2
   verify as: Kernel.*/2
@@ -317,7 +298,6 @@ defmodule Elmchemy.XBasics do
   
  
   """
-  @spec to_string() :: (any -> String.t)
   @spec to_string(any) :: String.t
   curry to_string/1
   def to_string(a) do
@@ -328,7 +308,6 @@ defmodule Elmchemy.XBasics do
 
   @type inspect_option :: {:structs, boolean} | {:binaries, binaries_as}
 
-  @spec inspect_() :: (any -> (list(inspect_option) -> String.t))
   @spec inspect_(any, list(inspect_option)) :: String.t
   curryp inspect_/2
   verify as: Kernel.inspect/2
@@ -338,11 +317,11 @@ defmodule Elmchemy.XBasics do
   
   
       iex> import Elmchemy.XBasics
-      iex> "hello" ++ "world"
+      iex> ( "hello" ++ "world" )
       "helloworld"
   
       iex> import Elmchemy.XBasics
-      iex> [1, 1, 2] ++ [3, 5, 8]
+      iex> ( [1, 1, 2] ++ [3, 5, 8] )
       [1, 1, 2, 3, 5, 8]
   
   
@@ -350,19 +329,16 @@ defmodule Elmchemy.XBasics do
   """
   curry ++/2
   def a ++ b do
-    if is_binary_.(a) && is_binary_.(b) do add_strings_.(a).(b) else add_lists_.(a).(b) end
+    if ( is_binary_.(a) && is_binary_.(b) ) do add_strings_.(a).(b) else add_lists_.(a).(b) end
   end
 
-  @spec is_binary_() :: (any -> boolean)
   @spec is_binary_(any) :: boolean
   curryp is_binary_/1
   verify as: Kernel.is_binary/1
   def is_binary_(a1), do: Kernel.is_binary(a1)
-  @spec add_strings_() :: (any -> (any -> any))
   @spec add_strings_(any, any) :: any
   curryp add_strings_/2
   def add_strings_(a1, a2), do: Kernel.<>(a1, a2)
-  @spec add_lists_() :: (any -> (any -> any))
   @spec add_lists_(any, any) :: any
   curryp add_lists_/2
   def add_lists_(a1, a2), do: Kernel.++(a1, a2)
@@ -372,7 +348,6 @@ defmodule Elmchemy.XBasics do
   
  
   """
-  @spec identity() :: (any -> any)
   @spec identity(any) :: any
   curry identity/1
   def identity(a) do
@@ -395,7 +370,6 @@ defmodule Elmchemy.XBasics do
   
  
   """
-  @spec always() :: (any -> (any -> any))
   @spec always(any, any) :: any
   curry always/2
   def always(a, b) do
@@ -407,7 +381,6 @@ defmodule Elmchemy.XBasics do
   
  
   """
-  @spec flip() :: ((any -> (any -> any)) -> (any -> (any -> any)))
   @spec flip((any -> (any -> any)), any, any) :: any
   curry flip/3
   def flip(f, a, b) do
@@ -437,7 +410,6 @@ defmodule Elmchemy.XBasics do
     Debug.crash.("a")
   end
 
-  @spec throw_() :: (String.t -> no_return)
   @spec throw_(String.t) :: no_return
   curryp throw_/1
   verify as: Kernel.throw/1
@@ -446,7 +418,6 @@ defmodule Elmchemy.XBasics do
  
  
   """
-  @spec tuple2() :: (any -> (any -> {any, any}))
   @spec tuple2(any, any) :: {any, any}
   curry tuple2/2
   def tuple2(a, b) do
@@ -457,7 +428,6 @@ defmodule Elmchemy.XBasics do
  
  
   """
-  @spec tuple3() :: (any -> (any -> (any -> {any, any, any})))
   @spec tuple3(any, any, any) :: {any, any, any}
   curry tuple3/3
   def tuple3(a, b, c) do
@@ -468,7 +438,6 @@ defmodule Elmchemy.XBasics do
  
  
   """
-  @spec tuple4() :: (any -> (any -> (any -> (any -> {any, any, any, any}))))
   @spec tuple4(any, any, any, any) :: {any, any, any, any}
   curry tuple4/4
   def tuple4(a, b, c, d) do
@@ -479,7 +448,6 @@ defmodule Elmchemy.XBasics do
  
  
   """
-  @spec tuple5() :: (any -> (any -> (any -> (any -> (any -> {any, any, any, any, any})))))
   @spec tuple5(any, any, any, any, any) :: {any, any, any, any, any}
   curry tuple5/5
   def tuple5(a, b, c, d, e) do

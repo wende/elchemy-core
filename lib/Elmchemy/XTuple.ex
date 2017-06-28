@@ -1,5 +1,5 @@
 
-# Compiled using Elmchemy v0.3.25
+# Compiled using Elmchemy v0.3.31
 defmodule Elmchemy.XTuple do
   use Elmchemy
 
@@ -25,7 +25,6 @@ defmodule Elmchemy.XTuple do
   
  
   """
-  @spec first() :: ({any, any} -> any)
   @spec first({any, any}) :: any
   curry first/1
   def first({fst, _}) do
@@ -46,7 +45,6 @@ defmodule Elmchemy.XTuple do
   
  
   """
-  @spec second() :: ({any, any} -> any)
   @spec second({any, any}) :: any
   curry second/1
   def second({_, snd}) do
@@ -67,7 +65,6 @@ defmodule Elmchemy.XTuple do
   
  
   """
-  @spec map_first() :: ((any -> any) -> ({any, any} -> {any, any}))
   @spec map_first((any -> any), {any, any}) :: {any, any}
   curry map_first/2
   def map_first(f, {fst, snd}) do
@@ -83,12 +80,11 @@ defmodule Elmchemy.XTuple do
       {"stressed", 4.0}
   
       iex> import Elmchemy.XTuple
-      iex> map_second.(fn(x) -> x + 1 end).({"stressed", 16})
+      iex> map_second.(fn(x) -> ( x + 1 ) end).({"stressed", 16})
       {"stressed", 17}
   
  
   """
-  @spec map_second() :: ((any -> any) -> ({any, any} -> {any, any}))
   @spec map_second((any -> any), {any, any}) :: {any, any}
   curry map_second/2
   def map_second(f, {fst, snd}) do

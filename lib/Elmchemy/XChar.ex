@@ -1,5 +1,5 @@
 
-# Compiled using Elmchemy v0.3.25
+# Compiled using Elmchemy v0.3.31
 defmodule Elmchemy.XChar do
   use Elmchemy
 
@@ -45,12 +45,11 @@ defmodule Elmchemy.XChar do
   
  
   """
-  @spec is_between() :: (char_list -> (char_list -> (char_list -> boolean)))
   @spec is_between(char_list, char_list, char_list) :: boolean
   curryp is_between/3
   defp is_between(low, high, char) do
     code = to_code.(char)
-    code >= to_code.(low) && code <= to_code.(high)
+    ( ( code >= to_code.(low) ) && ( code <= to_code.(high) ) )
   end
 
   @doc """
@@ -72,7 +71,6 @@ defmodule Elmchemy.XChar do
   
  
   """
-  @spec is_upper() :: (char_list -> boolean)
   @spec is_upper(char_list) :: boolean
   curry is_upper/1
   def is_upper(char) do
@@ -98,7 +96,6 @@ defmodule Elmchemy.XChar do
   
  
   """
-  @spec is_lower() :: (char_list -> boolean)
   @spec is_lower(char_list) :: boolean
   curry is_lower/1
   def is_lower(char) do
@@ -124,7 +121,6 @@ defmodule Elmchemy.XChar do
   
  
   """
-  @spec is_digit() :: (char_list -> boolean)
   @spec is_digit(char_list) :: boolean
   curry is_digit/1
   def is_digit(char) do
@@ -150,7 +146,6 @@ defmodule Elmchemy.XChar do
   
  
   """
-  @spec is_oct_digit() :: (char_list -> boolean)
   @spec is_oct_digit(char_list) :: boolean
   curry is_oct_digit/1
   def is_oct_digit(char) do
@@ -176,11 +171,10 @@ defmodule Elmchemy.XChar do
   
  
   """
-  @spec is_hex_digit() :: (char_list -> boolean)
   @spec is_hex_digit(char_list) :: boolean
   curry is_hex_digit/1
   def is_hex_digit(char) do
-    is_digit.(char) || is_between.('a').('f').(char) || is_between.('A').('F').(char)
+    ( ( is_digit.(char) || is_between.('a').('f').(char) ) || is_between.('A').('F').(char) )
   end
 
   @doc """
@@ -194,7 +188,6 @@ defmodule Elmchemy.XChar do
   
  
   """
-  @spec to_upper() :: (char_list -> char_list)
   @spec to_upper(char_list) :: char_list
   curry to_upper/1
   verify as: :string.to_upper/1
@@ -210,7 +203,6 @@ defmodule Elmchemy.XChar do
   
  
   """
-  @spec to_lower() :: (char_list -> char_list)
   @spec to_lower(char_list) :: char_list
   curry to_lower/1
   verify as: :string.to_lower/1
@@ -241,7 +233,6 @@ defmodule Elmchemy.XChar do
   
  
   """
-  @spec to_code() :: (char_list -> integer)
   @spec to_code(char_list) :: integer
   curry to_code/1
   def to_code(a1), do: Kernel.hd(a1)
@@ -256,14 +247,12 @@ defmodule Elmchemy.XChar do
   
  
   """
-  @spec from_code() :: (integer -> char_list)
   @spec from_code(integer) :: char_list
   curry from_code/1
   def from_code(code) do
     insert_at_.([]).(0).(code)
   end
 
-  @spec insert_at_() :: (list(any) -> (integer -> (any -> char_list)))
   @spec insert_at_(list(any), integer, any) :: char_list
   curryp insert_at_/3
   verify as: List.insert_at/3

@@ -1,5 +1,5 @@
 
-# Compiled using Elmchemy v0.3.25
+# Compiled using Elmchemy v0.3.31
 defmodule Elmchemy.XList do
   use Elmchemy
 
@@ -95,7 +95,6 @@ defmodule Elmchemy.XList do
   
  
   """
-  @spec cons() :: (any -> (list(any) -> list(any)))
   @spec cons(any, list(any)) :: list(any)
   curry cons/2
   def cons(a, list) do
@@ -117,7 +116,6 @@ defmodule Elmchemy.XList do
   
  
   """
-  @spec head() :: (list(any) -> {any} | nil)
   @spec head(list(any)) :: {any} | nil
   curry head/1
   def head([x | xs]) do
@@ -142,7 +140,6 @@ defmodule Elmchemy.XList do
   
  
   """
-  @spec tail() :: (list(any) -> {list(any)} | nil)
   @spec tail(list(any)) :: {list(any)} | nil
   curry tail/1
   def tail([x | xs]) do
@@ -163,7 +160,6 @@ defmodule Elmchemy.XList do
   
  
   """
-  @spec is_empty() :: (list(any) -> boolean)
   @spec is_empty(list(any)) :: boolean
   curry is_empty/1
   def is_empty([]) do
@@ -188,11 +184,10 @@ defmodule Elmchemy.XList do
   
  
   """
-  @spec member() :: (any -> (list(any) -> boolean))
   @spec member(any, list(any)) :: boolean
   curry member/2
   def member(x, xs) do
-    any.(fn(a) -> a == x end).(xs)
+    any.(fn(a) -> ( a == x ) end).(xs)
   end
 
   @doc """
@@ -211,7 +206,6 @@ defmodule Elmchemy.XList do
   
  
   """
-  @spec map() :: ((any -> any) -> (list(any) -> list(any)))
   @spec map((any -> any), list(any)) :: list(any)
   curry map/2
   def map(f, xs) do
@@ -230,11 +224,10 @@ defmodule Elmchemy.XList do
   
  
   """
-  @spec indexed_map() :: ((integer -> (any -> any)) -> (list(any) -> list(any)))
   @spec indexed_map((integer -> (any -> any)), list(any)) :: list(any)
   curry indexed_map/2
   def indexed_map(f, xs) do
-    map2.(f).(range.(0).(length.(xs) - 1)).(xs)
+    map2.(f).(range.(0).(( length.(xs) - 1 ))).(xs)
   end
 
   @doc """
@@ -248,7 +241,6 @@ defmodule Elmchemy.XList do
   
  
   """
-  @spec foldl() :: ((any -> (any -> any)) -> (any -> (list(any) -> any)))
   @spec foldl((any -> (any -> any)), any, list(any)) :: any
   curry foldl/3
   def foldl(func, acc, list) do
@@ -271,14 +263,12 @@ defmodule Elmchemy.XList do
   
  
   """
-  @spec foldr() :: ((any -> (any -> any)) -> (any -> (list(any) -> any)))
   @spec foldr((any -> (any -> any)), any, list(any)) :: any
   curry foldr/3
   def foldr(f, start, list) do
     foldr_.(list).(start).(f)
   end
 
-  @spec foldr_() :: (list(any) -> (any -> ((any -> (any -> any)) -> any)))
   @spec foldr_(list(any), any, (any -> (any -> any))) :: any
   curryp foldr_/3
   verify as: List.foldr/3
@@ -294,7 +284,6 @@ defmodule Elmchemy.XList do
   
  
   """
-  @spec scanl() :: ((any -> (any -> any)) -> (any -> (list(any) -> list(any))))
   @spec scanl((any -> (any -> any)), any, list(any)) :: list(any)
   curry scanl/3
   def scanl(f, b, xs) do
@@ -312,13 +301,12 @@ defmodule Elmchemy.XList do
   
   
       iex> import Elmchemy.XList
-      iex> filter.(flip.((&rem/0).()).(2) >>> (&==/0).().(0)).([1, 2, 3, 4, 5, 6])
+      iex> filter.(( flip.((&rem/0).()).(2) >>> (&==/0).().(0) )).([1, 2, 3, 4, 5, 6])
       [2, 4, 6]
   
   
  
   """
-  @spec filter() :: ((any -> boolean) -> (list(any) -> list(any)))
   @spec filter((any -> boolean), list(any)) :: list(any)
   curry filter/2
   def filter(pred, xs) do
@@ -332,20 +320,18 @@ defmodule Elmchemy.XList do
   
   
       iex> import Elmchemy.XList
-      iex> filter_map.(fn(a) -> if a >= 18 do {a} else nil end end).([3, 15, 12, 18, 24])
+      iex> filter_map.(fn(a) -> if ( a >= 18 ) do {a} else nil end end).([3, 15, 12, 18, 24])
       [18, 24]
   
   
  
   """
-  @spec filter_map() :: ((any -> {any} | nil) -> (list(any) -> list(any)))
   @spec filter_map((any -> {any} | nil), list(any)) :: list(any)
   curry filter_map/2
   def filter_map(f, xs) do
     foldr.(maybe_cons.(f)).([]).(xs)
   end
 
-  @spec maybe_cons() :: ((any -> {any} | nil) -> (any -> (list(any) -> list(any))))
   @spec maybe_cons((any -> {any} | nil), any, list(any)) :: list(any)
   curryp maybe_cons/3
   defp maybe_cons(f, mx, xs) do
@@ -368,11 +354,10 @@ defmodule Elmchemy.XList do
   
  
   """
-  @spec length() :: (list(any) -> integer)
   @spec length(list(any)) :: integer
   curry length/1
   def length(xs) do
-    foldl.(fn(_) -> fn(i) -> i + 1 end end).(0).(xs)
+    foldl.(fn(_) -> fn(i) -> ( i + 1 ) end end).(0).(xs)
   end
 
   @doc """
@@ -386,7 +371,6 @@ defmodule Elmchemy.XList do
   
  
   """
-  @spec reverse() :: (list(any) -> list(any))
   @spec reverse(list(any)) :: list(any)
   curry reverse/1
   def reverse(list) do
@@ -398,25 +382,24 @@ defmodule Elmchemy.XList do
   
   
       iex> import Elmchemy.XList
-      iex> all.(fn(a) -> rem(a, 2) == 0 end).([2, 4])
+      iex> all.(fn(a) -> ( rem(a, 2) == 0 ) end).([2, 4])
       :true
   
       iex> import Elmchemy.XList
-      iex> all.(fn(a) -> rem(a, 2) == 0 end).([2, 3])
+      iex> all.(fn(a) -> ( rem(a, 2) == 0 ) end).([2, 3])
       :false
   
       iex> import Elmchemy.XList
-      iex> all.(fn(a) -> rem(a, 2) == 0 end).([])
+      iex> all.(fn(a) -> ( rem(a, 2) == 0 ) end).([])
       :true
   
   
  
   """
-  @spec all() :: ((any -> boolean) -> (list(any) -> boolean))
   @spec all((any -> boolean), list(any)) :: boolean
   curry all/2
   def all(is_okay, list) do
-    (&!/0).().(any.(is_okay >>> (&!/0).()).(list))
+    (&!/0).().(any.(( is_okay >>> (&!/0).() )).(list))
   end
 
   @doc """
@@ -424,21 +407,20 @@ defmodule Elmchemy.XList do
   
   
       iex> import Elmchemy.XList
-      iex> any.(fn(a) -> rem(a, 2) == 0 end).([2, 3])
+      iex> any.(fn(a) -> ( rem(a, 2) == 0 ) end).([2, 3])
       :true
   
       iex> import Elmchemy.XList
-      iex> any.(fn(a) -> rem(a, 2) == 0 end).([1, 3])
+      iex> any.(fn(a) -> ( rem(a, 2) == 0 ) end).([1, 3])
       :false
   
       iex> import Elmchemy.XList
-      iex> any.(fn(a) -> rem(a, 2) == 0 end).([])
+      iex> any.(fn(a) -> ( rem(a, 2) == 0 ) end).([])
       :false
   
   
  
   """
-  @spec any() :: ((any -> boolean) -> (list(any) -> boolean))
   @spec any((any -> boolean), list(any)) :: boolean
   curry any/2
   def any(is_okay, list) do
@@ -467,7 +449,6 @@ defmodule Elmchemy.XList do
   
  
   """
-  @spec append() :: (list(any) -> (list(any) -> list(any)))
   @spec append(list(any), list(any)) :: list(any)
   curry append/2
   def append(xs, ys) do
@@ -490,7 +471,6 @@ defmodule Elmchemy.XList do
   
  
   """
-  @spec concat() :: (list(list(any)) -> list(any))
   @spec concat(list(list(any))) :: list(any)
   curry concat/1
   def concat(lists) do
@@ -502,13 +482,12 @@ defmodule Elmchemy.XList do
   
   
       iex> import Elmchemy.XList
-      iex> concat_map.(range.(2)).([1]) == concat.(map.(range.(2)).([1]))
+      iex> ( concat_map.(range.(2)).([1]) == concat.(map.(range.(2)).([1])) )
       true
   
   
  
   """
-  @spec concat_map() :: ((any -> list(any)) -> (list(any) -> list(any)))
   @spec concat_map((any -> list(any)), list(any)) :: list(any)
   curry concat_map/2
   def concat_map(f, list) do
@@ -526,7 +505,6 @@ defmodule Elmchemy.XList do
   
  
   """
-  @spec sum() :: (list(number) -> number)
   @spec sum(list(number)) :: number
   curry sum/1
   def sum(numbers) do
@@ -544,7 +522,6 @@ defmodule Elmchemy.XList do
   
  
   """
-  @spec product() :: (list(number) -> number)
   @spec product(list(number)) :: number
   curry product/1
   def product(numbers) do
@@ -566,7 +543,6 @@ defmodule Elmchemy.XList do
   
  
   """
-  @spec maximum() :: (list(any) -> {any} | nil)
   @spec maximum(list(any)) :: {any} | nil
   curry maximum/1
   def maximum([x | xs]) do
@@ -591,7 +567,6 @@ defmodule Elmchemy.XList do
   
  
   """
-  @spec minimum() :: (list(any) -> {any} | nil)
   @spec minimum(list(any)) :: {any} | nil
   curry minimum/1
   def minimum([x | xs]) do
@@ -608,24 +583,22 @@ defmodule Elmchemy.XList do
   
   
       iex> import Elmchemy.XList
-      iex> partition.(fn(x) -> x < 3 end).([0, 1, 2, 3, 4, 5])
+      iex> partition.(fn(x) -> ( x < 3 ) end).([0, 1, 2, 3, 4, 5])
       {[0, 1, 2], [3, 4, 5]}
   
       iex> import Elmchemy.XList
-      iex> partition.(fn(a) -> rem(a, 2) == 0 end).([0, 1, 2, 3, 4, 5])
+      iex> partition.(fn(a) -> ( rem(a, 2) == 0 ) end).([0, 1, 2, 3, 4, 5])
       {[0, 2, 4], [1, 3, 5]}
   
   
  
   """
-  @spec partition() :: ((any -> boolean) -> (list(any) -> {list(any), list(any)}))
   @spec partition((any -> boolean), list(any)) :: {list(any), list(any)}
   curry partition/2
   def partition(pred, list) do
     foldr.(partition_step.(pred)).({[], []}).(list)
   end
 
-  @spec partition_step() :: ((any -> boolean) -> (any -> ({list(any), list(any)} -> {list(any), list(any)})))
   @spec partition_step((any -> boolean), any, {list(any), list(any)}) :: {list(any), list(any)}
   curryp partition_step/3
   defp partition_step(pred, x, {trues, falses}) do
@@ -649,7 +622,6 @@ defmodule Elmchemy.XList do
   
  
   """
-  @spec map2() :: ((any -> (any -> any)) -> (list(any) -> (list(any) -> list(any))))
   @spec map2((any -> (any -> any)), list(any), list(any)) :: list(any)
   curry map2/3
   def map2(f, a, b) do
@@ -657,7 +629,6 @@ defmodule Elmchemy.XList do
     |> (map.(uncurried.(f))).()
   end
 
-  @spec zip_() :: (list(any) -> (list(any) -> list({any, any})))
   @spec zip_(list(any), list(any)) :: list({any, any})
   curryp zip_/2
   verify as: Enum.zip/2
@@ -685,14 +656,12 @@ defmodule Elmchemy.XList do
   
  
   """
-  @spec unzip() :: (list({any, any}) -> {list(any), list(any)})
   @spec unzip(list({any, any})) :: {list(any), list(any)}
   curry unzip/1
   def unzip(pairs) do
     foldr.(unzip_step).({[], []}).(pairs)
   end
 
-  @spec unzip_step() :: ({any, any} -> ({list(any), list(any)} -> {list(any), list(any)}))
   @spec unzip_step({any, any}, {list(any), list(any)}) :: {list(any), list(any)}
   curryp unzip_step/2
   defp unzip_step({x, y}, {xs, ys}) do
@@ -710,7 +679,6 @@ defmodule Elmchemy.XList do
   
  
   """
-  @spec intersperse() :: (any -> (list(any) -> list(any)))
   @spec intersperse(any, list(any)) :: list(any)
   curry intersperse/2
   def intersperse(sep, xs) do
@@ -735,18 +703,16 @@ defmodule Elmchemy.XList do
   
  
   """
-  @spec take() :: (integer -> (list(any) -> list(any)))
   @spec take(integer, list(any)) :: list(any)
   curry take/2
   def take(n, list) do
     take_fast.(0).(n).(list)
   end
 
-  @spec take_fast() :: (integer -> (integer -> (list(any) -> list(any))))
   @spec take_fast(integer, integer, list(any)) :: list(any)
   curryp take_fast/3
   defp take_fast(ctr, n, list) do
-    if n <= 0 do [] else case {n, list} do
+    if ( n <= 0 ) do [] else case {n, list} do
       {_, []} ->
         list
       {1, [x | _]} ->
@@ -756,28 +722,26 @@ defmodule Elmchemy.XList do
       {3, [x | [y | [z | _]]]} ->
         [x, y, z]
       {_, [x | [y | [z | [w | tl]]]]} ->
-        if ctr > 1000 do [x | [y | [z | [w | take_tail_rec.(n - 4).(tl)]]]] else [x | [y | [z | [w | take_fast.(ctr + 1).(n - 4).(tl)]]]] end
+        if ( ctr > 1000 ) do [x | [y | [z | [w | take_tail_rec.(( n - 4 )).(tl)]]]] else [x | [y | [z | [w | take_fast.(( ctr + 1 )).(( n - 4 )).(tl)]]]] end
       _ ->
         list
     end end
   end
 
-  @spec take_tail_rec() :: (integer -> (list(any) -> list(any)))
   @spec take_tail_rec(integer, list(any)) :: list(any)
   curryp take_tail_rec/2
   defp take_tail_rec(n, list) do
     reverse.(take_reverse.(n).(list).([]))
   end
 
-  @spec take_reverse() :: (integer -> (list(any) -> (list(any) -> list(any))))
   @spec take_reverse(integer, list(any), list(any)) :: list(any)
   curryp take_reverse/3
   defp take_reverse(n, list, taken) do
-    if n <= 0 do taken else case list do
+    if ( n <= 0 ) do taken else case list do
       [] ->
         taken
       [x | xs] ->
-        take_reverse.(n - 1).(xs).([x | taken])
+        take_reverse.(( n - 1 )).(xs).([x | taken])
     end end
   end
 
@@ -792,15 +756,14 @@ defmodule Elmchemy.XList do
   
  
   """
-  @spec drop() :: (integer -> (list(any) -> list(any)))
   @spec drop(integer, list(any)) :: list(any)
   curry drop/2
   def drop(n, list) do
-    if n <= 0 do list else case list do
+    if ( n <= 0 ) do list else case list do
       [] ->
         list
       [x | xs] ->
-        drop.(n - 1).(xs)
+        drop.(( n - 1 )).(xs)
     end end
   end
 
@@ -819,7 +782,6 @@ defmodule Elmchemy.XList do
   
  
   """
-  @spec singleton() :: (any -> list(any))
   @spec singleton(any) :: list(any)
   curry singleton/1
   def singleton(value) do
@@ -837,18 +799,16 @@ defmodule Elmchemy.XList do
   
  
   """
-  @spec repeat() :: (integer -> (any -> list(any)))
   @spec repeat(integer, any) :: list(any)
   curry repeat/2
   def repeat(n, value) do
     repeat_help.([]).(n).(value)
   end
 
-  @spec repeat_help() :: (list(any) -> (integer -> (any -> list(any))))
   @spec repeat_help(list(any), integer, any) :: list(any)
   curryp repeat_help/3
   defp repeat_help(result, n, value) do
-    if n <= 0 do result else repeat_help.([value | result]).(n - 1).(value) end
+    if ( n <= 0 ) do result else repeat_help.([value | result]).(( n - 1 )).(value) end
   end
 
   @doc """
@@ -871,18 +831,16 @@ defmodule Elmchemy.XList do
   
  
   """
-  @spec range() :: (integer -> (integer -> list(integer)))
   @spec range(integer, integer) :: list(integer)
   curry range/2
   def range(lo, hi) do
     range_help.(lo).(hi).([])
   end
 
-  @spec range_help() :: (integer -> (integer -> (list(integer) -> list(integer))))
   @spec range_help(integer, integer, list(integer)) :: list(integer)
   curryp range_help/3
   defp range_help(lo, hi, list) do
-    if lo <= hi do range_help.(lo).(hi - 1).([hi | list]) else list end
+    if ( lo <= hi ) do range_help.(lo).(( hi - 1 )).([hi | list]) else list end
   end
 
   @doc """
@@ -896,7 +854,6 @@ defmodule Elmchemy.XList do
   
  
   """
-  @spec sort() :: (list(any) -> list(any))
   @spec sort(list(any)) :: list(any)
   curry sort/1
   def sort(xs) do
@@ -914,7 +871,6 @@ defmodule Elmchemy.XList do
   
  
   """
-  @spec sort_by() :: ((any -> any) -> (list(any) -> list(any)))
   @spec sort_by((any -> any), list(any)) :: list(any)
   curry sort_by/2
   def sort_by(f, list) do
@@ -936,7 +892,6 @@ defmodule Elmchemy.XList do
   
  
   """
-  @spec sort_with() :: ((any -> (any -> Elmchemy.XBasics.order)) -> (list(any) -> list(any)))
   @spec sort_with((any -> (any -> Elmchemy.XBasics.order)), list(any)) :: list(any)
   curry sort_with/2
   def sort_with(f, list) do
@@ -952,7 +907,6 @@ defmodule Elmchemy.XList do
     sort_.(list).(exf)
   end
 
-  @spec sort_() :: (list(any) -> ((any -> (any -> boolean)) -> list(any)))
   @spec sort_(list(any), (any -> (any -> boolean))) :: list(any)
   curryp sort_/2
   verify as: Enum.sort/2

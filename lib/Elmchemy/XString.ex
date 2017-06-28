@@ -1,5 +1,5 @@
 
-# Compiled using Elmchemy v0.3.25
+# Compiled using Elmchemy v0.3.31
 defmodule Elmchemy.XString do
   use Elmchemy
 
@@ -77,11 +77,10 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec is_empty() :: (String.t -> boolean)
   @spec is_empty(String.t) :: boolean
   curry is_empty/1
   def is_empty(str) do
-    length.(str) == 0
+    ( length.(str) == 0 )
   end
 
   @doc """
@@ -95,11 +94,10 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec cons() :: (char_list -> (String.t -> String.t))
   @spec cons(char_list, String.t) :: String.t
   curry cons/2
   def cons(c, str) do
-    from_char.(c) ++ str
+    ( from_char.(c) ++ str )
   end
 
   @doc """
@@ -113,7 +111,6 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec from_char() :: (char_list -> String.t)
   @spec from_char(char_list) :: String.t
   curry from_char/1
   verify as: :binary.list_to_bin/1
@@ -134,7 +131,6 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec uncons() :: (String.t -> {{char_list, String.t}} | nil)
   @spec uncons(String.t) :: {{char_list, String.t}} | nil
   curry uncons/1
   def uncons(str) do
@@ -151,7 +147,6 @@ defmodule Elmchemy.XString do
     end
   end
 
-  @spec split_at_() :: (String.t -> (integer -> {String.t, String.t}))
   @spec split_at_(String.t, integer) :: {String.t, String.t}
   curryp split_at_/2
   verify as: String.split_at/2
@@ -168,11 +163,10 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec append() :: (String.t -> (String.t -> String.t))
   @spec append(String.t, String.t) :: String.t
   curry append/2
   def append(a, b) do
-    a ++ b
+    ( a ++ b )
   end
 
   @doc """
@@ -186,7 +180,6 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec concat() :: (list(String.t) -> String.t)
   @spec concat(list(String.t)) :: String.t
   curry concat/1
   def concat(list) do
@@ -208,7 +201,6 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec length() :: (String.t -> integer)
   @spec length(String.t) :: integer
   curry length/1
   verify as: String.length/1
@@ -218,13 +210,12 @@ defmodule Elmchemy.XString do
   
   
       iex> import Elmchemy.XString
-      iex> map.(fn(c) -> if c == '/' do '.' else c end end).("a/b/c")
+      iex> map.(fn(c) -> if ( c == '/' ) do '.' else c end end).("a/b/c")
       "a.b.c"
   
   
  
   """
-  @spec map() :: ((char_list -> char_list) -> (String.t -> String.t))
   curry map/2
   def map(f, str) do
     str
@@ -245,7 +236,6 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec filter() :: ((char_list -> boolean) -> (String.t -> String.t))
   curry filter/2
   def filter(f, str) do
     str
@@ -266,7 +256,6 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec reverse() :: (String.t -> String.t)
   @spec reverse(String.t) :: String.t
   curry reverse/1
   verify as: String.reverse/1
@@ -282,7 +271,6 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec foldl() :: ((char_list -> (any -> any)) -> (any -> (String.t -> any)))
   curry foldl/3
   def foldl(f, acc, str) do
     str
@@ -301,7 +289,6 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec foldr() :: ((char_list -> (any -> any)) -> (any -> (String.t -> any)))
   curry foldr/3
   def foldr(f, acc, str) do
     str
@@ -326,7 +313,6 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec split() :: (String.t -> (String.t -> list(String.t)))
   @spec split(String.t, String.t) :: list(String.t)
   curry split/2
   def split(pattern, str) do
@@ -335,7 +321,6 @@ defmodule Elmchemy.XString do
 
   @type split_option :: {:trim, boolean}
 
-  @spec split_() :: (String.t -> (list(String.t) -> (list(split_option) -> list(String.t))))
   @spec split_(String.t, list(String.t), list(split_option)) :: list(String.t)
   curryp split_/3
   verify as: String.split/3
@@ -359,14 +344,12 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec join() :: (String.t -> (list(String.t) -> String.t))
   @spec join(String.t, list(String.t)) :: String.t
   curry join/2
   def join(str, list) do
     join_.(list).(str)
   end
 
-  @spec join_() :: (list(String.t) -> (String.t -> String.t))
   @spec join_(list(String.t), String.t) :: String.t
   curryp join_/2
   verify as: Enum.join/2
@@ -382,14 +365,12 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec repeat() :: (integer -> (String.t -> String.t))
   @spec repeat(integer, String.t) :: String.t
   curry repeat/2
   def repeat(n, str) do
     repeat_.(str).(n)
   end
 
-  @spec repeat_() :: (String.t -> (integer -> String.t))
   @spec repeat_(String.t, integer) :: String.t
   curryp repeat_/2
   verify as: String.duplicate/2
@@ -426,18 +407,16 @@ defmodule Elmchemy.XString do
   #                       0  11
   #  slice -6 -1 = slice ((18 - 6)) (18 - 1 - 12)
   #                           12       5
-  @spec slice() :: (integer -> (integer -> (String.t -> String.t)))
   @spec slice(integer, integer, String.t) :: String.t
   curry slice/3
   def slice(from, to, str) do
     l = length.(str)
-    mirror = fn(a) -> if a < 0 do l + a else a end end
+    mirror = fn(a) -> if ( a < 0 ) do ( l + a ) else a end end
     start = mirror.(from)
-    len = mirror.(to) - start
+    len = ( mirror.(to) - start )
     slice_.(str).(start).(len)
   end
 
-  @spec slice_() :: (String.t -> (integer -> (integer -> String.t)))
   @spec slice_(String.t, integer, integer) :: String.t
   curryp slice_/3
   verify as: String.slice/3
@@ -453,7 +432,6 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec left() :: (integer -> (String.t -> String.t))
   @spec left(integer, String.t) :: String.t
   curry left/2
   def left(n, str) do
@@ -471,7 +449,6 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec right() :: (integer -> (String.t -> String.t))
   @spec right(integer, String.t) :: String.t
   curry right/2
   def right(n, str) do
@@ -489,7 +466,6 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec drop_left() :: (integer -> (String.t -> String.t))
   @spec drop_left(integer, String.t) :: String.t
   curry drop_left/2
   def drop_left(n, str) do
@@ -507,7 +483,6 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec drop_right() :: (integer -> (String.t -> String.t))
   @spec drop_right(integer, String.t) :: String.t
   curry drop_right/2
   def drop_right(n, str) do
@@ -533,11 +508,10 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec pad() :: (integer -> (char_list -> (String.t -> String.t)))
   @spec pad(integer, char_list, String.t) :: String.t
   curry pad/3
   def pad(n, c, str) do
-    right = div(length.(str) + n, 2)
+    right = div(( length.(str) + n ), 2)
     left = n
     str
     |> (pad_right.(right).(c)).()
@@ -563,14 +537,12 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec pad_left() :: (integer -> (char_list -> (String.t -> String.t)))
   @spec pad_left(integer, char_list, String.t) :: String.t
   curry pad_left/3
   def pad_left(n, c, str) do
     pad_leading.(str).(n).(from_char.(c))
   end
 
-  @spec pad_leading() :: (String.t -> (integer -> (String.t -> String.t)))
   @spec pad_leading(String.t, integer, String.t) :: String.t
   curryp pad_leading/3
   verify as: String.pad_leading/3
@@ -594,14 +566,12 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec pad_right() :: (integer -> (char_list -> (String.t -> String.t)))
   @spec pad_right(integer, char_list, String.t) :: String.t
   curry pad_right/3
   def pad_right(n, c, str) do
     pad_trailing.(str).(n).(from_char.(c))
   end
 
-  @spec pad_trailing() :: (String.t -> (integer -> (String.t -> String.t)))
   @spec pad_trailing(String.t, integer, String.t) :: String.t
   curryp pad_trailing/3
   verify as: String.pad_trailing/3
@@ -617,7 +587,6 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec trim() :: (String.t -> String.t)
   @spec trim(String.t) :: String.t
   curry trim/1
   verify as: String.trim/1
@@ -633,7 +602,6 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec trim_left() :: (String.t -> String.t)
   @spec trim_left(String.t) :: String.t
   curry trim_left/1
   verify as: String.trim_leading/1
@@ -649,7 +617,6 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec trim_right() :: (String.t -> String.t)
   @spec trim_right(String.t) :: String.t
   curry trim_right/1
   verify as: String.trim_trailing/1
@@ -665,7 +632,6 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec words() :: (String.t -> list(String.t))
   @spec words(String.t) :: list(String.t)
   curry words/1
   verify as: String.split/1
@@ -681,7 +647,6 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec lines() :: (String.t -> list(String.t))
   @spec lines(String.t) :: list(String.t)
   curry lines/1
   def lines(str) do
@@ -700,7 +665,6 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec to_upper() :: (String.t -> String.t)
   @spec to_upper(String.t) :: String.t
   curry to_upper/1
   verify as: String.upcase/1
@@ -716,7 +680,6 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec to_lower() :: (String.t -> String.t)
   @spec to_lower(String.t) :: String.t
   curry to_lower/1
   verify as: String.downcase/1
@@ -740,7 +703,6 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec any() :: ((char_list -> boolean) -> (String.t -> boolean))
   curry any/2
   def any(f, str) do
     XList.any.(f).(to_list.(str))
@@ -765,7 +727,6 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec all() :: ((char_list -> boolean) -> (String.t -> boolean))
   curry all/2
   def all(f, str) do
     XList.all.(f).(to_list.(str))
@@ -792,14 +753,12 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec contains() :: (String.t -> (String.t -> boolean))
   @spec contains(String.t, String.t) :: boolean
   curry contains/2
   def contains(pattern, str) do
     contains_.(str).(pattern)
   end
 
-  @spec contains_() :: (String.t -> (String.t -> boolean))
   @spec contains_(String.t, String.t) :: boolean
   curryp contains_/2
   verify as: String. contains?/2
@@ -819,14 +778,12 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec starts_with() :: (String.t -> (String.t -> boolean))
   @spec starts_with(String.t, String.t) :: boolean
   curry starts_with/2
   def starts_with(prefix, str) do
     starts_with_.(str).(prefix)
   end
 
-  @spec starts_with_() :: (String.t -> (String.t -> boolean))
   @spec starts_with_(String.t, String.t) :: boolean
   curryp starts_with_/2
   verify as: String.starts_with?/2
@@ -846,14 +803,12 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec ends_with() :: (String.t -> (String.t -> boolean))
   @spec ends_with(String.t, String.t) :: boolean
   curry ends_with/2
   def ends_with(suffix, str) do
     ends_with_.(str).(suffix)
   end
 
-  @spec ends_with_() :: (String.t -> (String.t -> boolean))
   @spec ends_with_(String.t, String.t) :: boolean
   curryp ends_with_/2
   verify as: String.ends_with?/2
@@ -877,7 +832,6 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec indexes() :: (String.t -> (String.t -> list(integer)))
   @spec indexes(String.t, String.t) :: list(integer)
   curry indexes/2
   def indexes(pattern, str) do
@@ -885,7 +839,6 @@ defmodule Elmchemy.XString do
     |> (XList.map.(XTuple.first)).()
   end
 
-  @spec matches_() :: (String.t -> (any -> list({integer, String.t})))
   @spec matches_(String.t, any) :: list({integer, String.t})
   curryp matches_/2
   verify as: :binary.matches/2
@@ -895,7 +848,6 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec indices() :: (String.t -> (String.t -> list(integer)))
   @spec indices(String.t, String.t) :: list(integer)
   curry indices/2
   def indices(pattern, str) do
@@ -937,19 +889,17 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec to_int() :: (String.t -> Elmchemy.XResult.result)
   @spec to_int(String.t) :: Elmchemy.XResult.result
   curry to_int/1
   def to_int(str) do
     case to_int_.(str) do
       {:error, "argument error"} ->
-        {:error, "could not convert string '" ++ str ++ "' to an Int"}
+        {:error, ( ( "could not convert string '" ++ str ) ++ "' to an Int" )}
       e ->
         e
     end
   end
 
-  @spec to_int_() :: (String.t -> Elmchemy.XResult.result)
   @spec to_int_(String.t) :: Elmchemy.XResult.result
   curryp to_int_/1
   def to_int_(a1) do 
@@ -992,20 +942,18 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec to_float() :: (String.t -> Elmchemy.XResult.result)
   @spec to_float(String.t) :: Elmchemy.XResult.result
   curry to_float/1
   def to_float(str) do
-    real = if contains.(".").(str) do str else str ++ ".0" end
+    real = if contains.(".").(str) do str else ( str ++ ".0" ) end
     case to_float_.(real) do
       {:error, "argument error"} ->
-        {:error, "could not convert string '" ++ str ++ "' to a Float"}
+        {:error, ( ( "could not convert string '" ++ str ) ++ "' to a Float" )}
       e ->
         e
     end
   end
 
-  @spec to_float_() :: (String.t -> Elmchemy.XResult.result)
   @spec to_float_(String.t) :: Elmchemy.XResult.result
   curryp to_float_/1
   def to_float_(a1) do 
@@ -1024,7 +972,6 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec to_list() :: (String.t -> list(char_list))
   @spec to_list(String.t) :: list(char_list)
   curry to_list/1
   def to_list(str) do
@@ -1035,12 +982,10 @@ defmodule Elmchemy.XString do
   #  It's ugly but it's the only way since there's no
   #    Chars in Elixir
 
-  @spec to_charlist_() :: (String.t -> list(integer))
   @spec to_charlist_(String.t) :: list(integer)
   curryp to_charlist_/1
   verify as: String.to_charlist/1
   def to_charlist_(a1), do: String.to_charlist(a1)
-  @spec map_() :: (list(integer) -> ((integer -> list(integer)) -> list(char_list)))
   @spec map_(list(integer), (integer -> list(integer))) :: list(char_list)
   curryp map_/2
   def map_(a1, a2), do: Enum.map(a1, fn (x1) -> a2.(x1) end)
@@ -1057,14 +1002,12 @@ defmodule Elmchemy.XString do
   
  
   """
-  @spec from_list() :: (list(char_list) -> String.t)
   @spec from_list(list(char_list)) :: String.t
   curry from_list/1
   def from_list(list) do
     join_chars_.(list).("")
   end
 
-  @spec join_chars_() :: (list(char_list) -> (String.t -> String.t))
   @spec join_chars_(list(char_list), String.t) :: String.t
   curryp join_chars_/2
   verify as: Enum.join/2

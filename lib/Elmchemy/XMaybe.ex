@@ -1,5 +1,5 @@
 
-# Compiled using Elmchemy v0.3.25
+# Compiled using Elmchemy v0.3.31
 defmodule Elmchemy.XMaybe do
   use Elmchemy
 
@@ -51,7 +51,6 @@ defmodule Elmchemy.XMaybe do
   
  
   """
-  @spec with_default() :: (any -> ({any} | nil -> any))
   @spec with_default(any, {any} | nil) :: any
   curry with_default/2
   def with_default(default, maybe) do
@@ -78,7 +77,6 @@ defmodule Elmchemy.XMaybe do
   
  
   """
-  @spec map() :: ((any -> any) -> ({any} | nil -> {any} | nil))
   curry map/2
   def map(f, maybe) do
     case maybe do
@@ -108,7 +106,6 @@ defmodule Elmchemy.XMaybe do
   
  
   """
-  @spec map2() :: ((any -> (any -> any)) -> ({any} | nil -> ({any} | nil -> {any} | nil)))
   curry map2/3
   def map2(func, ma, mb) do
     case {ma, mb} do
@@ -123,7 +120,6 @@ defmodule Elmchemy.XMaybe do
  
  
   """
-  @spec map3() :: ((any -> (any -> (any -> any))) -> ({any} | nil -> ({any} | nil -> ({any} | nil -> {any} | nil))))
   curry map3/4
   def map3(func, ma, mb, mc) do
     case {ma, mb, mc} do
@@ -138,7 +134,6 @@ defmodule Elmchemy.XMaybe do
  
  
   """
-  @spec map4() :: ((any -> (any -> (any -> (any -> any)))) -> ({any} | nil -> ({any} | nil -> ({any} | nil -> ({any} | nil -> {any} | nil)))))
   curry map4/5
   def map4(func, ma, mb, mc, md) do
     case {ma, mb, mc, md} do
@@ -153,7 +148,6 @@ defmodule Elmchemy.XMaybe do
  
  
   """
-  @spec map5() :: ((any -> (any -> (any -> (any -> (any -> any))))) -> ({any} | nil -> ({any} | nil -> ({any} | nil -> ({any} | nil -> ({any} | nil -> {any} | nil))))))
   curry map5/6
   def map5(func, ma, mb, mc, md, me) do
     case {ma, mb, mc, md, me} do
@@ -180,7 +174,6 @@ defmodule Elmchemy.XMaybe do
   
  
   """
-  @spec and_then() :: ((any -> {any} | nil) -> ({any} | nil -> {any} | nil))
   curry and_then/2
   def and_then(callback, maybe_value) do
     case maybe_value do

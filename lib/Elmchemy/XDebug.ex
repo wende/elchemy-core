@@ -1,5 +1,5 @@
 
-# Compiled using Elmchemy v0.3.25
+# Compiled using Elmchemy v0.3.31
 defmodule Elmchemy.XDebug do
   use Elmchemy
 
@@ -20,7 +20,6 @@ defmodule Elmchemy.XDebug do
   
  
   """
-  @spec log() :: (String.t -> (any -> any))
   @spec log(String.t, any) :: any
   curry log/2
   def log(title, a) do
@@ -28,7 +27,6 @@ defmodule Elmchemy.XDebug do
     a
   end
 
-  @spec puts_() :: (any -> (list({any, any}) -> any))
   @spec puts_(any, list({any, any})) :: any
   curryp puts_/2
   verify as: IO.inspect/2
@@ -40,7 +38,6 @@ defmodule Elmchemy.XDebug do
   
  
   """
-  @spec crash() :: (String.t -> any)
   @spec crash(String.t) :: any
   curry crash/1
   def crash(a1), do: Kernel.raise(a1)
