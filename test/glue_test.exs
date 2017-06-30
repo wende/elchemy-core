@@ -6,8 +6,8 @@ defmodule Elmchemy.GlueTest do
     import Elmchemy.Glue
 
     def test(x1,x2,x3,x4), do: [x1,x2,x3,x4]
-    defswap swapped_test/4, to: test
-    defreverse reverse_test/4, to: test
+    defswap swapped_test, to: test/4
+    defreverse reverse_test, to: test/4
   end
 
   test "Mock works" do

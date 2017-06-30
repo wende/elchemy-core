@@ -85,9 +85,9 @@ defmodule Elmchemy.Glue do
   ```
   """
 
-  defmacro defreverse({:/, _, [{name, meta, _ }, arity]} , to: {function, call_meta, _ }) do
+  defmacro defreverse({name, _,_}, to: {:/, _, [{function, call_meta, _ }, arity]} ) do
     args = take_arguments(arity)
-    function_definition = { name, meta, args}
+    function_definition = { name, call_meta, args}
     call = {function, call_meta, Enum.reverse(args) }
 
     quote do
@@ -102,9 +102,9 @@ defmodule Elmchemy.Glue do
   def foldl(x1, x2, x3), do: List.foldl(x3, x1, x2)
   """
 
-  defmacro defswap({:/, _, [{name, meta, _ }, arity]} , to: {function, call_meta, _ }) do
+  defmacro defswap({name, _,_}, to: {:/, _, [{function, call_meta, _ }, arity]}) do
     args = take_arguments(arity)
-    function_definition = { name, meta, args}
+    function_definition = { name, call_meta, args}
     {first, [second]} = Enum.split(args,arity-1)
     call = {function, call_meta, [second | first] }
 
