@@ -1,5 +1,5 @@
 
-# Compiled using Elmchemy v0.3.31
+# Compiled using Elmchemy v0.3.33
 defmodule Elmchemy.XString do
   use Elmchemy
 
@@ -399,14 +399,6 @@ defmodule Elmchemy.XString do
   
  
   """
-  #  slice 7 9 = slice 7 (9 - 7)
-  #                      7  2
-  #  slice 0 6 = slice 0 (6 - 0)
-  #                      0 6
-  #  slice 0 -7 = slice 0 (18 - 7 - 0)
-  #                       0  11
-  #  slice -6 -1 = slice ((18 - 6)) (18 - 1 - 12)
-  #                           12       5
   @spec slice(integer, integer, String.t) :: String.t
   curry slice/3
   def slice(from, to, str) do

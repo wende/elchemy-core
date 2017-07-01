@@ -1,5 +1,5 @@
 
-# Compiled using Elmchemy v0.3.31
+# Compiled using Elmchemy v0.3.33
 defmodule Elmchemy.XList do
   use Elmchemy
 
@@ -633,18 +633,6 @@ defmodule Elmchemy.XList do
   curryp zip_/2
   verify as: Enum.zip/2
   def zip_(a1, a2), do: Enum.zip(a1, a2)
-  #  {-|-}
-  #  map3 : (a -> b -> c -> result) -> List a -> List b -> List c -> List result
-  #  map3 =
-  #    Native.List.map3
-  #  {-|-}
-  #  map4 : (a -> b -> c -> d -> result) -> List a -> List b -> List c -> List d -> List result
-  #  map4 =
-  #    Native.List.map4
-  #  {-|-}
-  #  map5 : (a -> b -> c -> d -> e -> result) -> List a -> List b -> List c -> List d -> List e -> List result
-  #  map5 =
-  #    Native.List.map5
   @doc """
   Decompose a list of tuples into a tuple of lists.
   

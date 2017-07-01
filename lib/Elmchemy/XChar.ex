@@ -1,5 +1,5 @@
 
-# Compiled using Elmchemy v0.3.31
+# Compiled using Elmchemy v0.3.33
 defmodule Elmchemy.XChar do
   use Elmchemy
 
@@ -207,14 +207,6 @@ defmodule Elmchemy.XChar do
   curry to_lower/1
   verify as: :string.to_lower/1
   def to_lower(a1), do: :string.to_lower(a1)
-  #  {-| Convert to upper case, according to any locale-specific case mappings. -}
-  #  toLocaleUpper : Char -> Char
-  #  toLocaleUpper =
-  #    Native.Char.toLocaleUpper
-  #  {-| Convert to lower case, according to any locale-specific case mappings. -}
-  #  toLocaleLower : Char -> Char
-  #  toLocaleLower =
-  #    Native.Char.toLocaleLower
   @doc """
   Keyboard keys can be represented as integers. These are called *key codes*.
   You can use [`toCode`](#toCode) and [`fromCode`](#fromCode) to convert between

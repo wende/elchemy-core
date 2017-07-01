@@ -5,25 +5,22 @@ defmodule ElmchemyTest do
 
   doctest Elmchemy
 
-  typetest Elmchemy.XBasics
-  doctest Elmchemy.XBasics
-
-  typetest Elmchemy.XList
-  doctest Elmchemy.XList
-
-  typetest Elmchemy.XString
-  doctest Elmchemy.XString
-
-  typetest Elmchemy.XMaybe
-  doctest Elmchemy.XMaybe
-
-  typetest Elmchemy.XChar
-  doctest Elmchemy.XChar
-
-  typetest Elmchemy.XResult
-  doctest Elmchemy.XResult
-
-  typetest Elmchemy.XTuple
-  doctest Elmchemy.XTuple
+  for module <- [
+    Elmchemy.XBasics,
+    Elmchemy.XChar,
+    Elmchemy.XDate,
+    Elmchemy.XDebug,
+    Elmchemy.XDict,
+    Elmchemy.XList,
+    Elmchemy.XMaybe,
+    Elmchemy.XRegex,
+    Elmchemy.XResult,
+    Elmchemy.XSet,
+    Elmchemy.XString,
+    Elmchemy.XTuple
+  ] do
+    typetest module
+    doctest module
+  end
 
 end

@@ -1,11 +1,11 @@
 
-# Compiled using Elmchemy v0.3.31
+# Compiled using Elmchemy v0.3.33
 defmodule Elmchemy.XBasics do
   use Elmchemy
 
   @doc """
   Tons of useful functions that get imported by default.
-  @docs compare, xor, sqrt, clamp, compare , xor , negate , sqrt , logBase , e , pi , cos , sin , tan , acos , asin , atan , atan2 , round , floor , ceiling , truncate , toFloat , toString , (++) , identity , always, flip, tuple2, tuple3, tuple4, tuple5
+  @docs compare, sqrt, clamp, compare , xor , negate , sqrt , logBase , e , pi , cos , sin , tan , acos , asin , atan , atan2 , round , floor , ceiling , truncate , toFloat , toString , (++) , identity , always, flip, tuple2, tuple3, tuple4, tuple5
   
   @docs Order
   
@@ -21,7 +21,6 @@ defmodule Elmchemy.XBasics do
   """
   @type order :: :lt | :eq | :gt
 
-  #  Operators
 
 
   import Kernel, except: [
@@ -85,7 +84,6 @@ defmodule Elmchemy.XBasics do
   end
 
 
-  #  not/1 is inlined by the compiler
   @doc """
   The exclusive-or operator. `True` if exactly one input is `True`.
   
@@ -387,7 +385,6 @@ defmodule Elmchemy.XBasics do
     f.(b).(a)
   end
 
-  #  TODO Will be fixed with #34
 
   @spec curried(({any, any} -> any)) :: ((any -> any) -> any)
   curry curried/1
@@ -402,12 +399,10 @@ defmodule Elmchemy.XBasics do
   end
 
 
-  #  We don't care for Never type
-  #  Additional
   @spec not_implemented() :: any
   defp not_implemented() do
     _ = throw_.("Not implemented")
-    Debug.crash.("a")
+    XDebug.crash.("a")
   end
 
   @spec throw_(String.t) :: no_return
