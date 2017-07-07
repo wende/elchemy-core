@@ -1,9 +1,9 @@
-defmodule Elmchemy.GlueTest do
+defmodule Elchemy.GlueTest do
   use ExUnit.Case
 
   defmodule Mock do
-    require Elmchemy.Glue
-    import Elmchemy.Glue
+    require Elchemy.Glue
+    import Elchemy.Glue
 
     def test(x1,x2,x3,x4), do: [x1,x2,x3,x4]
     defswap swapped_test, to: test/4

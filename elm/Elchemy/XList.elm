@@ -1,4 +1,4 @@
-module Elmchemy.XList
+module Elchemy.XList
     exposing
         ( isEmpty
         , length
@@ -93,12 +93,12 @@ The current sentiment is that it is already quite error prone once you get to
 
 -}
 
-import Elmchemy exposing (..)
+import Elchemy exposing (..)
 
 
 {- ex
    import Kernel, except: [{:length, 1}]
-   import Elmchemy.XBasics
+   import Elchemy.XBasics
 -}
 
 

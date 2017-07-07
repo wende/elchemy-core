@@ -10,11 +10,11 @@ use Mix.Config
 
 # You can configure for your application as:
 #
-#     config :elmchemy, key: :value
+#     config :elchemy, key: :value
 #
 # And access this configuration in your application as:
 #
-#     Application.get_env(:elmchemy, :key)
+#     Application.get_env(:elchemy, :key)
 #
 # Or configure a 3rd-party app:
 #

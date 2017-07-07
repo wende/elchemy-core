@@ -1,4 +1,4 @@
-module Elmchemy
+module Elchemy
     exposing
         ( lffi
         , ffi
@@ -14,7 +14,7 @@ module Elmchemy
 -}
 
 
-{-| *Deprecated since Elmchemy 0.3.0*
+{-| *Deprecated since Elchemy 0.3.0*
 Function to make a direct Elixir local call. Takes a local function name
 and a tuple or single value of arguments
 
@@ -64,7 +64,7 @@ tryFfi m f =
     Debug.crash "You can't use tryFfi in a browser"
 
 
-{-| *Deprecated since Elmchemy 0.3.0*
+{-| *Deprecated since Elchemy 0.3.0*
 
 Produce multiple argument anonymous function out of regular elm function.
 
@@ -76,7 +76,7 @@ flambda arity f =
     Debug.crash "You can't use foreign lambda in a browser"
 
 
-{-| *Deprecated since Elmchemy 0.3.0*
+{-| *Deprecated since Elchemy 0.3.0*
 
 Wrap a function call in try catch returning Result based on wether the function throwed an error
 

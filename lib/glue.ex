@@ -1,4 +1,4 @@
-defmodule Elmchemy.Glue do
+defmodule Elchemy.Glue do
   @arg_names ~w[a b c d e f g h i j k l m n o p q r s t u v w x y z]a
 
   def try_catch(func) do
@@ -127,7 +127,7 @@ defmodule Elmchemy.Glue do
       {{:spec, {fun1, _}, spec}, _line} =
         Kernel.Typespec.translate_spec(:spec, spec_ast, __ENV__)
       right =
-        Elmchemy.Spec.find(unquote(mod), unquote(function), unquote(arity1))
+        Elchemy.Spec.find(unquote(mod), unquote(function), unquote(arity1))
       left = {{fun1, unquote(arity1)}, [spec]}
 
       __MODULE__
@@ -138,7 +138,7 @@ defmodule Elmchemy.Glue do
   defmacro typetest(mod) do
     Macro.expand(mod, __CALLER__).__type_tests__
     |> Enum.each(fn args ->
-      Kernel.apply(Elmchemy.Spec, :compare!, args)
+      Kernel.apply(Elchemy.Spec, :compare!, args)
     end)
   end
 end

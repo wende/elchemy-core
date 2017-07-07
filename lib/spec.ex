@@ -1,4 +1,4 @@
-defmodule Elmchemy.Spec do
+defmodule Elchemy.Spec do
   require Logger
 
   def find(module, function, arity) do
@@ -25,7 +25,7 @@ defmodule Elmchemy.Spec do
     if result == :ok do
       :ok
     else
-      raise Elmchemy.SpecError, message: """
+      raise Elchemy.SpecError, message: """
       Type definition mismatch at #{inspect mod1} line #{line}
       These type signatures are different:
         #{gen_elm a, mod1}
@@ -362,6 +362,6 @@ defmodule Elmchemy.Spec do
   defp lambdify_functions(l), do: l
 
 end
-defmodule Elmchemy.SpecError do
+defmodule Elchemy.SpecError do
   defexception [:message]
 end

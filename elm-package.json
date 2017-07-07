@@ -1,22 +1,22 @@
 {
     "version": "1.2.1",
-    "summary": "Set of standard libraries for Elmchemy",
-    "repository": "https://github.com/wende/elmchemy-core.git",
+    "summary": "Set of standard libraries for Elchemy",
+    "repository": "https://github.com/wende/elchemy-core.git",
     "license": "BSD3",
     "source-directories": [
         ".",
         "./elm"
     ],
     "exposed-modules": [
-        "Elmchemy",
-        "Elmchemy.XBasics",
-        "Elmchemy.XList",
-        "Elmchemy.XString",
-        "Elmchemy.XMaybe",
-        "Elmchemy.XChar",
-        "Elmchemy.XResult",
-        "Elmchemy.XTuple",
-        "Elmchemy.XDebug"
+        "Elchemy",
+        "Elchemy.XBasics",
+        "Elchemy.XList",
+        "Elchemy.XString",
+        "Elchemy.XMaybe",
+        "Elchemy.XChar",
+        "Elchemy.XResult",
+        "Elchemy.XTuple",
+        "Elchemy.XDebug"
     ],
     "dependencies": {
         "elm-lang/core": "5.1.1 <= v < 6.0.0"

@@ -1,4 +1,4 @@
-module Elmchemy.XMaybe exposing
+module Elchemy.XMaybe exposing
     ( Maybe(Just, Nothing)
     , andThen
     , map

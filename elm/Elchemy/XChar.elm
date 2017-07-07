@@ -1,4 +1,4 @@
-module Elmchemy.XChar
+module Elchemy.XChar
     exposing
         ( isUpper
         , isLower
@@ -32,7 +32,7 @@ module Elmchemy.XChar
 
 -}
 
-import Elmchemy exposing (..)
+import Elchemy exposing (..)
 
 
 {-| True for char between first and second argument
