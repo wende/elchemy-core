@@ -1,4 +1,4 @@
-module Elmchemy.XBasics
+module Elchemy.XBasics
     exposing
         ( Order(..)
         , compare
@@ -39,7 +39,7 @@ module Elmchemy.XBasics
 
 -}
 
-import Elmchemy exposing (..)
+import Elchemy exposing (..)
 
 
 {-| Represents the relative ordering of two things.

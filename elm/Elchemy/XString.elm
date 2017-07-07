@@ -1,4 +1,4 @@
-module Elmchemy.XString
+module Elchemy.XString
     exposing
         ( isEmpty
         , length
@@ -85,10 +85,10 @@ Cosmetic operations such as padding with extra characters or trimming whitespace
 
 -}
 
-import Elmchemy exposing (..)
-import Elmchemy.XResult as XResult
-import Elmchemy.XList as XList
-import Elmchemy.XTuple as XTuple
+import Elchemy exposing (..)
+import Elchemy.XResult as XResult
+import Elchemy.XList as XList
+import Elchemy.XTuple as XTuple
 
 
 {- ex
@@ -98,7 +98,7 @@ import Elmchemy.XTuple as XTuple
      {:to_charlist, 1}
 
    ]
-   import Elmchemy.XBasics, except: [
+   import Elchemy.XBasics, except: [
      {:to_float, 1},
     ]
 -}

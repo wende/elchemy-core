@@ -1,4 +1,4 @@
-module Elmchemy.XDebug
+module Elchemy.XDebug
     exposing
         ( log
         , crash
@@ -13,7 +13,7 @@ module Elmchemy.XDebug
 
 -}
 
-import Elmchemy exposing (..)
+import Elchemy exposing (..)
 
 
 {-| Log to console in `title: object` format

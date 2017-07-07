@@ -1,4 +1,4 @@
-module Elmchemy.XResult
+module Elchemy.XResult
     exposing
         ( Result(..)
         , withDefault
@@ -38,7 +38,7 @@ way to manage errors in Elm.
 
 -}
 
-import Elmchemy exposing (..)
+import Elchemy exposing (..)
 
 
 {-| A `Result` is either `Ok` meaning the computation succeeded, or it is an

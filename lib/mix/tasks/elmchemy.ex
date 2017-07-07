@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.Elmchemy do
+defmodule Mix.Tasks.Elchemy do
   use Mix.Task
 
   def run(["init"]) do
@@ -19,7 +19,7 @@ defmodule Mix.Tasks.Elmchemy do
   end
 
   defp iterate_specs(specs, mod) when is_list(specs),
-    do: Enum.map(specs, &(Elmchemy.Spec.gen_elm(&1, mod))) |> Enum.filter(fn a -> a != "\n" end)
+    do: Enum.map(specs, &(Elchemy.Spec.gen_elm(&1, mod))) |> Enum.filter(fn a -> a != "\n" end)
   defp iterate_specs(nil, _mod), do: []
 
     defp load_all(paths) do

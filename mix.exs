@@ -1,27 +1,27 @@
-defmodule Elmchemy.Mixfile do
+defmodule Elchemy.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :elmchemy,
-     name: "Elmchemy Compiler",
-     description: "Mix compiler wrapper around Elmchemy project",
+    [app: :elchemy,
+     name: "Elchemy Compiler",
+     description: "Mix compiler wrapper around Elchemy project",
      version: "0.4.0",
      elixir: "~> 1.4",
      description: "",
      package: package(),
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     elmchemy_path: "elm",
+     elchemy_path: "elm",
      deps: deps()]
   end
   defp package do
     # These are the default files included in the package
     [
-      name: :elmchemy,
+      name: :elchemy,
       files: ["lib", "priv", "mix.exs", "README*", "readme*", "LICENSE*", "license*"],
       maintainers: ["Krzysztof Wende"],
       licenses: ["Apache 2.0"],
-      links: %{"GitHub" => "https://github.com/wende/elmchemy"}
+      links: %{"GitHub" => "https://github.com/wende/elchemy"}
     ]
   end
   # Configuration for the OTP application

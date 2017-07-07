@@ -1,7 +1,7 @@
-defmodule Elmchemy.SpecTest do
+defmodule Elchemy.SpecTest do
   use ExUnit.Case
 
-  alias Elmchemy.Spec
+  alias Elchemy.Spec
   test "Can find spec" do
     assert Spec.find(Enum, :at, 3)
   end
@@ -44,7 +44,7 @@ defmodule Elmchemy.SpecTest do
   end
 
   test "Can print wrong specs" do
-    assert_raise(Elmchemy.SpecError, fn ->
+    assert_raise(Elchemy.SpecError, fn ->
       Spec.compare!(
         Spec.find(List, :flatten, 1),
         Spec.find(List, :first, 1),
@@ -52,7 +52,7 @@ defmodule Elmchemy.SpecTest do
     end)
   end
   # defmodule TypeTest do
-  #   use Elmchemy
+  #   use Elchemy
   #
   #   @spec myfun1(integer, integer, integer) :: integer
   #   verify as: Enum.at/3

@@ -1,4 +1,4 @@
-module Elmchemy.XTuple exposing
+module Elchemy.XTuple exposing
     ( first
     , second
     , mapFirst
