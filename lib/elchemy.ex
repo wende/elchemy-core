@@ -30,6 +30,7 @@ defmodule Elchemy do
         XBasics,
         XList,
         XString,
+        XDebug,
         XMaybe,
         XChar,
         XTuple,
@@ -44,6 +45,7 @@ defmodule Elchemy do
     Elchemy.XList,
     Elchemy.XString,
     Elchemy.XMaybe,
+    Elchemy.XDebug,
     Elchemy.XChar,
     Elchemy.XTuple,
     Elchemy.XResult
