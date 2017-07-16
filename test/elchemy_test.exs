@@ -25,7 +25,8 @@ defmodule ElchemyTest do
     Elchemy.XResult,
     Elchemy.XTuple,
     # Elchemy.XDebug, -- Debug loops forerever
-    Elchemy.XDict
+    Elchemy.XDict,
+    Elchemy.XSet
   ])
 
 end

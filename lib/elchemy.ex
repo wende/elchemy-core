@@ -34,7 +34,9 @@ defmodule Elchemy do
         XMaybe,
         XChar,
         XTuple,
-        XResult
+        XResult,
+        XDict,
+        XSet
       }
       import_std()
     end
@@ -48,7 +50,9 @@ defmodule Elchemy do
     Elchemy.XDebug,
     Elchemy.XChar,
     Elchemy.XTuple,
-    Elchemy.XResult
+    Elchemy.XResult,
+    Elchemy.XDict,
+    Elchemy.XSet
     ]
   defmacro import_std() do
     if Enum.member?(@std, __CALLER__.module) do
