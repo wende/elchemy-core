@@ -1,29 +1,31 @@
+defmodule Helpers do
+  defmacro gen_tests(tests) do
+    for mod <- tests do
+      quote do
+        typetest unquote(mod)
+        doctest unquote(mod)
+      end
+    end
+  end
+end
 
 defmodule ElchemyTest do
   use ExUnit.Case
   use Elchemy
+  import Helpers
 
   doctest Elchemy
 
-  typetest Elchemy.XBasics
-  doctest Elchemy.XBasics
-
-  typetest Elchemy.XList
-  doctest Elchemy.XList
-
-  typetest Elchemy.XString
-  doctest Elchemy.XString
-
-  typetest Elchemy.XMaybe
-  doctest Elchemy.XMaybe
-
-  typetest Elchemy.XChar
-  doctest Elchemy.XChar
-
-  typetest Elchemy.XResult
-  doctest Elchemy.XResult
-
-  typetest Elchemy.XTuple
-  doctest Elchemy.XTuple
+  gen_tests([
+    Elchemy.XBasics,
+    Elchemy.XList,
+    Elchemy.XString,
+    Elchemy.XMaybe,
+    Elchemy.XChar,
+    Elchemy.XResult,
+    Elchemy.XTuple,
+    # Elchemy.XDebug, -- Debug loops forerever
+    Elchemy.XDict
+  ])
 
 end

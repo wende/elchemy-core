@@ -1,9 +1,15 @@
 defmodule Elchemy.Spec do
   require Logger
-
   def find(module, function, arity) do
-    possible_result = module
+    case Code.ensure_loaded(module) do
+      {:error, _} -> raise "Module #{module} couldn't be found"
+      {:module, _} -> :ok
+    end
+
+    possible_result =
+      module
       |> Kernel.Typespec.beam_specs()
+      |> (&(&1 || raise "Module #{module} wasn't compiled before and cannot be used")).()
       |> Enum.filter(fn {{name, _ar}, _} -> name == function end)
     result =
       possible_result
@@ -19,17 +25,18 @@ defmodule Elchemy.Spec do
     end
   end
 
-  def compare!(a = {{_, _}, [{_, line, _, _}]}, b, mod1, mod2 \\ nil) do
+  def compare!(left = {{_, _}, [{_, line, _, _}]}, {m, f, a}, mod1, mod2 \\ nil) do
+    right = find(m, f, a)
     mod2 = mod2 || mod1
-    result = compare(a, b, mod1, mod2)
+    result = compare(left, right, mod1, mod2)
     if result == :ok do
       :ok
     else
       raise Elchemy.SpecError, message: """
       Type definition mismatch at #{inspect mod1} line #{line}
       These type signatures are different:
-        #{gen_elm a, mod1}
-        #{gen_elm b, mod2}
+        #{gen_elm left, mod1}
+        #{gen_elm right, mod2}
       Because of #{inspect result}
       """
     end
@@ -40,9 +47,9 @@ defmodule Elchemy.Spec do
   def compare(l = {{_, arity1}, [spec1]}, r = {{f, arity2}, [spec2 | rest]}, mod1, mod2 \\ nil) do
     mod2 = mod2 || mod1
     compared =
-       spec1
-       |> lambdify_functions()
-       |> do_compare(spec2, mod1, mod2)
+      spec1
+      |> lambdify_functions()
+      |> do_compare(spec2, mod1, mod2)
 
     cond do
       arity1 != arity2 ->
@@ -56,6 +63,8 @@ defmodule Elchemy.Spec do
     end
   end
   defp do_compare(same, same, _mod1, _mod2), do: :ok
+  defp do_compare(left, {:ann_type, _, [_, type]}, m1, m2),
+    do: do_compare(left, type, m1, m2)
   defp do_compare(l, {:type, _, :bounded_fun, [fun | _constraints]}, m1, m2) do
     do_compare(l, fun, m1, m2)
   end
@@ -68,6 +77,9 @@ defmodule Elchemy.Spec do
   defp do_compare(_, {:var, _, _}, _, _), do: :ok
   defp do_compare(t1 = {:type, _, type, args1}, t2 = {:type, _, type, args2}, m1, m2) do
     if length(args1) != length(args2) do
+      IO.inspect args1
+      IO.puts "====="
+      IO.inspect args2
       {:error, "#{gen_spec t1, m1} is not the same length as #{gen_spec t2, m2}"}
     else
       [args1, args2]
@@ -238,10 +250,10 @@ defmodule Elchemy.Spec do
 
   defp elmify_type(type, rest) do
     case {type, rest} do
-      {:map, []} -> "(Map #{rest})"
+      {:map, []} -> "Dict k v"
       {:map, [h | _t] = types} ->
         if is_binary(h) && h |> String.contains?("=") do
-          "{" <> Enum.join(types, ",") <> ""
+          "{" <> Enum.join(types, ",") <> "}"
         else
           "Map #{h}"
         end
@@ -300,7 +312,7 @@ defmodule Elchemy.Spec do
 
       {:char, []} -> "IntChar"
 
-      {:map_field_exact, [key, value]} -> "#{key} = #{value}"
+      {:map_field_exact, [key, value]} -> "#{key} => #{value}"
       {:map_field_assoc, [key, val]} -> "MapFieldAssoc #{key} #{val}"
 
       {:iolist, []} -> "IOList"
@@ -351,10 +363,21 @@ defmodule Elchemy.Spec do
       ]}
     ]}
   ) do
-    {:type, l1, :fun, [
-      {:type, l2, :product, [a, b]},
-      lambdify_functions(return)
-    ]}
+    case lambdify_functions(return) do
+      {:type, _, :fun, [
+          {:type, _, :product, args},
+          return
+        ]} ->
+        {:type, l1, :fun, [
+            {:type, l2, :product, [a,b] ++ args},
+            lambdify_functions(return)
+          ]}
+       other ->
+        {:type, l1, :fun, [
+            {:type, l2, :product, [a, b]},
+            lambdify_functions(return)
+          ]}
+    end
   end
   defp lambdify_functions({:type, l1, type, args}) do
     {:type, l1, type, Enum.map(args, &lambdify_functions/1)}

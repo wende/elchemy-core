@@ -97,7 +97,7 @@ defmodule Elchemy.Glue do
 
   @doc """
   Defines a function head that delegates to another module with last argument being first ( a, b, c becomes c, a, b)
-  defswap foldl/3, to: List.foldl
+  defswap foldl, to: List.foldl/3
   ### being equivalent of
   def foldl(x1, x2, x3), do: List.foldl(x3, x1, x2)
   """
@@ -114,7 +114,7 @@ defmodule Elchemy.Glue do
   end
 
   ## TYPE CHECKING
-  defmacro verify(as: {:/, _, [{call, _, []}, arity1]}) do
+  defmacro verify(as: {:/, _, [{call, _, []}, arity]}) do
     {mod, function} = case call do
       {:., _, [{:__aliases__, _, mods}, fun]} ->
         mod = Module.concat(mods)
@@ -126,9 +126,9 @@ defmodule Elchemy.Glue do
       spec_ast = Module.get_attribute(__MODULE__, :spec) |> hd |> elem(1)
       {{:spec, {fun1, _}, spec}, _line} =
         Kernel.Typespec.translate_spec(:spec, spec_ast, __ENV__)
-      right =
-        Elchemy.Spec.find(unquote(mod), unquote(function), unquote(arity1))
-      left = {{fun1, unquote(arity1)}, [spec]}
+      right = {unquote(mod), unquote(function), unquote(arity)}
+        # Elchemy.Spec.find(unquote(mod), unquote(function), unquote(arity1))
+      left = {{fun1, unquote(arity)}, [spec]}
 
       __MODULE__
       |> Module.put_attribute(:verify_type, [left, right, __MODULE__, unquote(mod)])

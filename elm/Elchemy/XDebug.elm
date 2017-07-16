@@ -22,14 +22,14 @@ log : String -> a -> a
 log title a =
     let
         _ =
-            puts_ "#{title}:#{a}" []
+            puts_ "#{title}:#{inspect a}" []
     in
         a
 
 
 puts_ : a -> List ( key, val ) -> a
 puts_ =
-    ffi "IO" "inspect"
+    ffi "IO" "puts"
 
 
 

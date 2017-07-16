@@ -11,7 +11,7 @@ defmodule Elchemy.SpecTest do
     assert Spec.compare(at, at, Enum)
   end
 
-  test "Can print specs as elm type sig" do
+  test "Can print specs as elm type " do
     gen_spec = &(Spec.find(&1, &2, &3) |> Spec.gen_elm(&1))
 
     assert gen_spec.(Enum, :map, 2) ==
@@ -47,7 +47,7 @@ defmodule Elchemy.SpecTest do
     assert_raise(Elchemy.SpecError, fn ->
       Spec.compare!(
         Spec.find(List, :flatten, 1),
-        Spec.find(List, :first, 1),
+        {List, :first, 1},
         Enum, List)
     end)
   end
