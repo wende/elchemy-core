@@ -86,7 +86,6 @@ Cosmetic operations such as padding with extra characters or trimming whitespace
 -}
 
 import Elchemy exposing (..)
-import Elchemy.XResult as XResult
 import Elchemy.XList as XList
 import Elchemy.XTuple as XTuple
 
@@ -131,7 +130,12 @@ cons c str =
 
 -}
 fromChar : Char -> String
-fromChar =
+fromChar char =
+    List.singleton char |> fromCharlist
+
+
+fromCharlist : List Char -> String
+fromCharlist =
     ffi ":binary" "list_to_bin"
 
 
@@ -724,23 +728,7 @@ toFloat_ =
 
 -}
 toList : String -> List Char
-toList str =
-    let
-        charlist =
-            toCharlist_ str
-    in
-        map_ charlist List.singleton
-
-
-
-{- It's ugly but it's the only way since there's no
-   Chars in Elixir
--}
-{- flag noverify:+toCharlist -}
-
-
-toCharlist_ : String -> List Int
-toCharlist_ =
+toList =
     ffi "String" "to_charlist"
 
 
@@ -762,9 +750,4 @@ something.
 -}
 fromList : List Char -> String
 fromList list =
-    joinChars_ list ""
-
-
-joinChars_ : List Char -> String -> String
-joinChars_ =
-    ffi "Enum" "join"
+    fromCharlist list

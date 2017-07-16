@@ -101,7 +101,7 @@ insert k (Set_elm_builtin d) =
 
 {-| Remove a value from a set. If the value is not found, no changes are made.
 
-     remove 1 (fromList [1]) == empty
+     remove 1 (fromList [1]) == empty == True
 
 -}
 remove : comparable -> Set comparable -> Set comparable
@@ -142,7 +142,7 @@ size (Set_elm_builtin d) =
 
 {-| Get the union of two sets. Keep all values.
 
-    union (fromList [1,2,3]) (fromList [2,3,4]) == (fromList [1,2,3,4])
+    union (fromList [1,2,3]) (fromList [2,3,4]) == (fromList [1,2,3,4]) == True
 
 -}
 union : Set comparable -> Set comparable -> Set comparable

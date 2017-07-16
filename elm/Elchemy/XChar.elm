@@ -33,6 +33,7 @@ module Elchemy.XChar
 -}
 
 import Elchemy exposing (..)
+import Basics exposing ((-), (+))
 
 
 {-| True for char between first and second argument
@@ -117,8 +118,13 @@ isHexDigit char =
 
 -}
 toUpper : Char -> Char
-toUpper =
-    ffi ":string" "to_upper"
+toUpper char =
+    if isBetween 'a' 'z' char then
+        (toCode char)
+            |> (+) -32
+            |> fromCode
+    else
+        char
 
 
 {-| Convert to lower case.
@@ -127,8 +133,13 @@ toUpper =
 
 -}
 toLower : Char -> Char
-toLower =
-    ffi ":string" "to_lower"
+toLower char =
+    if isBetween 'A' 'Z' char then
+        (toCode char)
+            |> (+) 32
+            |> fromCode
+    else
+        char
 
 
 
@@ -160,8 +171,8 @@ type alias KeyCode =
 
 -}
 toCode : Char -> KeyCode
-toCode =
-    ffi "Kernel" "hd"
+toCode char =
+    naiveId1 char 0
 
 
 {-| Convert from key code.
@@ -171,9 +182,14 @@ toCode =
 -}
 fromCode : KeyCode -> Char
 fromCode code =
-    insert_at_ [] 0 code
+    naiveId2 code 0
 
 
-insert_at_ : List a -> Int -> a -> Char
-insert_at_ =
-    ffi "List" "insert_at"
+naiveId1 : Char -> Int -> Int
+naiveId1 a b =
+    ffi "Kernel" "+"
+
+
+naiveId2 : Int -> Int -> Char
+naiveId2 a b =
+    ffi "Kernel" "+"

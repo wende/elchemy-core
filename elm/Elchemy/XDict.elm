@@ -130,7 +130,7 @@ isEmpty dict =
 {-| Insert a key-value pair into a dictionary. Replaces value when there is
 a collision.
 
-    insert "a" 1 empty == fromList [("a", 1)]
+    insert "a" 1 empty == fromList [("a", 1)] == True
 
 -}
 insert : comparable -> v -> Dict comparable v -> Dict comparable v
@@ -151,7 +151,7 @@ remove key dict =
 
 {-| Update the value of a dictionary for a specific key with a given function.
 
-    update "a" (\a -> Just 2) (fromList [("a", 1)]) == (fromList [("a", 2)])
+    update "a" (\a -> Just 2) (fromList [("a", 1)]) == (fromList [("a", 2)]) == True
 
 -}
 update : comparable -> (Maybe v -> Maybe v) -> Dict comparable v -> Dict comparable v
@@ -203,7 +203,7 @@ accumulators for when a given key appears:
 You then traverse all the keys from lowest to highest, building up whatever
 you want.
 
-    merge insert (flip (always insert)) insert (fromList [("a", 1), ("b", 2)]) (fromList [("b", 3), ("c", 4)]) empty == (fromList [("a", 1), ("b", 3), ("c", 4)])
+    merge insert (flip (always insert)) insert (fromList [("a", 1), ("b", 2)]) (fromList [("b", 3), ("c", 4)]) empty == (fromList [("a", 1), ("b", 3), ("c", 4)]) == True
 
 -}
 merge :
