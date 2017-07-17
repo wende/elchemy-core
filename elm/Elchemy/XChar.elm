@@ -33,16 +33,9 @@ module Elchemy.XChar
 -}
 
 import Elchemy exposing (..)
-import Basics exposing ((-), (+))
+import Basics exposing ((+))
 
 
-{-| True for char between first and second argument
-
-    between 'a' 'z' 'b' == True
-    between '1' '9' '5' == True
-    between 'A' 'Z' 'g' == False
-
--}
 isBetween : Char -> Char -> Char -> Bool
 isBetween low high char =
     let

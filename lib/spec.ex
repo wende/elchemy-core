@@ -77,9 +77,6 @@ defmodule Elchemy.Spec do
   defp do_compare(_, {:var, _, _}, _, _), do: :ok
   defp do_compare(t1 = {:type, _, type, args1}, t2 = {:type, _, type, args2}, m1, m2) do
     if length(args1) != length(args2) do
-      IO.inspect args1
-      IO.puts "====="
-      IO.inspect args2
       {:error, "#{gen_spec t1, m1} is not the same length as #{gen_spec t2, m2}"}
     else
       [args1, args2]
@@ -343,10 +340,8 @@ defmodule Elchemy.Spec do
       end)
     case resolved do
       {:type, {^type, {:type, _, :any, []}, []}} ->
-        Logger.debug "Resolved #{inspect type} into itself"
         {:var, 0, type}
       {:type, {^type, definition, []}} ->
-        Logger.debug "Resolved #{inspect type} into #{inspect definition}"
         definition
       nil ->
         Logger.warn "No type with name #{type} in module #{inspect module}. Resolving to :any"

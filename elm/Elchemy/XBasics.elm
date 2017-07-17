@@ -157,7 +157,7 @@ clamp x bottom top =
 
 {-| -}
 logBase : Float -> Float -> Float
-logBase a b =
+logBase _ _ =
     notImplemented
 
 
@@ -221,22 +221,30 @@ round =
     ffi "Kernel" "round"
 
 
+
+{- flag noverify:+floor -}
+
+
 {-| -}
 floor : Float -> Int
 floor x =
-    notImplemented
+    ffi "Float" "floor"
+
+
+
+{- flag noverify:+ceiling -}
 
 
 {-| -}
 ceiling : Float -> Int
 ceiling x =
-    notImplemented
+    ffi "Float" "ceil"
 
 
 {-| Truncate a number, rounding towards zero.
 -}
 truncate : Float -> Int
-truncate x =
+truncate _ =
     notImplemented
 
 
@@ -332,7 +340,7 @@ functions like `map`:
 
 -}
 always : a -> a -> a
-always a b =
+always a _ =
     a
 
 

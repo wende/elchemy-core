@@ -151,7 +151,7 @@ remove key dict =
 
 {-| Update the value of a dictionary for a specific key with a given function.
 
-    update "a" (\a -> Just 2) (fromList [("a", 1)]) == (fromList [("a", 2)]) == True
+    update "a" (\_ -> Just 2) (fromList [("a", 1)]) == (fromList [("a", 2)]) == True
 
 -}
 update : comparable -> (Maybe v -> Maybe v) -> Dict comparable v -> Dict comparable v
@@ -190,7 +190,7 @@ intersect t1 t2 =
 -}
 diff : Dict comparable v -> Dict comparable v -> Dict comparable v
 diff t1 t2 =
-    foldl (\k v t -> remove k t) t1 t2
+    foldl (\k _ t -> remove k t) t1 t2
 
 
 {-| The most general way of combining two dictionaries. You provide three
@@ -286,7 +286,7 @@ partition predicate dict =
 -}
 keys : Dict comparable v -> List comparable
 keys dict =
-    foldr (\key value keyList -> key :: keyList) [] dict
+    foldr (\key _ keyList -> key :: keyList) [] dict
 
 
 {-| Get all of the values in a dictionary, in the order of their keys.
@@ -296,7 +296,7 @@ keys dict =
 -}
 values : Dict comparable v -> List v
 values dict =
-    foldr (\key value valueList -> value :: valueList) [] dict
+    foldr (\_ value valueList -> value :: valueList) [] dict
 
 
 {-| Convert a dictionary into an association list of key-value pairs, sorted by keys.

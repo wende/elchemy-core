@@ -216,8 +216,7 @@ map : (Char -> Char) -> String -> String
 map f str =
     str
         |> toList
-        |> (\str -> List.map f str)
-        |> List.map fromChar
+        |> List.map (f >> fromChar)
         |> join ""
 
 
@@ -234,7 +233,7 @@ filter : (Char -> Bool) -> String -> String
 filter f str =
     str
         |> toList
-        |> (\str -> List.filter f str)
+        |> List.filter f
         |> List.map fromChar
         |> join ""
 

@@ -59,7 +59,6 @@ Insert, remove, and query operations all take *O(log n)* time.
 -}
 
 import Dict as Dict
-import List as List
 
 
 {-| Represents a set of unique values. So `(Set Int)` is a set of integers and

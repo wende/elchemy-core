@@ -139,7 +139,7 @@ cons a list =
 head : List a -> Maybe a
 head list =
     case list of
-        x :: xs ->
+        x :: _ ->
             Just x
 
         [] ->
@@ -155,7 +155,7 @@ head list =
 tail : List a -> Maybe (List a)
 tail list =
     case list of
-        x :: xs ->
+        _ :: xs ->
             Just xs
 
         [] ->
@@ -380,7 +380,7 @@ concat lists =
 
 {-| Map a given function onto a list and flatten the resulting lists.
 
-    concatMap (range 2) [1] == concat (map (range 2) [1]) == true
+    concatMap (range 2) [1] == concat (map (range 2) [1]) == True
 
 -}
 concatMap : (a -> List b) -> List a -> List b
@@ -602,7 +602,7 @@ drop n list =
             [] ->
                 list
 
-            x :: xs ->
+            _ :: xs ->
                 drop (n - 1) xs
 
 
@@ -668,7 +668,7 @@ sort xs =
 
 {-| Sort values by a derived property. To be replaced
 
-    sortBy (\(i, a) -> i)  [(1, "mouse"),(0, "cat")] == [(0, "cat"), (1, "mouse")]
+    sortBy (\(i, _) -> i)  [(1, "mouse"),(0, "cat")] == [(0, "cat"), (1, "mouse")]
 
 -}
 sortBy : (a -> comparable) -> List a -> List a
