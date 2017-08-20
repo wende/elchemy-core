@@ -164,6 +164,7 @@ defmodule Elchemy.Spec do
       {{:integer, []}, {:neg_integer, []}} -> :ok
       {{:integer, []}, {:non_neg_integer, []}} -> :ok
       {{:integer, []}, {:pos_integer, []}} -> :ok
+      {{:integer, []}, {:number, []}} -> :ok
       _ ->
         {:error, "type #{gen_spec t1, m1} is not a subtype of #{gen_spec t2, m2}"}
     end
