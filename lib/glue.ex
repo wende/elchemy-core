@@ -69,10 +69,6 @@ defmodule Elchemy.Glue do
 
   ## ARGUMENT MANIPULATION
 
-  @doc """
-  Helper function used in argument manipulation macros.
-  """
-
   defp take_arguments(many) do
     for arg_name <- Enum.take(@arg_names, many), do: {arg_name, [], Elixir}
   end

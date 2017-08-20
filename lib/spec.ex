@@ -44,7 +44,7 @@ defmodule Elchemy.Spec do
   @doc """
   Check if left spec is a subtype of a right one
   """
-  def compare(l = {{_, arity1}, [spec1]}, r = {{f, arity2}, [spec2 | rest]}, mod1, mod2 \\ nil) do
+  def compare(l = {{_, arity1}, [spec1]}, {{f, arity2}, [spec2 | rest]}, mod1, mod2 \\ nil) do
     mod2 = mod2 || mod1
     compared =
       spec1
@@ -243,8 +243,6 @@ defmodule Elchemy.Spec do
       end
     {path, name}
   end
-  defp extract_path({:atom, _, name}), do: name
-
 
   defp elmify_type(type, rest) do
     case {type, rest} do
@@ -368,7 +366,7 @@ defmodule Elchemy.Spec do
             {:type, l2, :product, [a,b] ++ args},
             lambdify_functions(return)
           ]}
-       other ->
+       _other ->
         {:type, l1, :fun, [
             {:type, l2, :product, [a, b]},
             lambdify_functions(return)
