@@ -731,15 +731,6 @@ toList =
     ffi "String" "to_charlist"
 
 
-
-{- flag noverify:+map_ -}
-
-
-map_ : List Int -> (Int -> List Int) -> List Char
-map_ =
-    ffi "Enum" "map"
-
-
 {-| Convert a list of characters into a String. Can be useful if you
 want to create a string primarily by consing, perhaps for decoding
 something.
