@@ -23,7 +23,8 @@ defmodule Elchemy do
       import Kernel, except: [{:"++", 2}]
       import Elchemy.Glue
       import Kernel, except: [
-        {:'++', 2}
+        {:'++', 2},
+        {:to_string, 1}
       ]
 
       alias Elchemy.{
