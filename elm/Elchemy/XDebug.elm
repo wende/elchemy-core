@@ -16,18 +16,25 @@ module Elchemy.XDebug
 import Elchemy exposing (..)
 
 
+type Device
+    = Stdio
+
+
 {-| Log to console in `title: object` format
+
+     log "Title" (1,2,3) == (1,2,3)
+
 -}
 log : String -> a -> a
 log title a =
     let
         _ =
-            puts_ "#{title}:#{inspect a}" []
+            puts_ Stdio "#{title}: #{inspect a}"
     in
         a
 
 
-puts_ : a -> List ( key, val ) -> a
+puts_ : Device -> a -> a
 puts_ =
     ffi "IO" "puts"
 

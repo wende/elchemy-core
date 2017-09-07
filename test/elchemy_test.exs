@@ -24,9 +24,10 @@ defmodule ElchemyTest do
     Elchemy.XChar,
     Elchemy.XResult,
     Elchemy.XTuple,
-    # Elchemy.XDebug, -- Debug loops forerever
     Elchemy.XDict,
     Elchemy.XSet
   ])
+  # No typetest for Debug because it loops forever on type resolution
+  doctest Elchemy.XDebug
 
 end
