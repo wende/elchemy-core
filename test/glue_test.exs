@@ -21,4 +21,15 @@ defmodule Elchemy.GlueTest do
   test "Swapped arguments" do
     assert Mock.swapped_test(1,2,3,4) == [4,1,2,3 ]
   end
+
+  test "Can define recursive function" do
+    import Elchemy.Glue
+
+    fun = rec fun, fn
+      0 -> 0
+      a -> a + fun.(a - 1)
+    end
+
+    assert fun.(3) == 6
+  end
 end
