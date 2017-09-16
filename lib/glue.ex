@@ -145,7 +145,10 @@ defmodule Elchemy.Glue do
     n = num_args(c)
     args = n_args(n, [])
     namedf = quote do
-      fn (unquote(var)) -> unquote(f) end
+      fn (unquote(var)) ->
+        _ = unquote(var)
+        unquote(f)
+      end
     end
     combinator_fun = combinator_ast(namedf, args, meta)
     quote do
@@ -160,14 +163,18 @@ defmodule Elchemy.Glue do
       { :., meta,
         [ { {:., meta, [xvar]}, meta,
             [xvar] } ] },
-      meta, args }, meta )
+      meta, args }, meta)
     quote do
       fn unquote(xvar) -> unquote(namedf).(unquote(inner)) end
     end
   end
 
-  defp fn_ast(vars, body, meta) do
-    {:fn, meta, [{:->, meta, [vars, body]}]}
+  defp fn_ast(vars, body, _meta) do
+    quote do
+      fn unquote_splicing(vars) ->
+        unquote(body)
+      end
+    end
   end
 
   defp n_args(0, args) do
