@@ -63,13 +63,6 @@ defmodule Elchemy do
     else
       quote do
         import Elchemy.XBasics
-        import Elchemy.XList, only: [{:cons, 0}]
-        # Rest contains no functions
-        # import Maybe exposing ( Maybe( Just, Nothing ) )
-        # import Result exposing ( Result( Ok, Err ) )
-        # import String
-        # import Tuple
-        # import Debug
       end
     end
   end

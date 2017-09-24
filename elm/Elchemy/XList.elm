@@ -12,7 +12,6 @@ module Elchemy.XList
         , singleton
         , repeat
         , range
-        , cons
         , (::)
         , append
         , concat
@@ -21,6 +20,9 @@ module Elchemy.XList
         , unzip
         , map
         , map2
+        , map3
+        , map4
+        , map5
         , filterMap
         , concatMap
         , indexedMap
@@ -54,7 +56,7 @@ list must have the same type.
 
 # Putting Lists Together
 
-@docs singleton, repeat, range, cons, (::), append, concat, intersperse
+@docs singleton, repeat, range, (::), append, concat, intersperse
 
 
 # Taking Lists Apart
@@ -64,7 +66,7 @@ list must have the same type.
 
 # Mapping
 
-@docs map, map2
+@docs map, map2, map3, map4, map5
 
 If you can think of a legitimate use of `mapN` where `N` is 6 or more, please
 let us know on [the list](https://groups.google.com/forum/#!forum/elm-discuss).
@@ -94,6 +96,7 @@ The current sentiment is that it is already quite error prone once you get to
 -}
 
 import Elchemy exposing (..)
+import Elchemy.XBasics exposing (cons)
 
 
 {- ex
@@ -117,17 +120,6 @@ import Elchemy exposing (..)
 (::) : a -> List a -> List a
 (::) a list =
     cons a list
-
-
-{-| Add an element to the front of a list. Pronounced *cons*.
-
-    cons 1 [2,3] == [1,2,3]
-    cons 1 [] == [1]
-
--}
-cons : a -> List a -> List a
-cons a list =
-    a :: list
 
 
 {-| Extract the first element of a list.
@@ -473,6 +465,57 @@ map2 : (a -> b -> result) -> List a -> List b -> List result
 map2 f a b =
     zip_ a b
         |> map (uncurry f)
+
+
+{-| -}
+map3 :
+    (a -> b -> c -> result)
+    -> List a
+    -> List b
+    -> List c
+    -> List result
+map3 f a b c =
+    case ( a, b, c ) of
+        ( ha :: ta, hb :: tb, hc :: tc ) ->
+            f ha hb hc :: map3 f ta tb tc
+
+        _ ->
+            []
+
+
+{-| -}
+map4 :
+    (a -> b -> c -> d -> result)
+    -> List a
+    -> List b
+    -> List c
+    -> List d
+    -> List result
+map4 f a b c d =
+    case ( a, b, c, d ) of
+        ( ha :: ta, hb :: tb, hc :: tc, hd :: td ) ->
+            f ha hb hc hd :: map4 f ta tb tc td
+
+        _ ->
+            []
+
+
+{-| -}
+map5 :
+    (a -> b -> c -> d -> e -> result)
+    -> List a
+    -> List b
+    -> List c
+    -> List d
+    -> List e
+    -> List result
+map5 f a b c d e =
+    case ( a, b, c, d, e ) of
+        ( ha :: ta, hb :: tb, hc :: tc, hd :: td, he :: te ) ->
+            f ha hb hc hd he :: map5 f ta tb tc td te
+
+        _ ->
+            []
 
 
 zip_ : List a -> List b -> List ( a, b )

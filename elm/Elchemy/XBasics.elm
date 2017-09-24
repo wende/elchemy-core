@@ -1,6 +1,7 @@
 module Elchemy.XBasics
     exposing
-        ( Order(..)
+        ( cons
+        , Order(..)
         , compare
         , xor
         , negate
@@ -33,7 +34,7 @@ module Elchemy.XBasics
         )
 
 {-| Tons of useful functions that get imported by default.
-@docs compare, xor, sqrt, clamp, compare , xor , negate , sqrt , logBase , e , pi , cos , sin , tan , acos , asin , atan , atan2 , round , floor , ceiling , truncate , toFloat , toString , (++) , identity , always, flip, tuple2, tuple3, tuple4, tuple5
+@docs cons, compare, xor, sqrt, clamp, compare , xor , negate , sqrt , logBase , e , pi , cos , sin , tan , acos , asin , atan , atan2 , round , floor , ceiling , truncate , toFloat , toString , (++) , identity , always, flip, tuple2, tuple3, tuple4, tuple5
 
 @docs Order
 
@@ -58,8 +59,8 @@ type Order
    import Kernel, except: [
      {:'++', 2},
      {:round, 1},
-     {:to_string, 1}
-
+     {:to_string, 1},
+     {:'|>', 2}
    ]
 
    curry ==/2
@@ -108,12 +109,23 @@ compare a b =
 
 {- ex
    # >> is replaced with >>> by the compiler
-   def l >>> r do
-     fn x -> r.(l.(x)) end
-   end
+   def l >>> r, do: fn x -> r.(l.(x)) end
 
+   curry |>/2
+   defp l |> r, do: r.(l)
 -}
 -- not/1 is inlined by the compiler
+
+
+{-| Add an element to the front of a list. Pronounced *cons*.
+
+    cons 1 [2,3] == [1,2,3]
+    cons 1 [] == [1]
+
+-}
+cons : a -> List a -> List a
+cons a list =
+    a :: list
 
 
 {-| The exclusive-or operator. `True` if exactly one input is `True`.
