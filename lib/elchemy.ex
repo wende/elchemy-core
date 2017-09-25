@@ -20,11 +20,11 @@ defmodule Elchemy do
       require Elchemy.Glue
 
       import Elchemy
-      import Kernel, except: [{:"++", 2}]
       import Elchemy.Glue
       import Kernel, except: [
         {:'++', 2},
-        {:to_string, 1}
+        {:to_string, 1},
+        {:length, 1}
       ]
 
       alias Elchemy.{
