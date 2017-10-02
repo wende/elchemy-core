@@ -65,6 +65,8 @@ defmodule Elchemy.Spec do
   defp do_compare(same, same, _mod1, _mod2), do: :ok
   defp do_compare(left, {:ann_type, _, [_, type]}, m1, m2),
     do: do_compare(left, type, m1, m2)
+  defp do_compare(left, {:type, {:as_boolean, right, _}}, m1, m2),
+    do: do_compare(left, right, m1, m2)
   defp do_compare(l, {:type, _, :bounded_fun, [fun | _constraints]}, m1, m2) do
     do_compare(l, fun, m1, m2)
   end
@@ -333,7 +335,7 @@ defmodule Elchemy.Spec do
     resolved =
       beam_types
       |> Enum.find(fn
-        {:type, {name, _definition, []}} -> name == type
+        {:type, {name, _definition, _}} -> name == type
         {:opaque, _} -> false
         {:typep, _} -> false
       end)
