@@ -29,5 +29,6 @@ defmodule ElchemyTest do
   ])
   # No typetest for Debug because it loops forever on type resolution
   doctest Elchemy.XDebug
+  doctest Elchemy.XBitwise
 
 end
