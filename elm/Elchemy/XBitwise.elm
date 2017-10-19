@@ -25,16 +25,17 @@ integerBitSize = 32
     and 4 1 == 0
     and 102939 1 == 1
 
--- truncates to 32 bits
-    and 92147483647 -1 == 1953170431
+    -- truncates to 32 bits
+    and 1099511627775 -1 == -1
 
 -}
 and : Int -> Int -> Int
 and arg1 arg2 =
-    nativeAnd (to32Bits arg1) (to32Bits arg2)
+    to32Bits (and_ arg1 arg2)
 
-nativeAnd : Int -> Int -> Int
-nativeAnd =
+
+and_ : Int -> Int -> Int
+and_ =
   ffi "Bitwise" "band"
 
 
@@ -45,9 +46,16 @@ nativeAnd =
     or 4 1 == 5
     or 102939 1 == 102939
 
+    -- truncates to 32 bits
+    or 1099511627775 0 == -1
+
 -}
 or : Int -> Int -> Int
-or =
+or arg1 arg2 =
+    to32Bits (or_ arg1 arg2)
+
+or_ : Int -> Int -> Int
+or_ =
   ffi "Bitwise" "bor"
 
 
@@ -58,11 +66,17 @@ or =
     Bitwise.xor 4 1 == 5
     Bitwise.xor 102939 1 == 102938
 
+    -- truncates to 32 bits
+    Bitwise.xor 1099511627775 1 == -2
+
 -}
 xor : Int -> Int -> Int
-xor =
-  ffi "Bitwise" "bxor"
+xor arg1 arg2 =
+    to32Bits (xor_ arg1 arg2)
 
+xor_ : Int -> Int -> Int
+xor_ =
+  ffi "Bitwise" "bxor"
 
 {-| Flip each bit individually, often called bitwise NOT
 
@@ -70,9 +84,17 @@ xor =
     complement 1 == -2
     complement 102939 == -102940
 
+    -- truncates to 32 bits
+    complement 1099511627775 == 0
+
 -}
 complement : Int -> Int
-complement =
+complement arg =
+    to32Bits (complement_ arg)
+
+
+complement_ : Int -> Int
+complement_ =
   ffi "Bitwise" "bnot"
 
 
@@ -80,24 +102,36 @@ complement =
 This can be used to multiply numbers by powers of two.
     shiftLeftBy 1 5 == 10
     shiftLeftBy 5 1 == 32
+    -- shift is modulo 32 bits
+    shiftLeftBy 32 1 == 1
+    -- truncates to 32 bits
+    shiftLeftBy 16 65535 == -65536
 -}
 shiftLeftBy : Int -> Int -> Int
 shiftLeftBy shift int =
-    swappedShiftLeftBy int shift
+    to32Bits (shiftLeftBy_ int (mod_ shift integerBitSize))
 
 
-{- Swaps the argument order for ffi
--}
-swappedShiftLeftBy : Int -> Int -> Int
-swappedShiftLeftBy =
+shiftLeftBy_ : Int -> Int -> Int
+shiftLeftBy_ =
     ffi "Bitwise" "bsl"
+
+mod_ : Int -> Int -> Int
+mod_ =
+    ffi "Integer" "mod"
 
 
 {-| Shift bits to the right by a given offset, filling new bits with
 whatever is the topmost bit. This can be used to divide numbers by powers of two.
+
     shiftRightBy 1  32 == 16
     shiftRightBy 2  32 == 8
     shiftRightBy 1 -32 == -16
+    -- shift is modulo 32 bits
+    shiftRightBy 32 1 == 1
+    -- truncates to 32 bits
+    shiftRightBy 1 1099511627775 == -1
+
 This is called an [arithmetic right shift][ars], often written (>>), and
 sometimes called a sign-propagating right shift because it fills empty spots
 with copies of the highest bit.
@@ -105,19 +139,25 @@ with copies of the highest bit.
 -}
 shiftRightBy : Int -> Int -> Int
 shiftRightBy shift int =
-  nativeShiftRightBy int shift
+  to32Bits (shiftRightBy_ int (mod_ shift integerBitSize))
 
 
-{- Swaps the argument order for ffi
--}
-nativeShiftRightBy : Int -> Int -> Int
-nativeShiftRightBy =
+shiftRightBy_ : Int -> Int -> Int
+shiftRightBy_ =
   ffi "Bitwise" "bsr"
 
+
 {-| Shift bits to the right by a given offset, filling new bits with zeros.
+
     shiftRightZfBy 1  32 == 16
     shiftRightZfBy 2  32 == 8
     shiftRightZfBy 1 -32 == 2147483632
+    -- shift is modulo 32 bits
+    shiftRightZfBy 32 1 == 1
+    -- truncates to 32 bits
+    shiftRightZfBy 1 1099511627775 == 2147483647
+    shiftRightZfBy 2 1099511627775 == 1073741823
+
 This is called an [logical right shift][lrs], often written (>>>), and
 sometimes called a zero-fill right shift because it fills empty spots with
 zeros.
@@ -126,12 +166,21 @@ zeros.
 shiftRightZfBy : Int -> Int -> Int
 shiftRightZfBy shift int =
   shiftRightBy shift int
-  |> and (mask shift)
+  |> and (zfMask (mod_ shift integerBitSize))
+
+zfMask : Int -> Int
+zfMask bits =
+    (shiftLeftBy_ 1 (integerBitSize - bits)) - 1
 
 to32Bits : Int -> Int
 to32Bits int =
-    int |> and (mask 0)
+    ffi "Elchemy.XBitwise" "to_32_bits_"
 
-mask : Int -> Int
-mask bits =
-    (shiftLeftBy (integerBitSize - bits) 1) - 1
+{- ex
+
+def to_32_bits_(int) do
+  << truncated :: integer-signed-32 >> = << int :: integer-signed-32 >>
+  truncated
+end
+
+-}
