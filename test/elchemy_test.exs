@@ -25,10 +25,10 @@ defmodule ElchemyTest do
     Elchemy.XResult,
     Elchemy.XTuple,
     Elchemy.XDict,
+    Elchemy.XBitwise,
     Elchemy.XSet
   ])
   # No typetest for Debug because it loops forever on type resolution
   doctest Elchemy.XDebug
-  doctest Elchemy.XBitwise
 
 end
