@@ -16,7 +16,8 @@
         "Elchemy.XChar",
         "Elchemy.XResult",
         "Elchemy.XTuple",
-        "Elchemy.XDebug"
+        "Elchemy.XDebug",
+        "Elchemy.XBitwise"
     ],
     "dependencies": {
         "elm-lang/core": "5.1.1 <= v < 6.0.0"
