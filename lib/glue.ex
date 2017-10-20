@@ -158,14 +158,10 @@ defmodule Elchemy.Glue do
   end
 
   defp combinator_ast(namedf, args, meta) do
-    xvar = Macro.var(:x, __MODULE__)
-    inner = fn_ast(args, {
-      { :., meta,
-        [ { {:., meta, [xvar]}, meta,
-            [xvar] } ] },
-      meta, args }, meta)
+    x = Macro.var(:x, __MODULE__)
+    inner = fn_ast(args, quote do unquote(x).(unquote(x)).(unquote_splicing(args)) end, meta)
     quote do
-      fn unquote(xvar) -> unquote(namedf).(unquote(inner)) end
+      fn unquote(x) -> unquote(namedf).(unquote(inner)) end
     end
   end
 
@@ -177,22 +173,13 @@ defmodule Elchemy.Glue do
     end
   end
 
-  defp n_args(0, args) do
-    args
-  end
-  defp n_args(n, args) do
-    n_args(n - 1, [Macro.var(:"a#{n - 1}", __MODULE__) | args])
-  end
+  defp n_args(0, args), do: args
+  defp n_args(n, args), do: n_args(n - 1, [Macro.var(:"a#{n - 1}", __MODULE__) | args])
 
-  defp num_args({:->, _, [fn_head | _fn_body]}) do
-    num_args_fn_head(fn_head)
-  end
-  defp num_args_fn_head([{:when, _, args} | _]) do
-    Enum.take_while(args, &is_arg/1) |> length()
-  end
-  defp num_args_fn_head(vars) when is_list(vars) do
-    length(vars)
-  end
+  defp num_args({:->, _, [fn_head | _fn_body]}), do: num_args_fn_head(fn_head)
+
+  defp num_args_fn_head([{:when, _, args} | _]), do: Enum.take_while(args, &is_arg/1) |> length()
+  defp num_args_fn_head(vars) when is_list(vars), do: length(vars)
 
   defp is_arg({a, _m, c}) when is_atom(a) and is_atom(c), do: :true
   defp is_arg(_), do: :false
