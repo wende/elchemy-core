@@ -48,8 +48,11 @@ and : Int -> Int -> Int
 and arg1 arg2 =
     to32Bits (and_ arg1 arg2)
 
+
+
 {- We don't verify since it's a macro -}
 {- flag noverify:+and_ -}
+
 
 and_ : Int -> Int -> Int
 and_ =
@@ -71,8 +74,10 @@ or arg1 arg2 =
     to32Bits (or_ arg1 arg2)
 
 
+
 {- We don't verify since it's a macro -}
 {- flag noverify:+or_ -}
+
 
 or_ : Int -> Int -> Int
 or_ =
@@ -81,12 +86,12 @@ or_ =
 
 {-| Bitwise XOR
 
-    Bitwise.xor 0 0 == 0
-    Bitwise.xor 1 1 == 0
-    Bitwise.xor 4 1 == 5
-    Bitwise.xor 102939 1 == 102938
+    xor 0 0 == 0
+    xor 1 1 == 0
+    xor 4 1 == 5
+    xor 102939 1 == 102938
     -- truncates to 32 bits
-    Bitwise.xor 1099511627775 1 == -2
+    xor 1099511627775 1 == -2
 
 -}
 xor : Int -> Int -> Int
@@ -94,8 +99,10 @@ xor arg1 arg2 =
     to32Bits (xor_ arg1 arg2)
 
 
+
 {- We don't verify since it's a macro -}
 {- flag noverify:+xor_ -}
+
 
 xor_ : Int -> Int -> Int
 xor_ =
@@ -116,8 +123,10 @@ complement arg =
     to32Bits (complement_ arg)
 
 
+
 {- We don't verify since it's a macro -}
 {- flag noverify:+complement_ -}
+
 
 complement_ : Int -> Int
 complement_ =
@@ -140,8 +149,10 @@ shiftLeftBy shift int =
     to32Bits (shiftLeftBy_ int (mod_ shift integerBitSize))
 
 
+
 {- We don't verify since it's a macro -}
 {- flag noverify:+shiftLeftBy_ -}
+
 
 shiftLeftBy_ : Int -> Int -> Int
 shiftLeftBy_ =
@@ -175,8 +186,10 @@ shiftRightBy shift int =
     to32Bits (shiftRightBy_ int (mod_ shift integerBitSize))
 
 
+
 {- We don't verify since it's a macro -}
 {- flag noverify:+shiftRightBy_ -}
+
 
 shiftRightBy_ : Int -> Int -> Int
 shiftRightBy_ =
@@ -210,7 +223,9 @@ zfMask bits =
     (shiftLeftBy_ 1 (integerBitSize - bits)) - 1
 
 
+
 {- flag noverify:+to32Bits -}
+
 
 to32Bits : Int -> Int
 to32Bits int =

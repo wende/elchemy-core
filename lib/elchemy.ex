@@ -16,9 +16,6 @@ defmodule Elchemy do
       Module.register_attribute(__MODULE__, :verify_type, accumulate: true)
       @before_compile ElchemyHack
 
-      require Elchemy
-      require Elchemy.Glue
-
       import Elchemy
       import Elchemy.Glue
       import Kernel, except: [
@@ -27,19 +24,6 @@ defmodule Elchemy do
         {:length, 1}
       ]
 
-      alias Elchemy.{
-        XBasics,
-        XList,
-        XString,
-        XDebug,
-        XMaybe,
-        XChar,
-        XTuple,
-        XResult,
-        XDict,
-        XSet,
-        XBitwise
-      }
       import_std()
     end
   end
@@ -58,7 +42,10 @@ defmodule Elchemy do
     Elchemy.XBitwise
     ]
   defmacro import_std() do
-    if Enum.member?(@std, __CALLER__.module) do
+    aliases = for mod <- @std do
+      quote do alias unquote(mod) end
+    end
+    import_basics = if Enum.member?(@std, __CALLER__.module) do
       quote do
         :ok
       end
@@ -67,5 +54,6 @@ defmodule Elchemy do
         import Elchemy.XBasics
       end
     end
+    [aliases, import_basics]
   end
 end
