@@ -16,6 +16,9 @@ defmodule Elchemy do
       Module.register_attribute(__MODULE__, :verify_type, accumulate: true)
       @before_compile ElchemyHack
 
+      Module.register_attribute(__MODULE__, :let, accumulate: true)
+      @before_compile Elchemy.Let
+
       import Elchemy
       import Elchemy.Glue
       import Kernel, except: [
