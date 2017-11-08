@@ -26,7 +26,8 @@ defmodule ElchemyTest do
     Elchemy.XTuple,
     Elchemy.XDict,
     Elchemy.XBitwise,
-    Elchemy.XSet
+    Elchemy.XSet,
+    Elchemy.Platform.XCmd
   ])
   # No typetest for Debug because it loops forever on type resolution
   doctest Elchemy.XDebug
