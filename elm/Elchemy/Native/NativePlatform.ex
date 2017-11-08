@@ -1,0 +1,3 @@
+defmodule NativePlatform do
+  
+end
