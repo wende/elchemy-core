@@ -32,4 +32,35 @@ defmodule Elchemy.GlueTest do
 
     assert fun.(3) == 6
   end
+
+  test "Can define mutually recursive functions" do
+    import Elchemy.Glue
+
+    fun = rec fun, fn
+      :x ->
+        {x, y} = {&fun.(:x).(&1), &fun.(:y).(&1)}
+        {_, _} = {x, y}
+        fn a -> y.(a) - 1 end
+      :y ->
+        {x, y} = {&fun.(:x).(&1), &fun.(:y).(&1)}
+        {_, _} = {x, y}
+        fn a -> a end
+    end
+    {x, y} = {&fun.(:x).(&1), &fun.(:y).(&1)}
+
+    assert x.(10) == 9
+    assert y.(10) == 10
+  end
+
+  test "Can use DSL syntax to define mutually recursive functions" do
+    import Elchemy.Glue
+
+    {x, y} = let [
+      x: fn a -> y.(a) - 1 end,
+      y: fn a -> a end
+    ]
+
+    assert x.(10) == 9
+    assert y.(10) == 10
+  end
 end

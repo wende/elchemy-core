@@ -138,6 +138,35 @@ defmodule Elchemy.Glue do
     end)
   end
 
+  ## -- Mutually recursive Let..in using Y combinator
+  defmacro let(clauses) do
+    right = for {name, _} <- clauses do
+      quote do
+        &(fun.(unquote(name)).(&1))
+      end
+    end
+
+    names = for {n, _} <- clauses, do: Macro.var(n, nil)
+    underscored = for _ <- names, do: Macro.var(:_, nil)
+
+    whole = quote do
+      {unquote_splicing(names)} = {unquote_splicing(right)}
+      {unquote_splicing(underscored)} = {unquote_splicing(names)}
+    end
+
+    inner = {:fn, [], for {name, c} <- clauses do
+      {:'->', [], [[name], quote do
+          unquote(whole)
+          unquote(c)
+      end]}
+    end}
+
+    quote do
+      fun = rec fun, unquote(inner)
+      unquote(whole)
+    end
+  end
+
   ## -- Y-combinator
 
   defmacro rec(name, {:fn, meta, [c|_clauses]} = f) do
