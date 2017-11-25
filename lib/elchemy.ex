@@ -39,7 +39,8 @@ defmodule Elchemy do
     Elchemy.XResult,
     Elchemy.XDict,
     Elchemy.XSet,
-    Elchemy.XBitwise
+    Elchemy.XBitwise,
+    Elchemy.XRegex
     ]
   defmacro import_std() do
     aliases = for mod <- @std do

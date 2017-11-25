@@ -73,6 +73,17 @@ defmodule Elchemy.Spec do
   defp do_compare({:type, _, :list, [{:type, _, :any, []}]}, {:type, _, :list, []}, _m1, _m2) do
     :ok
   end
+  defp do_compare(t1 = {:type, _, :map, args1}, t2 = {:type, _, :map, args2}, m1, m2) do
+    if length(args1) != length(args2) do
+      {:error, "#{gen_spec t1, m1} has different amount of fields than #{gen_spec t2, m2}"}
+    else
+      [Enum.sort(args1), Enum.sort(args2)]
+      |> Enum.zip()
+      |> Enum.map(fn {arg1, arg2} -> do_compare(arg1, arg2, m1, m2) end)
+      |> Enum.find(fn a -> a != :ok end)
+      |> (&(&1 || :ok)).()
+    end
+  end
   defp do_compare({:type, _, type, []}, {:type, _, type, []}, _, _), do: :ok
   defp do_compare(_, {:type, _, :any, []}, _, _), do: :ok
   defp do_compare(_, {:type, _, :term, []}, _, _), do: :ok

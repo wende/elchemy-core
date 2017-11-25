@@ -78,7 +78,7 @@ type Dict k v
 -}
 empty : Dict k v
 empty =
-    ffi "NativeDict" "empty"
+    ffi "Native.Dict" "empty"
 
 
 {-| Get the value associated with a key. If the key is not found, return
@@ -92,7 +92,7 @@ dictionary.
 -}
 get : comparable -> Dict comparable v -> Maybe v
 get targetKey dict =
-    ffi "NativeDict" "get"
+    ffi "Native.Dict" "get"
 
 
 {-| Determine if a key is in a dictionary.
@@ -114,7 +114,7 @@ member key dict =
 -}
 size : Dict k v -> Int
 size dict =
-    ffi "NativeDict" "size"
+    ffi "Native.Dict" "size"
 
 
 {-| Determine if a dictionary is empty.
@@ -135,7 +135,7 @@ a collision.
 -}
 insert : comparable -> v -> Dict comparable v -> Dict comparable v
 insert key value dict =
-    ffi "NativeDict" "insert"
+    ffi "Native.Dict" "insert"
 
 
 {-| Remove a key-value pair from a dictionary. If the key is not found,
@@ -146,7 +146,7 @@ no changes are made.
 -}
 remove : comparable -> Dict comparable v -> Dict comparable v
 remove key dict =
-    ffi "NativeDict" "remove"
+    ffi "Native.Dict" "remove"
 
 
 {-| Update the value of a dictionary for a specific key with a given function.
@@ -156,7 +156,7 @@ remove key dict =
 -}
 update : comparable -> (Maybe v -> Maybe v) -> Dict comparable v -> Dict comparable v
 update k alter dict =
-    ffi "NativeDict" "update"
+    ffi "Native.Dict" "update"
 
 
 {-| Create a dictionary with one key-value pair.
@@ -215,7 +215,7 @@ merge :
     -> result
     -> result
 merge leftStep bothStep rightStep leftDict rightDict initialResult =
-    ffi "NativeDict" "merge"
+    ffi "Native.Dict" "merge"
 
 
 
@@ -226,7 +226,7 @@ merge leftStep bothStep rightStep leftDict rightDict initialResult =
 -}
 map : (comparable -> a -> b) -> Dict comparable a -> Dict comparable b
 map f dict =
-    ffi "NativeDict" "map"
+    ffi "Native.Dict" "map"
 
 
 {-| Fold over the key-value pairs in a dictionary, in order from lowest
@@ -234,7 +234,7 @@ key to highest key.
 -}
 foldl : (comparable -> v -> b -> b) -> b -> Dict comparable v -> b
 foldl f acc dict =
-    ffi "NativeDict" "foldl"
+    ffi "Native.Dict" "foldl"
 
 
 {-| Fold over the key-value pairs in a dictionary, in order from highest
@@ -242,7 +242,7 @@ key to lowest key.
 -}
 foldr : (comparable -> v -> b -> b) -> b -> Dict comparable v -> b
 foldr f acc t =
-    ffi "NativeDict" "foldr"
+    ffi "Native.Dict" "foldr"
 
 
 {-| Keep a key-value pair when it satisfies a predicate.

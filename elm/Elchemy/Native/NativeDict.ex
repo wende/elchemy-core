@@ -1,4 +1,4 @@
-defmodule NativeDict do
+defmodule Native.Dict do
   use Elchemy
   require Logger
   @spec empty :: %{}
