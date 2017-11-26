@@ -118,13 +118,17 @@ defmodule Elchemy.Spec do
     compare_types(t1, t2, m1, m2)
   end
   defp do_compare({:var, _, _}, {:var, _, _}, _, _), do: :ok
-  defp do_compare({:user_type, _, name, []}, {:user_type, _, name, []}, _, _) do
-    :ok
+  defp do_compare({:user_type, _, name, args1}, {:user_type, _, name, args2}, m1, m2) do
+    [args1, args2]
+    |> Enum.zip()
+    |> Enum.map(fn {arg1, arg2} -> do_compare(arg1, arg2, m1, m2) end)
+    |> Enum.find(fn a -> a != :ok end)
+    |> (&(&1 || :ok)).()
   end
-  defp do_compare({:user_type, _, name, []}, b, m1, m2) do
+  defp do_compare({:user_type, _, name, _}, b, m1, m2) do
     do_compare(resolve_type(name, m1), b, m1, m2)
   end
-  defp do_compare(a, {:user_type, _, name, []}, m1, m2) do
+  defp do_compare(a, {:user_type, _, name, _}, m1, m2) do
     do_compare(a, resolve_type(name, m2), m1, m2)
   end
   defp do_compare({:remote_type, _, path}, {:remote_type, _, path}, _, _) do
@@ -347,13 +351,15 @@ defmodule Elchemy.Spec do
       beam_types
       |> Enum.find(fn
         {:type, {name, _definition, _}} -> name == type
+        {:type, {name, _definition, _}, _args} -> name == type
         {:opaque, _} -> false
         {:typep, _} -> false
       end)
     case resolved do
       {:type, {^type, {:type, _, :any, []}, []}} ->
         {:var, 0, type}
-      {:type, {^type, definition, []}} ->
+      # We don't care for arguments because you can't have two same type names in Elm
+      {:type, {^type, definition, _args}} ->
         definition
       nil ->
         Logger.warn "No type with name #{type} in module #{inspect module}. Resolving to :any"

@@ -66,6 +66,12 @@ Insert, remove, and query operations all take *O(log n)* time.
 import Elchemy exposing (..)
 
 
+{- flag notype:+Dict -}
+{- ex
+   @type dict(_, _) :: %{}
+-}
+
+
 {-| A dictionary of keys and values. So a `(Dict String User)` is a dictionary
 that lets you look up a `String` (such as user names) and find the associated
 `User`.
