@@ -8,6 +8,11 @@ defmodule Elchemy.GlueTest do
     def test(x1,x2,x3,x4), do: [x1,x2,x3,x4]
     defswap swapped_test, to: test/4
     defreverse reverse_test, to: test/4
+
+    curry myfun/3, lambdas: [{0,2}, {2,3}]
+    def myfun(a, _b, c) do
+      {a.(1).(2), c.(2).(3).(4)}
+    end
   end
 
   test "Mock works" do
@@ -20,6 +25,12 @@ defmodule Elchemy.GlueTest do
 
   test "Swapped arguments" do
     assert Mock.swapped_test(1,2,3,4) == [4,1,2,3 ]
+  end
+
+  test "Can unlambdify passed functions" do
+    duo = fn a, b -> a + b end
+    trio = fn a, b, c -> {a, b, c} end
+    assert Mock.myfun(duo, 0, trio) == {3, {2,3,4}}
   end
 
   test "Can define recursive function" do
