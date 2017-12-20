@@ -22,6 +22,8 @@ module Elchemy.XBasics
         , ceiling
         , truncate
         , toFloat
+        , isInfinite
+        , isNaN
         , toString
         , (++)
         , identity
@@ -34,7 +36,7 @@ module Elchemy.XBasics
         )
 
 {-| Tons of useful functions that get imported by default.
-@docs cons, compare, xor, sqrt, clamp, compare , xor , negate , sqrt , logBase , e , pi , cos , sin , tan , acos , asin , atan , atan2 , round , floor , ceiling , truncate , toFloat , toString , (++) , identity , always, flip, tuple2, tuple3, tuple4, tuple5
+@docs cons, compare, xor, sqrt, clamp, compare , xor , negate , sqrt , logBase , e , pi , cos , sin , tan , acos , asin , atan , atan2 , round , floor , ceiling , truncate , toFloat , isInfinite, isNaN , toString , (++) , identity , always, flip, tuple2, tuple3, tuple4, tuple5
 
 @docs Order
 
@@ -92,6 +94,20 @@ type Order
    def div(_, 0), do: 0
    def div(l, r), do: Kernel.div(l, r)
 
+   @spec infinite?(number() | :infinity) :: boolean()
+   def infinite?(:infinity), do: true
+   def infinite?(_), do: false
+
+   @spec nan?(float() | :infinity) :: boolean()
+   def nan?(:nan), do: true
+   def nan?(_), do: false
+
+   @spec nan?(float()) :: boolean()
+   def nan?(:nan), do: true
+   def nan?(_), do: false
+
+   def do_sqrt(x) when x < 0, do: :nan
+   def do_sqrt(x), do: :math.sqrt(x)
 -}
 
 
@@ -154,11 +170,15 @@ negate =
     ffi "Kernel" "-"
 
 
+
+{- flag noverify:+sqrt -}
+
+
 {-| Take the square root of a number.
 -}
 sqrt : number -> Float
 sqrt =
-    ffi ":math" "sqrt"
+    ffi "Elchemy.XBasics" "do_sqrt"
 
 
 {-| Clamps a number within a given range. With the expression
@@ -272,6 +292,44 @@ truncate _ =
 toFloat : Int -> Float
 toFloat x =
     mul_ x 1.0
+
+
+
+{- flag noverify:+isInfinite -}
+
+
+{-| Determine whether a float is positive or negative infinity.
+
+    isInfinite (0/0) == False
+    isInfinite (sqrt -1) == False
+    isInfinite (1/0) == True
+    isInfinite 1 == False
+    Notice that NaN is not infinite! For float `n` to be finite implies that
+    `not (isInfinite n || isNaN n)` evaluates to `True`.
+
+-}
+isInfinite : Float -> Bool
+isInfinite =
+    ffi "Elchemy.XBasics" "infinite?"
+
+
+
+{- flag noverify:+isNaN -}
+
+
+{-| Determine whether a float is an undefined or unrepresentable number.
+NaN stands for *not a number* and it is [a standardized part of floating point
+numbers](http://en.wikipedia.org/wiki/NaN).
+
+    isNaN (0/0) == True
+    isNaN (sqrt -1) == True
+    isNaN (1/0) == False -- infinity is a number
+    isNaN 1 == False
+
+-}
+isNaN : Float -> Bool
+isNaN =
+    ffi "Elchemy.XBasics" "nan?"
 
 
 mul_ : Int -> Float -> Float
