@@ -21,7 +21,9 @@ defmodule Elchemy do
       import Kernel, except: [
         {:'++', 2},
         {:to_string, 1},
-        {:length, 1}
+        {:length, 1},
+        {:'/', 2},
+        {:div, 2},
       ]
 
       import_std()
