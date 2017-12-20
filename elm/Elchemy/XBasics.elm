@@ -87,7 +87,7 @@ type Order
 
    curry //2
    def 0 / 0, do: :nan
-   def left / 0, do: :infinity
+   def _ / 0, do: :infinity
    def l / r, do: Kernel./(l, r)
 
    curry div/2
@@ -102,9 +102,6 @@ type Order
    def nan?(:nan), do: true
    def nan?(_), do: false
 
-   @spec nan?(float()) :: boolean()
-   def nan?(:nan), do: true
-   def nan?(_), do: false
 
    def do_sqrt(x) when x < 0, do: :nan
    def do_sqrt(x), do: :math.sqrt(x)
