@@ -78,12 +78,19 @@ type Order
    curry +/2
    curry -/2
    curry */2
-   curry //2
-   curry div/2
-   curry rem/2
    curry abs/1
+   curry rem/2
    # Inlined from not
    curry !/1
+
+   curry //2
+   def 0 / 0, do: :nan
+   def left / 0, do: :infinity
+   def l / r, do: Kernel./(l, r)
+
+   curry div/2
+   def div(_, 0), do: 0
+   def div(l, r), do: Kernel.div(l, r)
 
 -}
 
