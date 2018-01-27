@@ -18,7 +18,7 @@ defmodule Elchemy.Spec do
       raise """
       No function #{inspect module}.#{function}/#{arity} found
       Maybe you meant one of these:
-      #{inspect possible_result}
+      #{specs_to_readable(possible_result)}
       """
     else
       result
@@ -44,7 +44,8 @@ defmodule Elchemy.Spec do
   @doc """
   Check if left spec is a subtype of a right one
   """
-  def compare(l = {{_, arity1}, [spec1]}, {{f, arity2}, [spec2 | rest]}, mod1, mod2 \\ nil) do
+  def compare(l, r, mod1, mod2 \\ nil)
+  def compare(l = {{_, arity1}, [spec1]}, {{f, arity2}, [spec2 | rest]}, mod1, mod2) do
     mod2 = mod2 || mod1
     compared =
       spec1
@@ -397,6 +398,15 @@ defmodule Elchemy.Spec do
   end
   defp lambdify_functions(l), do: l
 
+  defp specs_to_readable(specs) do
+    for {{name, arity}, defs} <- specs do
+      "#{name}/#{arity}:\n" <>
+      (for d <- defs do
+        Kernel.Typespec.spec_to_ast(name, d) |> Macro.to_string()
+      end |> Enum.join("\n"))
+    end
+    |> Enum.join("\n")
+  end
 end
 defmodule Elchemy.SpecError do
   defexception [:message]
