@@ -527,6 +527,11 @@ lines str =
     split "\n" str
 
 
+
+{- No verify to make them both work for Elixir 1.6 and lower than 1.6 -}
+{- flag noverify:+toUpper noverify:+toLower -}
+
+
 {-| Convert a string to all upper case. Useful for case-insensitive comparisons
 and VIRTUAL YELLING.
 
@@ -536,6 +541,13 @@ and VIRTUAL YELLING.
 toUpper : String -> String
 toUpper =
     ffi "String" "upcase"
+
+
+
+-- type Encoding
+--     = Default
+--     | Ascii
+--     | Greek
 
 
 {-| Convert a string to all lower case. Useful for case-insensitive comparisons.

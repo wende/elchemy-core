@@ -176,11 +176,20 @@ defmodule Elchemy.Glue do
     end
     quote do
       spec_ast = Module.get_attribute(__MODULE__, :spec) |> hd |> elem(1)
-      {{:spec, {fun1, _}, spec}, _line} =
-        Kernel.Typespec.translate_spec(:spec, spec_ast, __ENV__)
-      right = {unquote(mod), unquote(function), unquote(arity)}
-        # Elchemy.Spec.find(unquote(mod), unquote(function), unquote(arity1))
-      left = {{fun1, unquote(arity)}, [spec]}
+
+      {left, right} = case Kernel.Typespec.translate_spec(:spec, spec_ast, __ENV__) do
+        # Elixir <= 1.5.x
+        {{:spec, {fun1, _}, spec}, _line} ->
+          left = {{fun1, unquote(arity)}, [spec]}
+          right = {unquote(mod), unquote(function), unquote(arity)}
+          {left, right}
+
+        # Elixir 1.6.x
+        {:spec, {fun1, _}, _l, spec} ->
+          right = {unquote(mod), unquote(function), unquote(arity)}
+          left = {{fun1, unquote(arity)}, [spec]}
+          {left, right}
+      end
 
       __MODULE__
       |> Module.put_attribute(:verify_type, [left, right, __MODULE__, unquote(mod)])
