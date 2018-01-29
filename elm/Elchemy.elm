@@ -13,6 +13,8 @@ module Elchemy
 
 -}
 
+import Dict
+
 
 {-| *Deprecated since Elchemy 0.3.0*
 Function to make a direct Elixir local call. Takes a local function name
@@ -84,3 +86,84 @@ Wrap a function call in try catch returning Result based on wether the function 
 tryCatch : (() -> a) -> Result String a
 tryCatch a =
     Debug.crash "You can't use 'try' in a browser"
+
+
+
+-- AccessMacros
+
+
+{-| Puts a value into a struct under marked field and returns modified version
+-}
+update : (a -> b) -> (b -> b) -> a -> a
+update s1 f =
+    Debug.crash "You can't use update in a browser"
+
+
+update2 : (a -> b) -> (b -> c) -> (c -> c) -> a -> a
+update2 s1 s2 f =
+    Debug.crash "You can't use update in a browser"
+
+
+update3 : (a -> b) -> (b -> c) -> (c -> d) -> (d -> d) -> a -> a
+update3 s1 s2 s3 f =
+    Debug.crash "You can't use update in a browser"
+
+
+update4 : (a -> b) -> (b -> c) -> (c -> d) -> (d -> e) -> (e -> e) -> a -> a
+update4 s1 s2 s3 s4 f =
+    Debug.crash "You can't use update in a browser"
+
+
+update5 : (a -> b) -> (b -> c) -> (c -> d) -> (d -> e) -> (e -> f) -> (f -> f) -> a -> a
+update5 s1 s2 s3 s4 s5 f =
+    Debug.crash "You can't use update in a browser"
+
+
+put : (a -> b) -> b -> a -> a
+put s1 x =
+    always x |> update s1
+
+
+put2 : (a -> b) -> (b -> c) -> c -> a -> a
+put2 s1 s2 x =
+    always x |> update2 s1 s2
+
+
+put3 : (a -> b) -> (b -> c) -> (c -> d) -> d -> a -> a
+put3 s1 s2 s3 x =
+    always x |> update3 s1 s2 s3
+
+
+put4 : (a -> b) -> (b -> c) -> (c -> d) -> (d -> e) -> e -> a -> a
+put4 s1 s2 s3 s4 x =
+    always x |> update4 s1 s2 s3 s4
+
+
+put5 : (a -> b) -> (b -> c) -> (c -> d) -> (d -> e) -> (e -> f) -> f -> a -> a
+put5 s1 s2 s3 s4 s5 x =
+    always x |> update5 s1 s2 s3 s4 s5
+
+
+get : (a -> b) -> a -> b
+get s1 x =
+    s1 x
+
+
+get2 : (a -> b) -> (b -> c) -> a -> c
+get2 s1 s2 x =
+    x |> s1 |> s2
+
+
+get3 : (a -> b) -> (b -> c) -> (c -> d) -> a -> d
+get3 s1 s2 s3 x =
+    x |> s1 |> s2 |> s3
+
+
+get4 : (a -> b) -> (b -> c) -> (c -> d) -> (d -> e) -> a -> e
+get4 s1 s2 s3 s4 x =
+    x |> s1 |> s2 |> s3 |> s4
+
+
+get5 : (a -> b) -> (b -> c) -> (c -> d) -> (d -> e) -> (e -> f) -> a -> f
+get5 s1 s2 s3 s4 s5 x =
+    x |> s1 |> s2 |> s3 |> s4 |> s5

@@ -9,6 +9,31 @@ defmodule Elchemy.Glue do
     end
   end
 
+  def update_in_(selectors) do
+    fn f ->
+      fn target ->
+        do_update_in(selectors, f, target)
+      end
+    end
+  end
+
+  def put_in_(selectors) do
+    fn value ->
+      update_in_(selectors).(fn _ -> value end)
+    end
+  end
+
+  def get_in_(selectors) do
+    fn target ->
+      get_in(target, selectors)
+    end
+  end
+
+  defp do_update_in([s | rest], f, target),
+    do: Map.put(target, s, do_update_in(rest, f, target[s]))
+  defp do_update_in([], f, target),
+    do: f.(target)
+
 
   defmacro curry({:/, _, [{name, _, _}, arity]}, opts \\ []) do
     lambdas = opts[:lambdas] || []

@@ -74,4 +74,13 @@ defmodule Elchemy.GlueTest do
     assert x.(10) == 9
     assert y.(10) == 10
   end
+
+  test "Accessors and divisors" do
+    assert Elchemy.Glue.update_in_([:x]).(fn x -> x + 1 end).(%{x: 1, y: 2}) == %{x: 2, y: 2}
+    assert Elchemy.Glue.update_in_([:x, :y]).(fn x -> x + 1 end).(%{x: %{y: 10}, y: 2}) == %{x: %{y: 11}, y: 2}
+
+    assert Elchemy.Glue.put_in_([:x, :y]).(20).(%{x: %{y: 10}, y: 2}) == %{x: %{y: 20}, y: 2}
+
+    assert Elchemy.Glue.get_in_([:x, :y]).(%{x: %{y: 10}, y: 2}) == 10
+  end
 end
