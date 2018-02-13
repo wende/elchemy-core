@@ -1,14 +1,34 @@
-module Elchemy.Elixir.Ast exposing (Expression(..), Value(..), toElixirAst, dotApplication)
+module Elchemy.Elixir.Ast
+    exposing
+        ( Expression(..)
+        , CompiledExpression
+        , Value(..)
+        , toElixirAst
+        , dotApplication
+        , unquote
+        )
+
+{-| Module responsible for representing Elixir's AST in a type-safe and Elchemy compatible
+manner.
+Currnetly used for creating Plugins, might be used in future for generating entire
+Elchemy output.
+-}
 
 import Elchemy exposing (..)
 
 
-type Expression x
-    = Application (Expression x) (List (Expression x))
+type Expression
+    = Application Expression (List Expression)
     | Variable String
     | Value Value
-    | Do (List (Expression x))
-    | Quote x
+    | Do (List Expression)
+    | List (List Expression)
+    | Tuple (List Expression)
+    | Quotation
+
+
+type CompiledExpression
+    = Compiled Expression
 
 
 type Value
@@ -17,13 +37,46 @@ type Value
     | Atom String
 
 
-toElixirAst : Expression x -> y
+toElixirAst : CompiledExpression -> y
 toElixirAst =
     ffi "Elchemy.Elixir.NativeAst" "serialize"
 
 
+unquote : x -> Expression -> CompiledExpression
+unquote =
+    ffi "Elchemy.Elixir.NativeAst" "substitute"
+
+
+
+------------ Helpers -------------------------
+
+
 {-| Anonymous function application
 -}
-dotApplication : Expression x -> List (Expression x) -> Expression x
+dotApplication : Expression -> List Expression -> Expression
 dotApplication left right =
     Application (Application (Value <| Atom ".") [ left ]) right
+
+
+access : List Expression -> Expression -> Expression
+access keys expression =
+    List.foldl (\acc a -> Application (Application (Value <| Atom ".") [ a ]) [ acc ]) expression keys
+
+
+
+------- Values --------
+
+
+int : Int -> Expression
+int =
+    Int >> Value
+
+
+string : String -> Expression
+string =
+    String >> Value
+
+
+atom : String -> Expression
+atom =
+    Atom >> Value

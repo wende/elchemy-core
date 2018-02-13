@@ -1,13 +1,17 @@
 defmodule Elchemy.Elixir.AstTest do
   use ExUnit.Case
+  use Elchemy
 
   alias Elchemy.Elixir.Ast
+
+  doctest Ast
+  typetest Ast
 
   test "Can create simple block" do
     correct = quote do
       a(1,2,3)
     end
-    args = {:application, {:atom, "a"}, [{:int, 1},{:int, 2},{:int, 3}]}
+    args = {:application, (atom "a"), [(int 1),(int 2),(int 3)]}
     assert Ast.to_elixir_ast(args) == correct
   end
 
@@ -15,9 +19,9 @@ defmodule Elchemy.Elixir.AstTest do
     correct = quote do
       {:a, :b} == 1 + a
     end
-    args = {:application, {:atom, "=="}, [
-      {:application, {:atom, "{}"}, [{:atom, "a"}, {:atom, "b"}]},
-      {:application, {:atom, "+"}, [{:int, 1}, {:variable, "a"}]},
+    args = {:application, (atom "=="), [
+      {:application, (atom "{}"), [(atom "a"), (atom "b")]},
+      {:application, (atom "+"), [(int 1), {:variable, "a"}]},
     ]}
     assert Macro.to_string(Ast.to_elixir_ast(args)) == Macro.to_string(correct)
   end
@@ -29,10 +33,10 @@ defmodule Elchemy.Elixir.AstTest do
         b
       end
     end
-    args = {:application, {:atom, "unless"}, [
-      {:atom, "true"},
+    args = {:application, (atom "unless"), [
+      (atom "true"),
       {:do, [
-        {:application, {:application, {:atom, "."}, [{:atom, "Elixir.MyTest"}, {:atom, "test"}]}, []},
+        {:application, {:application, (atom "."), [(atom "Elixir.MyTest"), (atom "test")]}, []},
         {:variable, "b"}
       ]}
     ]}
@@ -44,8 +48,11 @@ defmodule Elchemy.Elixir.AstTest do
     correct = quote do
       unquote(quoted).(10)
     end
-    args = {:application, {:application, {:atom, "."}, [{:quote, quoted}]}, [{:int, 10}]}
+    args = Ast.unquote__(quoted, {:application, {:application, (atom "."), [:quotation]}, [(int 10)]})
     assert Macro.to_string(Ast.to_elixir_ast(args)) == Macro.to_string(correct)
   end
+
+  defp atom(x), do: {:value, {:atom, x}}
+  defp int(x), do: {:value, {:int, x}}
 
 end

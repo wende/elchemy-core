@@ -3,25 +3,25 @@ module Elchemy.Elixir.Plugin exposing (Plugin, compile)
 {-| Used to allow usage of macros inside Elchemy
 -}
 
-import Elchemy.Elixir.Ast exposing (Expression(..))
+import Elchemy.Elixir.Ast exposing (CompiledExpression, Expression(..))
 
 
-type alias Plugin a inject =
+type alias Plugin a =
     { name : String
     , setup : List String
     , blocks : List a
-    , serialize : a -> Expression inject
+    , serialize : a -> CompiledExpression
     }
 
 
-type alias CompiledPlugin inject =
+type alias CompiledPlugin =
     { name : String
     , setup : List String
-    , ast : List (Expression inject)
+    , ast : List CompiledExpression
     }
 
 
-compile : Plugin a inject -> CompiledPlugin inject
+compile : Plugin a -> CompiledPlugin
 compile plugin =
     { name = plugin.name
     , setup = plugin.setup
