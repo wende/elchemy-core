@@ -22,7 +22,7 @@ defmodule Elchemy.Format do
 
   def inspect(term) when is_list(term) do
     [head | rest] = term
-    inner = head |> Enum.map(fn x -> Tuple.to_list(x) end) |> Enum.join ", "
+    inner = head |> Tuple.to_list() |> Enum.map(fn x -> Tuple.to_list(x) end) |> Enum.join(", ")
     "(" <> Enum.join(inner, ", ") <> ")"
 
     rest |> Tuple.to_list() |> Enum.join(" ") |> String.capitalize
