@@ -11,22 +11,18 @@ defmodule Elchemy.Format do
   end
 
   def inspect(term) do
-    check_number(term)
+    is_atom_first(term)
   end
 
-  defp check_number(term) when is_tuple(term) do
-    if Kernel.tuple_size(term) > 2 do
-      term |> Tuple.to_list() |> Enum.join(" ") |> String.capitalize
-    else
+  defp is_atom_first(term) when is_tuple(term) do
       [head | rest] = term |> Tuple.to_list
       if is_atom(head) do
-        false
+          term |> Tuple.to_list() |> Enum.join(" ") |> String.capitalize
       else
         inner = term |> Tuple.to_list()
         "(" <> Enum.join(inner, ", ") <> ")"
       end
-    end
-
   end
+
 
 end
