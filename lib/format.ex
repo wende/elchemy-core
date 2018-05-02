@@ -1,5 +1,7 @@
 defmodule Elchemy.Format do
 
+  import Kernel, except: [inspect: 1]
+
   @doc "Some doc"
   @spec inspect(term()) :: String.t()
 
@@ -11,7 +13,7 @@ defmodule Elchemy.Format do
   end
 
   def inspect(term) when is_tuple(term) do
-      [head | rest] = term |> Tuple.to_list
+      [head | _rest] = term |> Tuple.to_list
       if is_atom(head) do
           term |> Tuple.to_list() |> Enum.join(" ") |> String.capitalize
       else
@@ -21,15 +23,11 @@ defmodule Elchemy.Format do
   end
 
   def inspect(term) when is_list(term) do
-    [head | rest] = term
-    inner = head |> Tuple.to_list() |> Enum.map(fn x -> Tuple.to_list(x) end) |> Enum.join(", ")
-    "(" <> Enum.join(inner, ", ") <> ")"
+    inner =
+      term
+      |> Enum.map(fn x -> inspect(x) end)
+      |> Enum.join(", ")
 
-    rest |> Tuple.to_list() |> Enum.join(" ") |> String.capitalize
+    "[" <> inner <> "]"
   end
-
-
-
-
-
 end
