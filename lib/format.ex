@@ -2,9 +2,6 @@ defmodule Elchemy.Format do
 
   @doc "Some doc"
   @spec inspect(term()) :: String.t()
-  def inspect(term) when is_tuple(term) do
-
-  end
 
   def inspect(term) when is_map(term) do
     inner = term |> Enum.map(fn {key, value} ->
@@ -25,7 +22,8 @@ defmodule Elchemy.Format do
       if is_atom(head) do
         false
       else
-        term |> List.to_string
+        term = [head, rest]
+        List.to_string(term)
         "(" <> Enum.join(rest, ", ") <> ")"
       end
     end
