@@ -13,13 +13,15 @@ defmodule Elchemy.Format do
     "{ " <> Enum.join(inner, ", ") <> " }"
   end
 
-  def inspect(term) when is_tuple(term) do
-    [head | rest] = term |> Tuple.to_list
-    if is_atom(head) do
-      false
-    else
-      [head | rest] = [nil | (Tuple.to_list(rest) |> List.to_string(rest))]
-      "(" <> Enum.join(rest, ", ") <> ")"
+  def inspect(term) do
+    defp inspect_tuple when is_tuple(term) do
+      [head | rest] = term |> Tuple.to_list
+      if is_atom(head) do
+        false
+      else
+        [head | rest] = [nil | (Kernel.to_string(rest))]
+        "(" <> Enum.join(rest, ", ") <> ")"
+      end
     end
   end
 
