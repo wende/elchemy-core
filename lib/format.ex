@@ -22,9 +22,8 @@ defmodule Elchemy.Format do
       if is_atom(head) do
         false
       else
-        term = [head, rest]
-        List.to_string(term)
-        "(" <> Enum.join(rest, ", ") <> ")"
+        inner = term |> Tuple.to_list()
+        "(" <> Enum.join(inner, ", ") <> ")"
       end
     end
 
