@@ -10,7 +10,6 @@ defmodule Elchemy.Format do
     "{ " <> Enum.join(inner, ", ") <> " }"
   end
 
-
   def inspect(term) when is_tuple(term) do
       [head | rest] = term |> Tuple.to_list
       if is_atom(head) do
@@ -20,6 +19,15 @@ defmodule Elchemy.Format do
         "(" <> Enum.join(inner, ", ") <> ")"
       end
   end
+
+  def inspect(term) when is_list(term) do
+    [head | rest] = term
+    inner = head |> Tuple.to_list()
+    "(" <> Enum.join(inner, ", ") <> ")"
+
+    rest |> Tuple.to_list() |> Enum.join(" ") |> String.capitalize
+  end
+
 
 
 end
