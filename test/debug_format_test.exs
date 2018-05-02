@@ -15,8 +15,26 @@ defmodule DebugFormatTest do
     assert Format.inspect({1, 2}) == "(1, 2)"
   end
 
+  test "Formats longer non-type tuples" do
+    assert Format.inspect({1, 2, 3, 4}) == "(1, 2, 3, 4)"
+  end
+
   test "Formats simple nested " do
     assert Format.inspect([{1, {2, 3}}, {:type, 1, 2}]) == "[(1, (2, 3)), Type 1 2]"
+  end
+
+  test "Formats advanced nested" do
+    assert Format.inspect(%{
+      a: {1, 2, 3}
+      b: {:a, 1, 2}
+    }) == "{ a = (1, 2, 3), b = A 1 2}"
+  end
+
+  test "Formats dictionaries" do
+    assert Format.inspect(%{
+      "a" => {1, 2, 3}
+      "b" => {:a, 1, 2}
+    }) == "Dict.fromList [{ a = (1, 2, 3), b = A 1 2}]"
   end
 
   test "Extra: Puts parens on nested types" do
