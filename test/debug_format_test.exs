@@ -27,14 +27,14 @@ defmodule DebugFormatTest do
     assert Format.inspect(%{
       a: {1, 2, 3},
       b: {:a, 1, 2}
-    }) == "{ a = (1, 2, 3), b = A 1 2}"
+    }) == "{ a = (1, 2, 3), b = A 1 2 }"
   end
 
   test "Formats dictionaries" do
     assert Format.inspect(%{
       "a" => {1, 2, 3},
       "b" => {:a, 1, 2}
-    }) == "Dict.fromList [{ a = (1, 2, 3), b = A 1 2}]"
+    }) == "Dict.fromList [{ a = (1, 2, 3), b = A 1 2 }]"
   end
 
   test "Extra: Puts parens on nested types" do

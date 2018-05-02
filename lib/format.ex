@@ -7,7 +7,7 @@ defmodule Elchemy.Format do
 
   def inspect(term) when is_map(term) do
     inner = term |> Enum.map(fn {key, value} ->
-      (key |> Kernel.to_string) <> " = " <> (value |> Kernel.to_string)
+      (key |> inspect()) <> " = " <> (value |> inspect())
     end)
     "{ " <> Enum.join(inner, ", ") <> " }"
   end
@@ -15,9 +15,9 @@ defmodule Elchemy.Format do
   def inspect(term) when is_tuple(term) do
       [head | _rest] = term |> Tuple.to_list
       if is_atom(head) do
-          term |> Tuple.to_list() |> Enum.join(" ") |> String.capitalize
+          term |> Tuple.to_list() |> Enum.map(&inspect/1) |> Enum.join(" ") |> String.capitalize
       else
-        inner = term |> Tuple.to_list()
+        inner = term |> Tuple.to_list() |> Enum.map(&inspect/1)
         "(" <> Enum.join(inner, ", ") <> ")"
       end
   end
@@ -30,4 +30,6 @@ defmodule Elchemy.Format do
 
     "[" <> inner <> "]"
   end
+
+  def inspect(x), do: to_string(x)
 end
