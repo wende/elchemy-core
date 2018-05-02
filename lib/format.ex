@@ -10,11 +10,8 @@ defmodule Elchemy.Format do
     "{ " <> Enum.join(inner, ", ") <> " }"
   end
 
-  def inspect(term) do
-    is_atom_first(term)
-  end
 
-  defp is_atom_first(term) when is_tuple(term) do
+  def inspect(term) when is_tuple(term) do
       [head | rest] = term |> Tuple.to_list
       if is_atom(head) do
           term |> Tuple.to_list() |> Enum.join(" ") |> String.capitalize
