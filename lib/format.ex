@@ -13,9 +13,9 @@ defmodule Elchemy.Format do
   end
 
   def inspect(term) when is_tuple(term) do
-      [head | _rest] = term |> Tuple.to_list
+      [head | rest] = term |> Tuple.to_list
       if is_atom(head) do
-          term |> Tuple.to_list() |> Enum.map(&inspect/1) |> Enum.join(" ") |> String.capitalize
+          (head |> Atom.to_string() |> String.capitalize()) <> " " <> (rest |> Tuple.to_list() |> Enum.map(&inspect/1) |> Enum.join(" "))
       else
         inner = term |> Tuple.to_list() |> Enum.map(&inspect/1)
         "(" <> Enum.join(inner, ", ") <> ")"
