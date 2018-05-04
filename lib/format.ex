@@ -28,7 +28,7 @@ defmodule Elchemy.Format do
         args = rest |> Enum.map(&inspect(&1, true)) |> Enum.join(" ")
 
         if in_type do
-          ["(", type, " ", args, ")"],
+          ["(", type, " ", args, ")"]
         else
           [type, " ", args]
         end |> Enum.join()
