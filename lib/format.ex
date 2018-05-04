@@ -15,14 +15,13 @@ defmodule Elchemy.Format do
       "{ " <> Enum.join(inner, ", ") <> " }"
     [{_key, _value} | _] ->
       inner = term |> Enum.map(fn {key, value} ->
-        (key |> inspect()) <> " = " <> (value |> inspect())
+        (inspect(key)) <> " = " <> (value |> inspect())
       end)
       "Dict.fromList [{ " <> Enum.join(inner, ", ") <> " }]"
     end
-
   end
 
-  def inspect(term) when is_tuple(term) do
+  def inspect(term, in_type) when is_tuple(term) do
       [head | rest] = term |> Tuple.to_list
       if is_atom(head) do
           left = (head |> Atom.to_string() |> String.capitalize())
