@@ -2,6 +2,7 @@ module Elchemy
     exposing
         ( lffi
         , ffi
+        , macro
         , tryFfi
         , flambda
         , tryCatch
@@ -9,11 +10,9 @@ module Elchemy
 
 {-| Module to help express some Elixir related types and calls that wouldn't otherwise be possible
 
-@docs lffi, ffi, tryFfi , flambda, tryCatch
+@docs lffi, ffi, macro, tryFfi , flambda, tryCatch
 
 -}
-
-import Dict
 
 
 {-| *Deprecated since Elchemy 0.3.0*
@@ -49,6 +48,13 @@ inside of your test suite
 ffi : String -> String -> a
 ffi m f =
     Debug.crash "You can't use ffi in a browser"
+
+
+{-| TODO document
+-}
+macro : String -> String -> a
+macro m f =
+    Debug.crash "You can't use macro in a browser"
 
 
 {-| Function to make a direct Elixir remote call. Takes a module name, a function name

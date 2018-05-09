@@ -6,6 +6,9 @@ module Elchemy.Elixir.Ast
         , toElixirAst
         , dotApplication
         , unquote
+        , atom
+        , int
+        , string
         )
 
 {-| Module responsible for representing Elixir's AST in a type-safe and Elchemy compatible

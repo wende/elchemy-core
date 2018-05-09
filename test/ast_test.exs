@@ -43,15 +43,6 @@ defmodule Elchemy.Elixir.AstTest do
     assert Macro.to_string(Ast.to_elixir_ast(args)) == Macro.to_string(correct)
   end
 
-  test "Work with quote block" do
-    quoted = fn a -> a + 1 end
-    correct = quote do
-      unquote(quoted).(10)
-    end
-    args = Ast.unquote__(quoted, {:application, {:application, (atom "."), [:quotation]}, [(int 10)]})
-    assert Macro.to_string(Ast.to_elixir_ast(args)) == Macro.to_string(correct)
-  end
-
   defp atom(x), do: {:value, {:atom, x}}
   defp int(x), do: {:value, {:int, x}}
 

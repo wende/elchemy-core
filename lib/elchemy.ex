@@ -18,6 +18,7 @@ defmodule Elchemy do
 
       import Elchemy
       import Elchemy.Glue
+      #if __MODULE__ != Elchemy.Elixir.Macros, do: require Elchemy.Elixir.Macros
       import Kernel, except: [
         {:'++', 2},
         {:to_string, 1},

@@ -43,10 +43,21 @@ defmodule Elchemy.Elixir.NativeAst do
   defp do_sub({:variable, _var} = v, _v), do: v
   defp do_sub({:value, _val} = v, _v), do: v
   defp do_sub({:do, exps}, v), do: {:do, sub_each(exps, v)}
-  defp do_sub(:quotation, q), do: {:quote, q}
+  defp do_sub(:quotation, q), do: {:quote, safe_quote(q)}
   defp do_sub({:tuple, exps}, v), do: {:tuple, sub_each(exps, v)}
   defp do_sub({:list, exps}, v), do: {:list, sub_each(exps, v)}
 
-
   defp sub_each(exps, value), do: Enum.map(exps, fn exp -> do_sub(exp, value) end)
+
+  defp safe_quote(v) when is_function(v) do
+    info = :erlang.fun_info(v)
+    module = info[:module]
+    name = info[:name]
+    arity = info[:arity]
+    quote do
+      &unquote(module).unquote(name)/unquote(arity)
+    end |> IO.inspect(label: "fun")
+  end
+  defp safe_quote(v), do: v
+
 end
