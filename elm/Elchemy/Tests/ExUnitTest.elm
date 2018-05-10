@@ -15,4 +15,4 @@ testSuite =
 
 meta : List Macro
 meta =
-    [ Elchemy.Plugins.ExUnit.tests testSuite ]
+    [ tests testSuite ]
