@@ -1,5 +1,4 @@
 defmodule Elchemy.Plugins.NativeExUnit do
-  alias Elchemy.Plugins.NativeAst
 
   def define_tests(tests) do
     {%{
