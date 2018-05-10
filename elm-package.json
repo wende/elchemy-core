@@ -9,6 +9,7 @@
     ],
     "exposed-modules": [
         "Elchemy",
+        "Elchemy.Macros",
         "Elchemy.XBasics",
         "Elchemy.XList",
         "Elchemy.XString",

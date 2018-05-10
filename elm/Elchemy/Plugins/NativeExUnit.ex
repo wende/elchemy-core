@@ -12,11 +12,9 @@ defmodule Elchemy.Plugins.NativeExUnit do
 
     inner =
       for {:test, name, f} <- tests do
-        body = f |> IO.inspect()
-
         quote do
           test unquote(name), %{context: context} do
-            assert unquote(body).(context)
+            assert unquote(f).(context)
           end
         end
       end
