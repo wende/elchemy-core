@@ -1,10 +1,10 @@
-module Elchemy.Macros exposing (Macro(..), Do(..), use, behaviour)
+module Elchemy.Macros exposing (Macro(..), Do(..), macro, use, behaviour)
 
 {-| This module is responsible for defining and using macros in Plugins system for Elchemy.
 To use this module you need to import it to your module and use its constructs in the
 `meta` definition of your module.
 
-@docs Macro, Do, use, behaviour
+@docs Macro, Do, macro, use, behaviour
 
 -}
 
@@ -37,6 +37,23 @@ type Macro
 -}
 type Do x
     = Do x
+
+
+{-| FFI function that creates a new macro calling an Elixir function that returns Elixir ast.
+For instance:
+
+    myMacro : Macro
+    myMacro =
+        macro "ModuleContainingAstFunction" "ast_function"
+
+Notice that the function *always* returns a Macro type so that it can only be used in `meta` definition
+of a module. That ensures that macros are only called top level, everything in deeper scopes -
+like inside functions should only be handled using functions.
+
+-}
+macro : String -> String -> a
+macro m f =
+    Debug.crash "You can't use macro in a browser"
 
 
 {-| Use macro is a simple wrapper around Elixir.SpecialForms.use

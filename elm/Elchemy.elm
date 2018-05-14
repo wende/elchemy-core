@@ -2,7 +2,6 @@ module Elchemy
     exposing
         ( lffi
         , ffi
-        , macro
         , tryFfi
         , flambda
         , tryCatch
@@ -10,7 +9,7 @@ module Elchemy
 
 {-| Module to help express some Elixir related types and calls that wouldn't otherwise be possible
 
-@docs lffi, ffi, macro, tryFfi , flambda, tryCatch
+@docs lffi, ffi, tryFfi , flambda, tryCatch
 
 -}
 
@@ -48,23 +47,6 @@ inside of your test suite
 ffi : String -> String -> a
 ffi m f =
     Debug.crash "You can't use ffi in a browser"
-
-
-{-| FFI function that creates a new macro calling an Elixir function that returns Elixir ast.
-For instance:
-
-    myMacro : Macro
-    myMacro =
-        macro "ModuleContainingAstFunction" "ast_function"
-
-Notice that the function *always* returns a Macro type so that it can only be used in `meta` definition
-of a module. That ensures that macros are only called top level, everything in deeper scopes -
-like inside functions should only be handled using functions.
-
--}
-macro : String -> String -> a
-macro m f =
-    Debug.crash "You can't use macro in a browser"
 
 
 {-| Function to make a direct Elixir remote call. Takes a module name, a function name
