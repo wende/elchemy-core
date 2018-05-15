@@ -28,3 +28,4 @@ example/elm.js
 .elchemy*
 *.elchemy.ex
 *.orig
+.elixir_ls/

@@ -13,8 +13,6 @@ module Elchemy
 
 -}
 
-import Dict
-
 
 {-| *Deprecated since Elchemy 0.3.0*
 Function to make a direct Elixir local call. Takes a local function name

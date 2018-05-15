@@ -134,23 +134,7 @@ apply f x =
 
 {-| Lazily chain together lazy computations, for when you have a series of
 steps that all need to be performed lazily. This can be nice when you need to
-pattern match on a value, for example, when appending lazy lists:
-type List a = Empty | Node a (Lazy (List a))
-cons : a -> Lazy (List a) -> Lazy (List a)
-cons first rest =
-Lazy.map (Node first) rest
-append : Lazy (List a) -> Lazy (List a) -> Lazy (List a)
-append lazyList1 lazyList2 =
-let
-appendHelp list1 =
-case list1 of
-Empty ->
-lazyList2
-Node first rest ->
-cons first (append rest list2))
-in
-lazyList1
-|> Lazy.andThen appendHelp
+pattern match on a value.
 By using `andThen` we ensure that neither `lazyList1` or `lazyList2` are forced
 before they are needed. So as written, the `append` function delays the pattern
 matching until later.
