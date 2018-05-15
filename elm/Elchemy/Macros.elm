@@ -22,9 +22,14 @@ To use this module you need to import it to your module and use its constructs i
        @behaviour unquote(module)
      end
    end
--}
 
-import Elchemy exposing (..)
+   def strip_meta(mod) do
+     mod
+     |> Module.split
+     |> Enum.drop(-1)
+     |> Module.concat
+   end
+-}
 
 
 {-| Type of macro expression that go into 'meta' function in a module
