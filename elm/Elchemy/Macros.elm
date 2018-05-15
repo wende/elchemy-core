@@ -57,7 +57,7 @@ like inside functions should only be handled using functions.
 
 -}
 macro : String -> String -> a
-macro m f =
+macro =
     Debug.crash "You can't use macro in a browser"
 
 
@@ -65,11 +65,11 @@ macro m f =
 -}
 use : String -> Macro
 use =
-    macro "Elchemy.Elixir.Macros" "use_macro"
+    macro "Elchemy.Macros" "use_macro"
 
 
 {-| Use macro is a simple wrapper around @behaviour module attribute.
 -}
 behaviour : String -> Macro
 behaviour =
-    macro "Elchemy.Elixir.Macros" "behaviour_macro"
+    macro "Elchemy.Macros" "behaviour_macro"
