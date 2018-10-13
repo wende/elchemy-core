@@ -206,10 +206,6 @@ defmodule Elchemy.Glue do
     quote do
       spec_ast = Module.get_attribute(__MODULE__, :spec)
 
-      # Elixir 1.7.x
-      if spec_ast === nil do
-        :ok
-      else
         {left, right} =
           case Kernel.Typespec.translate_spec(:spec, spec_ast, __ENV__) do
             # Elixir <= 1.5.x
@@ -227,7 +223,6 @@ defmodule Elchemy.Glue do
 
         __MODULE__
         |> Module.put_attribute(:verify_type, [left, right, __MODULE__, unquote(mod)])
-      end
     end
   end
 
