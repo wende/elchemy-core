@@ -204,10 +204,11 @@ defmodule Elchemy.Glue do
           {mod, fun}
       end
 
-    verify_specs(System.version())
+    System.version()
+    |> verify_specs({mod, function, arity})
   end
 
-  defp verify_specs("1.5." <> _) do
+  defp verify_specs("1.5." <> _, {mod, function, arity}) do
     quote do
       spec_ast = Module.get_attribute(__MODULE__, :spec) |> hd |> elem(1)
 
@@ -223,7 +224,7 @@ defmodule Elchemy.Glue do
     end
   end
 
-  defp verify_specs("1.6." <> _) do
+  defp verify_specs("1.6." <> _, {mod, function, arity}) do
     quote do
       spec_ast = Module.get_attribute(__MODULE__, :spec) |> hd |> elem(1)
 
@@ -237,13 +238,13 @@ defmodule Elchemy.Glue do
     end
   end
 
-  defp verify_specs("1.7.0") do
+  defp verify_specs("1.7.0", _) do
     quote do
       :ok
     end
   end
 
-  defp verify_specs("1.7" <> _) do
+  defp verify_specs("1.7" <> _, {mod, function, arity}) do
     quote do
       Code.Typespec.fetch_specs(__MODULE__) |> hd |> elem(1)
       {:spec, {fun1, _}, _l, spec} = Kernel.Typespec.translate_spec(:spec, spec_ast, __ENV__)
