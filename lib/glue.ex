@@ -246,8 +246,21 @@ defmodule Elchemy.Glue do
 
   defp verify_specs("1.7" <> _, {mod, function, arity}) do
     quote do
-      Code.Typespec.fetch_specs(__MODULE__) |> hd |> elem(1)
-      {:spec, {fun1, _}, _l, spec} = Kernel.Typespec.translate_spec(:spec, spec_ast, __ENV__)
+      spec_ast = Code.Typespec.fetch_specs(__MODULE__) |> hd |> elem(1)
+      {:spec, {fun1, _}, _l, spec} = Code.Typespec.spec_to_quoted(spec_ast, __ENV__)
+
+      left = {{fun1, unquote(arity)}, [spec]}
+      right = {unquote(mod), unquote(function), unquote(arity)}
+
+      __MODULE__
+      |> Module.put_attribute(:verify_type, [left, right, __MODULE__, unquote(mod)])
+    end
+  end
+
+  defp verify_specs("1.8" <> _, {mod, function, arity}) do
+    quote do
+      spec_ast = Code.Typespec.fetch_specs(__MODULE__) |> hd |> elem(1)
+      {:spec, {fun1, _}, _l, spec} = Code.Typespec.spec_to_quoted(spec_ast, __ENV__)
 
       left = {{fun1, unquote(arity)}, [spec]}
       right = {unquote(mod), unquote(function), unquote(arity)}
