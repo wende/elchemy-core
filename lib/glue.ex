@@ -238,34 +238,20 @@ defmodule Elchemy.Glue do
     end
   end
 
-  defp verify_specs("1.7.0", _) do
-    quote do
-      :ok
-    end
-  end
+  # Not supportedd in Elixir 1.7.0-3
+  defp verify_specs(version, _) when version in ["1.7.0", "1.7.1", "1.7.2", "1.7.3"], do: :ok
 
-  # 1.7 and up
+  # 1.7.4 and up
   defp verify_specs(version, {mod, function, arity}) do
-    _discard =
-      quote do
-        {set, bag} = :elixir_module.data_tables(__MODULE__)
+    quote do
+      {{:spec, {fun1, _}, _l, spec}, _state} = Elchemy.ElixirTypespec.get_last_spec(__MODULE__)
 
-        # TODO this function doesn't work as intended because of https://github.com/elixir-lang/elixir/issues/8927
-        # Until then FFI type checking has to be disabled or rewritten using Elixir's original source
-        {used_types, specs, _callbacks, _macrocallbacks, _optional_callbacks} =
-          Kernel.Typespec.translate_typespecs_for_module(set, bag)
+      left = {{fun1, unquote(arity)}, [spec]}
+      right = {unquote(mod), unquote(function), unquote(arity)}
 
-        {:spec, {fun1, _}, _l, spec} = specs |> List.last()
-
-        left = {{fun1, unquote(arity)}, [spec]}
-        right = {unquote(mod), unquote(function), unquote(arity)}
-
-        __MODULE__
-        |> Module.put_attribute(:verify_type, [left, right, __MODULE__, unquote(mod)])
-      end
-
-    IO.warn("Elixir version #{version} discovered. Disabling FFI type-checking")
-    :ok
+      __MODULE__
+      |> Module.put_attribute(:verify_type, [left, right, __MODULE__, unquote(mod)])
+    end
   end
 
   defmacro typetest(mod) do
