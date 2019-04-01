@@ -245,7 +245,7 @@ defmodule Elchemy.Glue do
   end
 
   # 1.7 and up
-  defp verify_specs(_, {mod, function, arity}) do
+  defp verify_specs(version, {mod, function, arity}) do
     _discard =
       quote do
         {set, bag} = :elixir_module.data_tables(__MODULE__)
@@ -264,6 +264,7 @@ defmodule Elchemy.Glue do
         |> Module.put_attribute(:verify_type, [left, right, __MODULE__, unquote(mod)])
       end
 
+    IO.warn("Elixir version #{version} discovered. Disabling FFI type-checking")
     :ok
   end
 
