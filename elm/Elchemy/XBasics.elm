@@ -62,7 +62,8 @@ type Order
      {:'++', 2},
      {:round, 1},
      {:to_string, 1},
-     {:'|>', 2}
+     {:'|>', 2},
+     {:floor, 1}
    ]
 
    curry ==/2

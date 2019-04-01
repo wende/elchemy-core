@@ -244,30 +244,27 @@ defmodule Elchemy.Glue do
     end
   end
 
-  defp verify_specs("1.7" <> _, {mod, function, arity}) do
-    quote do
-      spec_ast = Code.Typespec.fetch_specs(__MODULE__) |> hd |> elem(1)
-      {:spec, {fun1, _}, _l, spec} = Code.Typespec.spec_to_quoted(spec_ast, __ENV__)
+  # 1.7 and up
+  defp verify_specs(_, {mod, function, arity}) do
+    _discard =
+      quote do
+        {set, bag} = :elixir_module.data_tables(__MODULE__)
 
-      left = {{fun1, unquote(arity)}, [spec]}
-      right = {unquote(mod), unquote(function), unquote(arity)}
+        # TODO this function doesn't work as intended because of https://github.com/elixir-lang/elixir/issues/8927
+        # Until then FFI type checking has to be disabled or rewritten using Elixir's original source
+        {used_types, specs, _callbacks, _macrocallbacks, _optional_callbacks} =
+          Kernel.Typespec.translate_typespecs_for_module(set, bag)
 
-      __MODULE__
-      |> Module.put_attribute(:verify_type, [left, right, __MODULE__, unquote(mod)])
-    end
-  end
+        {:spec, {fun1, _}, _l, spec} = specs |> List.last()
 
-  defp verify_specs("1.8" <> _, {mod, function, arity}) do
-    quote do
-      spec_ast = Code.Typespec.fetch_specs(__MODULE__) |> hd |> elem(1)
-      {:spec, {fun1, _}, _l, spec} = Code.Typespec.spec_to_quoted(spec_ast, __ENV__)
+        left = {{fun1, unquote(arity)}, [spec]}
+        right = {unquote(mod), unquote(function), unquote(arity)}
 
-      left = {{fun1, unquote(arity)}, [spec]}
-      right = {unquote(mod), unquote(function), unquote(arity)}
+        __MODULE__
+        |> Module.put_attribute(:verify_type, [left, right, __MODULE__, unquote(mod)])
+      end
 
-      __MODULE__
-      |> Module.put_attribute(:verify_type, [left, right, __MODULE__, unquote(mod)])
-    end
+    :ok
   end
 
   defmacro typetest(mod) do
